@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Layout from '@/components/Layout';
-import { Shield, Award, CheckCircle, Flask } from 'lucide-react';
+import { Shield, Award, CheckCircle, Beaker } from 'lucide-react';
 
 export default function QualitePage() {
   return (
@@ -39,7 +39,7 @@ export default function QualitePage() {
 
         <div className="bg-green-50 rounded-lg p-6 mb-8">
           <div className="flex items-center mb-4">
-            <Flask className="text-green-600 mr-3" size={24} />
+                            <Beaker className="text-green-600 mr-3" size={24} />
             <h2 className="text-xl font-semibold">Tests laboratoire</h2>
           </div>
           <p className="text-gray-700 mb-4">
