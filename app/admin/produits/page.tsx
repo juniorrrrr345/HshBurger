@@ -65,10 +65,12 @@ export default function AdminProduitsPage() {
       name: '',
       description: '',
       images: [''],
+      videos: [],
       prices: [{ id: Date.now().toString(), variant: '', price: 0, originalPrice: 0, unit: '' }],
       category: '',
       inStock: true,
-      featured: false
+      featured: false,
+      orderLink: ''
     });
     setShowModal(true);
   };
