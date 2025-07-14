@@ -26,6 +26,13 @@ export interface ShopSettings {
   colors: {
     primary: string;
     secondary: string;
+    text: string;
+    background: string;
+  };
+  background: {
+    type: 'color' | 'image';
+    value: string;
+    opacity?: number;
   };
   contact: {
     email: string;
