@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useShopSettings, usePages, useProducts } from '@/hooks/useShop';
-import { ShoppingCart, Menu, X, Phone, Mail, MapPin, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, Mail, MapPin, ChevronDown } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -129,9 +129,6 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Actions */}
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-700 hover:text-primary transition-colors">
-                <ShoppingCart size={20} />
-              </button>
               <Link href="/admin" className="btn-primary text-sm">
                 Admin
               </Link>

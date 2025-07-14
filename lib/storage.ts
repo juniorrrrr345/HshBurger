@@ -100,14 +100,16 @@ class LocalStorage {
         id: '1',
         name: 'Huile CBD 10%',
         description: 'Huile de CBD premium 10% - 10ml. Extraction CO2 supercritique pour une qualité optimale.',
-        images: ['/products/huile-cbd-10.jpg'],
+        images: ['https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400'],
+        videos: [],
         prices: [
           { id: '1', variant: '10ml', price: 29.90, unit: 'flacon' },
           { id: '2', variant: '20ml', price: 54.90, originalPrice: 59.80, unit: 'flacon' }
         ],
-        category: 'huiles',
+        category: '1',
         inStock: true,
         featured: true,
+        orderLink: '',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       },
@@ -115,15 +117,68 @@ class LocalStorage {
         id: '2',
         name: 'Fleurs CBD Amnesia',
         description: 'Fleurs de CBD Amnesia - Taux de CBD 18%. Cultivées en indoor, saveur citronnée.',
-        images: ['/products/fleurs-amnesia.jpg'],
+        images: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400'],
+        videos: [],
         prices: [
           { id: '3', variant: '1g', price: 8.90, unit: 'gramme' },
           { id: '4', variant: '3g', price: 24.90, originalPrice: 26.70, unit: 'grammes' },
           { id: '5', variant: '5g', price: 39.90, originalPrice: 44.50, unit: 'grammes' }
         ],
-        category: 'fleurs',
+        category: '2',
         inStock: true,
         featured: true,
+        orderLink: '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: '3',
+        name: 'Résine CBD Hash',
+        description: 'Résine de CBD artisanale - 15% de CBD. Texture malleable et goût authentique.',
+        images: ['https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400'],
+        videos: [],
+        prices: [
+          { id: '6', variant: '1g', price: 12.90, unit: 'gramme' },
+          { id: '7', variant: '3g', price: 35.90, originalPrice: 38.70, unit: 'grammes' }
+        ],
+        category: '3',
+        inStock: true,
+        featured: true,
+        orderLink: '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: '4',
+        name: 'Huile CBD 15%',
+        description: 'Huile de CBD forte concentration 15% - Idéale pour utilisateurs expérimentés.',
+        images: ['https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400'],
+        videos: [],
+        prices: [
+          { id: '8', variant: '10ml', price: 49.90, unit: 'flacon' },
+          { id: '9', variant: '20ml', price: 89.90, originalPrice: 99.80, unit: 'flacon' }
+        ],
+        category: '1',
+        inStock: true,
+        featured: false,
+        orderLink: '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      {
+        id: '5',
+        name: 'Fleurs CBD Lemon Haze',
+        description: 'Fleurs de CBD Lemon Haze - Taux de CBD 16%. Arôme citronné intense.',
+        images: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400'],
+        videos: [],
+        prices: [
+          { id: '10', variant: '1g', price: 9.90, unit: 'gramme' },
+          { id: '11', variant: '3g', price: 27.90, unit: 'grammes' }
+        ],
+        category: '2',
+        inStock: true,
+        featured: false,
+        orderLink: '',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }

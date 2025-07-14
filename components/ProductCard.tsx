@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Product } from '@/types';
-import { ShoppingCart, Eye } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -43,19 +43,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         {/* Actions au survol */}
-        <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
+        <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <Link 
             href={`/produits/${product.id}`} 
             className="bg-white text-gray-900 p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
             <Eye size={20} />
           </Link>
-          <button 
-            className="bg-white text-gray-900 p-2 rounded-full hover:bg-gray-100 transition-colors"
-            disabled={!product.inStock}
-          >
-            <ShoppingCart size={20} />
-          </button>
         </div>
       </div>
 
