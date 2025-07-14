@@ -28,10 +28,12 @@ export default function AdminProduitsPage() {
     name: '',
     description: '',
     images: [''],
+    videos: [''],
     prices: [{ id: '', variant: '', price: 0, originalPrice: 0, unit: '' }] as ProductPrice[],
     category: '',
     inStock: true,
-    featured: false
+    featured: false,
+    orderLink: ''
   });
 
   const filteredProducts = products.filter(product => {
