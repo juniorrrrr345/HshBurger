@@ -3,13 +3,18 @@
 import React from 'react';
 import Link from 'next/link';
 import AdminLayout from '@/components/admin/AdminLayout';
+import LoadingSpinner from '@/components/admin/LoadingSpinner';
 import { useProducts, usePages, useCategories } from '@/hooks/useShop';
 import { Package, FileText, Grid, Eye, ShoppingCart, TrendingUp, Users, Star } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { products } = useProducts();
-  const { pages } = usePages();
-  const { categories } = useCategories();
+  const { products, loading: productsLoading } = useProducts();
+  const { pages, loading: pagesLoading } = usePages();
+  const { categories, loading: categoriesLoading } = useCategories();
+
+  if (productsLoading || pagesLoading || categoriesLoading) {
+    return <LoadingSpinner />;
+  }
 
   const stats = [
     {

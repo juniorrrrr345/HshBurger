@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Product, ShopSettings, Page, Category } from '@/types';
 import { storage } from '@/lib/storage';
+import { useClientMount } from './useClientMount';
 
 // Hook pour les produits
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasMounted = useClientMount();
 
   useEffect(() => {
+    if (!hasMounted) return;
+    
     const loadProducts = () => {
       const savedProducts = storage.getProducts();
       setProducts(savedProducts);
@@ -15,7 +19,7 @@ export function useProducts() {
     };
 
     loadProducts();
-  }, []);
+  }, [hasMounted]);
 
   const saveProducts = (newProducts: Product[]) => {
     storage.saveProducts(newProducts);
@@ -76,8 +80,11 @@ export function useProducts() {
 export function useShopSettings() {
   const [settings, setSettings] = useState<ShopSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const hasMounted = useClientMount();
 
   useEffect(() => {
+    if (!hasMounted) return;
+    
     const loadSettings = () => {
       const savedSettings = storage.getShopSettings();
       setSettings(savedSettings);
@@ -85,7 +92,7 @@ export function useShopSettings() {
     };
 
     loadSettings();
-  }, []);
+  }, [hasMounted]);
 
   const updateSettings = (newSettings: Partial<ShopSettings>) => {
     if (!settings) return;
@@ -113,8 +120,11 @@ export function useShopSettings() {
 export function usePages() {
   const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasMounted = useClientMount();
 
   useEffect(() => {
+    if (!hasMounted) return;
+    
     const loadPages = () => {
       const savedPages = storage.getPages();
       setPages(savedPages);
@@ -122,7 +132,7 @@ export function usePages() {
     };
 
     loadPages();
-  }, []);
+  }, [hasMounted]);
 
   const savePages = (newPages: Page[]) => {
     storage.savePages(newPages);
@@ -178,8 +188,11 @@ export function usePages() {
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const hasMounted = useClientMount();
 
   useEffect(() => {
+    if (!hasMounted) return;
+    
     const loadCategories = () => {
       const savedCategories = storage.getCategories();
       setCategories(savedCategories);
@@ -187,7 +200,7 @@ export function useCategories() {
     };
 
     loadCategories();
-  }, []);
+  }, [hasMounted]);
 
   const saveCategories = (newCategories: Category[]) => {
     storage.saveCategories(newCategories);

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
+import LoadingSpinner from '@/components/admin/LoadingSpinner';
 import { useProducts, useCategories } from '@/hooks/useShop';
 import { Product, ProductPrice } from '@/types';
 import { 
@@ -18,8 +19,12 @@ import {
 } from 'lucide-react';
 
 export default function AdminProduitsPage() {
-  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
-  const { categories } = useCategories();
+  const { products, addProduct, updateProduct, deleteProduct, loading: productsLoading } = useProducts();
+  const { categories, loading: categoriesLoading } = useCategories();
+
+  if (productsLoading || categoriesLoading) {
+    return <LoadingSpinner />;
+  }
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [showModal, setShowModal] = useState(false);
