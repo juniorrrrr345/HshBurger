@@ -46,41 +46,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Avantages */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="bg-green-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Leaf className="text-green-600" size={32} />
-              </div>
-              <h3 className="font-bold text-lg mb-2">100% Naturel</h3>
-              <p className="text-gray-600">Produits CBD naturels et bio</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-green-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Shield className="text-green-600" size={32} />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Qualité Garantie</h3>
-              <p className="text-gray-600">Testés en laboratoire</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-green-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Truck className="text-green-600" size={32} />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Livraison Rapide</h3>
-              <p className="text-gray-600">Expédition sous 24h</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-green-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Award className="text-green-600" size={32} />
-              </div>
-              <h3 className="font-bold text-lg mb-2">Expertise</h3>
-              <p className="text-gray-600">Conseils personnalisés</p>
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       {/* Produits populaires */}
       <section className="py-16 bg-gray-50">

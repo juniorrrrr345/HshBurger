@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useShopSettings, usePages } from '@/hooks/useShop';
-import { ShoppingCart, Menu, X, Phone, Mail, MapPin } from 'lucide-react';
+import { useShopSettings, usePages, useProducts } from '@/hooks/useShop';
+import { ShoppingCart, Menu, X, Phone, Mail, MapPin, ChevronDown } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,7 +12,9 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { settings } = useShopSettings();
   const { getActivePages } = usePages();
+  const { products } = useProducts();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [pages, setPages] = useState<any[]>([]);
 
   useEffect(() => {
@@ -65,18 +67,52 @@ export default function Layout({ children }: LayoutProps) {
               <Link href="/" className="text-gray-700 hover:text-primary transition-colors">
                 Accueil
               </Link>
-              <Link href="/produits" className="text-gray-700 hover:text-primary transition-colors">
-                Produits
-              </Link>
-              {pages.map((page) => (
-                <Link 
-                  key={page.id} 
-                  href={`/pages/${page.slug}`} 
-                  className="text-gray-700 hover:text-primary transition-colors"
+              
+              {/* Menu déroulant Produits */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsProductsOpen(!isProductsOpen)}
+                  className="flex items-center text-gray-700 hover:text-primary transition-colors"
                 >
-                  {page.title}
-                </Link>
-              ))}
+                  Produits
+                  <ChevronDown size={16} className="ml-1" />
+                </button>
+                {isProductsOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
+                    <div className="p-4">
+                      <Link 
+                        href="/produits"
+                        className="block text-gray-700 hover:text-primary font-medium mb-3"
+                        onClick={() => setIsProductsOpen(false)}
+                      >
+                        Tous les produits
+                      </Link>
+                      <div className="space-y-2">
+                        {products.slice(0, 5).map((product) => (
+                          <Link
+                            key={product.id}
+                            href={`/produits/${product.id}`}
+                            className="block text-sm text-gray-600 hover:text-primary"
+                            onClick={() => setIsProductsOpen(false)}
+                          >
+                            {product.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <Link href="/pages/livraison" className="text-gray-700 hover:text-primary transition-colors">
+                Livraison
+              </Link>
+              <Link href="/pages/qualite" className="text-gray-700 hover:text-primary transition-colors">
+                Qualité
+              </Link>
+              <Link href="/pages/a-propos" className="text-gray-700 hover:text-primary transition-colors">
+                À propos
+              </Link>
               <Link href="/contact" className="text-gray-700 hover:text-primary transition-colors">
                 Contact
               </Link>
