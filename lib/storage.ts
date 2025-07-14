@@ -20,7 +20,13 @@ class LocalStorage {
   getProducts(): Product[] {
     if (!this.isClient) return [];
     const products = localStorage.getItem('cbd-products');
-    return products ? JSON.parse(products) : this.getDefaultProducts();
+    if (!products) {
+      // Première fois : créer les données par défaut
+      const defaultProducts = this.getDefaultProducts();
+      this.saveProducts(defaultProducts);
+      return defaultProducts;
+    }
+    return JSON.parse(products);
   }
 
   saveProducts(products: Product[]): void {
@@ -32,7 +38,13 @@ class LocalStorage {
   getShopSettings(): ShopSettings {
     if (!this.isClient) return this.getDefaultSettings();
     const settings = localStorage.getItem('cbd-shop-settings');
-    return settings ? JSON.parse(settings) : this.getDefaultSettings();
+    if (!settings) {
+      // Première fois : créer les paramètres par défaut
+      const defaultSettings = this.getDefaultSettings();
+      this.saveShopSettings(defaultSettings);
+      return defaultSettings;
+    }
+    return JSON.parse(settings);
   }
 
   saveShopSettings(settings: ShopSettings): void {
@@ -44,7 +56,13 @@ class LocalStorage {
   getPages(): Page[] {
     if (!this.isClient) return [];
     const pages = localStorage.getItem('cbd-pages');
-    return pages ? JSON.parse(pages) : this.getDefaultPages();
+    if (!pages) {
+      // Première fois : créer les pages par défaut
+      const defaultPages = this.getDefaultPages();
+      this.savePages(defaultPages);
+      return defaultPages;
+    }
+    return JSON.parse(pages);
   }
 
   savePages(pages: Page[]): void {
@@ -56,7 +74,13 @@ class LocalStorage {
   getCategories(): Category[] {
     if (!this.isClient) return [];
     const categories = localStorage.getItem('cbd-categories');
-    return categories ? JSON.parse(categories) : this.getDefaultCategories();
+    if (!categories) {
+      // Première fois : créer les catégories par défaut
+      const defaultCategories = this.getDefaultCategories();
+      this.saveCategories(defaultCategories);
+      return defaultCategories;
+    }
+    return JSON.parse(categories);
   }
 
   saveCategories(categories: Category[]): void {
@@ -240,21 +264,38 @@ class LocalStorage {
         id: '1',
         name: 'Huiles CBD',
         description: 'Huiles de CBD de différentes concentrations',
-        image: '/categories/huiles.jpg'
+        image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=300'
       },
       {
         id: '2',
         name: 'Fleurs CBD',
         description: 'Fleurs de CBD premium indoor et outdoor',
-        image: '/categories/fleurs.jpg'
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300'
       },
       {
         id: '3',
         name: 'Résines CBD',
         description: 'Résines et hash CBD artisanaux',
-        image: '/categories/resines.jpg'
+        image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300'
       }
     ];
+  }
+
+  // Méthode pour réinitialiser toutes les données
+  resetAllData(): void {
+    if (!this.isClient) return;
+    
+    // Supprimer toutes les données existantes
+    localStorage.removeItem('cbd-products');
+    localStorage.removeItem('cbd-categories');
+    localStorage.removeItem('cbd-pages');
+    localStorage.removeItem('cbd-shop-settings');
+    
+    // Recréer les données par défaut
+    this.getProducts();
+    this.getCategories();
+    this.getPages();
+    this.getShopSettings();
   }
 }
 

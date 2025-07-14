@@ -314,14 +314,15 @@ export default function AdminParametresPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes les données ? Cette action est irréversible.')) {
-                      localStorage.clear();
+                    if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes les données ? Cette action remplacera tout par les données par défaut.')) {
+                      const { storage } = require('@/lib/storage');
+                      storage.resetAllData();
                       window.location.reload();
                     }
                   }}
                   className="btn-outline text-red-600 border-red-300 hover:bg-red-50"
                 >
-                  Réinitialiser les données
+                  Réinitialiser avec données par défaut
                 </button>
               </div>
             </div>
