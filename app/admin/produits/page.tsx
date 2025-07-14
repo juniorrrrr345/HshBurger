@@ -28,10 +28,12 @@ export default function AdminProduitsPage() {
     name: '',
     description: '',
     images: [''],
+    videos: [''],
     prices: [{ id: '', variant: '', price: 0, originalPrice: 0, unit: '' }] as ProductPrice[],
     category: '',
     inStock: true,
-    featured: false
+    featured: false,
+    orderLink: ''
   });
 
   const filteredProducts = products.filter(product => {
@@ -47,10 +49,12 @@ export default function AdminProduitsPage() {
       name: product.name,
       description: product.description,
       images: product.images.length > 0 ? product.images : [''],
+      videos: product.videos && product.videos.length > 0 ? product.videos : [''],
       prices: product.prices.map(p => ({ ...p })),
       category: product.category,
       inStock: product.inStock,
-      featured: product.featured
+      featured: product.featured,
+      orderLink: product.orderLink || ''
     });
     setShowModal(true);
   };
@@ -95,6 +99,26 @@ export default function AdminProduitsPage() {
     input.click();
   };
 
+  const handleVideoUpload = (index: number) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'video/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          const newVideos = [...formData.videos];
+          newVideos[index] = result;
+          setFormData(prev => ({ ...prev, videos: newVideos }));
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
   const addImage = () => {
     setFormData(prev => ({
       ...prev,
@@ -106,6 +130,20 @@ export default function AdminProduitsPage() {
     setFormData(prev => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addVideo = () => {
+    setFormData(prev => ({
+      ...prev,
+      videos: [...prev.videos, '']
+    }));
+  };
+
+  const removeVideo = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      videos: prev.videos.filter((_, i) => i !== index)
     }));
   };
 
@@ -143,6 +181,7 @@ export default function AdminProduitsPage() {
     const productData = {
       ...formData,
       images: formData.images.filter(img => img !== ''),
+      videos: formData.videos.filter(vid => vid !== ''),
       prices: formData.prices.map(p => ({
         ...p,
         originalPrice: p.originalPrice || undefined
@@ -375,6 +414,17 @@ export default function AdminProduitsPage() {
                         </option>
                       ))}
                     </select>
+                  </div>
+
+                  <div>
+                    <label className="form-label">Lien de commande externe (optionnel)</label>
+                    <input
+                      type="url"
+                      value={formData.orderLink}
+                      onChange={(e) => setFormData(prev => ({ ...prev, orderLink: e.target.value }))}
+                      className="form-input"
+                      placeholder="https://exemple.com/commande"
+                    />
                   </div>
 
                   <div className="flex items-center space-x-6">

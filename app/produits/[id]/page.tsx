@@ -118,6 +118,27 @@ export default function ProductDetailPage() {
                 ))}
               </div>
             )}
+
+            {/* Vidéos */}
+            {product.videos && product.videos.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-3">Vidéos du produit</h3>
+                <div className="space-y-4">
+                  {product.videos.map((video, index) => (
+                    <div key={index} className="rounded-lg overflow-hidden">
+                      <video
+                        controls
+                        className="w-full h-64 object-cover"
+                        poster={product.images[0]}
+                      >
+                        <source src={video} type="video/mp4" />
+                        Votre navigateur ne supporte pas les vidéos.
+                      </video>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Informations produit */}
@@ -127,14 +148,7 @@ export default function ProductDetailPage() {
                 <span className="badge badge-warning mb-2">Produit populaire</span>
               )}
               <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-              <div className="flex items-center mb-4">
-                <div className="flex text-yellow-400 mr-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="currentColor" />
-                  ))}
-                </div>
-                <span className="text-sm text-gray-600">(4.8/5 - 24 avis)</span>
-              </div>
+
             </div>
 
             <div className="mb-6">
@@ -201,16 +215,42 @@ export default function ProductDetailPage() {
             <div className="mb-6 space-y-3">
               {product.inStock ? (
                 <>
-                  <button className="btn-primary w-full flex items-center justify-center">
-                    <ShoppingCart size={20} className="mr-2" />
-                    Ajouter au panier
-                  </button>
+                  {product.orderLink ? (
+                    <a 
+                      href={product.orderLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary w-full flex items-center justify-center"
+                    >
+                      <ShoppingCart size={20} className="mr-2" />
+                      Commander maintenant
+                    </a>
+                  ) : (
+                    <button className="btn-primary w-full flex items-center justify-center">
+                      <ShoppingCart size={20} className="mr-2" />
+                      Ajouter au panier
+                    </button>
+                  )}
                   <div className="flex space-x-3">
                     <button className="btn-outline flex-1 flex items-center justify-center">
                       <Heart size={20} className="mr-2" />
                       Favoris
                     </button>
-                    <button className="btn-outline flex-1 flex items-center justify-center">
+                    <button 
+                      className="btn-outline flex-1 flex items-center justify-center"
+                      onClick={() => {
+                        if (navigator.share) {
+                          navigator.share({
+                            title: product.name,
+                            text: product.description,
+                            url: window.location.href
+                          });
+                        } else {
+                          navigator.clipboard.writeText(window.location.href);
+                          alert('Lien copié dans le presse-papiers !');
+                        }
+                      }}
+                    >
                       <Share2 size={20} className="mr-2" />
                       Partager
                     </button>

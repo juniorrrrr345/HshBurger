@@ -3,10 +3,12 @@ export interface Product {
   name: string;
   description: string;
   images: string[];
+  videos?: string[];
   prices: ProductPrice[];
   category: string;
   inStock: boolean;
   featured: boolean;
+  orderLink?: string;
   createdAt: string;
   updatedAt: string;
 }

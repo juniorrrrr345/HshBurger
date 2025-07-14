@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useShopSettings, usePages } from '@/hooks/useShop';
-import { ShoppingCart, Menu, X, Phone, Mail, MapPin } from 'lucide-react';
+import { useShopSettings, usePages, useProducts } from '@/hooks/useShop';
+import { ShoppingCart, Menu, X, Phone, Mail, MapPin, ChevronDown } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,7 +12,9 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { settings } = useShopSettings();
   const { getActivePages } = usePages();
+  const { products } = useProducts();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [pages, setPages] = useState<any[]>([]);
 
   useEffect(() => {
@@ -65,18 +67,52 @@ export default function Layout({ children }: LayoutProps) {
               <Link href="/" className="text-gray-700 hover:text-primary transition-colors">
                 Accueil
               </Link>
-              <Link href="/produits" className="text-gray-700 hover:text-primary transition-colors">
-                Produits
-              </Link>
-              {pages.map((page) => (
-                <Link 
-                  key={page.id} 
-                  href={`/pages/${page.slug}`} 
-                  className="text-gray-700 hover:text-primary transition-colors"
+              
+              {/* Menu déroulant Produits */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsProductsOpen(!isProductsOpen)}
+                  className="flex items-center text-gray-700 hover:text-primary transition-colors"
                 >
-                  {page.title}
-                </Link>
-              ))}
+                  Produits
+                  <ChevronDown size={16} className="ml-1" />
+                </button>
+                {isProductsOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
+                    <div className="p-4">
+                      <Link 
+                        href="/produits"
+                        className="block text-gray-700 hover:text-primary font-medium mb-3"
+                        onClick={() => setIsProductsOpen(false)}
+                      >
+                        Tous les produits
+                      </Link>
+                      <div className="space-y-2">
+                        {products.slice(0, 5).map((product) => (
+                          <Link
+                            key={product.id}
+                            href={`/produits/${product.id}`}
+                            className="block text-sm text-gray-600 hover:text-primary"
+                            onClick={() => setIsProductsOpen(false)}
+                          >
+                            {product.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <Link href="/pages/livraison" className="text-gray-700 hover:text-primary transition-colors">
+                Livraison
+              </Link>
+              <Link href="/pages/qualite" className="text-gray-700 hover:text-primary transition-colors">
+                Qualité
+              </Link>
+              <Link href="/pages/a-propos" className="text-gray-700 hover:text-primary transition-colors">
+                À propos
+              </Link>
               <Link href="/contact" className="text-gray-700 hover:text-primary transition-colors">
                 Contact
               </Link>
@@ -146,128 +182,6 @@ export default function Layout({ children }: LayoutProps) {
       <main className="flex-1">
         {children}
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid md:grid-cols-4 gap-8">
-            {/* Informations boutique */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">{settings.name}</h3>
-              <p className="text-gray-400 mb-4">{settings.description}</p>
-              <div className="flex space-x-4">
-                {settings.social.facebook && (
-                  <a 
-                    href={settings.social.facebook} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Facebook
-                  </a>
-                )}
-                {settings.social.instagram && (
-                  <a 
-                    href={settings.social.instagram} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Instagram
-                  </a>
-                )}
-                {settings.social.twitter && (
-                  <a 
-                    href={settings.social.twitter} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Twitter
-                  </a>
-                )}
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">Navigation</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-                    Accueil
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/produits" className="text-gray-400 hover:text-white transition-colors">
-                    Produits
-                  </Link>
-                </li>
-                {pages.map((page) => (
-                  <li key={page.id}>
-                    <Link 
-                      href={`/pages/${page.slug}`} 
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      {page.title}
-                    </Link>
-                  </li>
-                ))}
-                <li>
-                  <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">Contact</h3>
-              <div className="space-y-2">
-                <div className="flex items-center text-gray-400">
-                  <Phone size={16} className="mr-2" />
-                  <span>{settings.contact.phone}</span>
-                </div>
-                <div className="flex items-center text-gray-400">
-                  <Mail size={16} className="mr-2" />
-                  <span>{settings.contact.email}</span>
-                </div>
-                <div className="flex items-center text-gray-400">
-                  <MapPin size={16} className="mr-2" />
-                  <span>{settings.contact.address}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Informations légales */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">Informations</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/pages/mentions-legales" className="text-gray-400 hover:text-white transition-colors">
-                    Mentions légales
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pages/conditions-generales" className="text-gray-400 hover:text-white transition-colors">
-                    CGV
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pages/politique-confidentialite" className="text-gray-400 hover:text-white transition-colors">
-                    Politique de confidentialité
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} {settings.name}. Tous droits réservés.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
