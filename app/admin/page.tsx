@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useProducts, usePages, useCategories } from '@/hooks/useShop';
 import { Package, FileText, Grid, Eye, ShoppingCart, TrendingUp, Users, Star } from 'lucide-react';
@@ -170,22 +171,22 @@ export default function AdminDashboard() {
           </div>
           <div className="card-body">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <button className="btn-primary flex items-center justify-center">
+              <Link href="/admin/produits" className="btn-primary flex items-center justify-center">
                 <Package size={20} className="mr-2" />
                 Nouveau produit
-              </button>
-              <button className="btn-secondary flex items-center justify-center">
+              </Link>
+              <Link href="/admin/pages" className="btn-secondary flex items-center justify-center">
                 <FileText size={20} className="mr-2" />
                 Nouvelle page
-              </button>
-              <button className="btn-outline flex items-center justify-center">
+              </Link>
+              <Link href="/admin/categories" className="btn-outline flex items-center justify-center">
                 <Grid size={20} className="mr-2" />
                 Nouvelle catégorie
-              </button>
-              <button className="btn-outline flex items-center justify-center">
+              </Link>
+              <Link href="/" target="_blank" className="btn-outline flex items-center justify-center">
                 <Eye size={20} className="mr-2" />
                 Voir la boutique
-              </button>
+              </Link>
             </div>
           </div>
         </div>
