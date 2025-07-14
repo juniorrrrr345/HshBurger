@@ -148,14 +148,7 @@ export default function ProductDetailPage() {
                 <span className="badge badge-warning mb-2">Produit populaire</span>
               )}
               <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-              <div className="flex items-center mb-4">
-                <div className="flex text-yellow-400 mr-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="currentColor" />
-                  ))}
-                </div>
-                <span className="text-sm text-gray-600">(4.8/5 - 24 avis)</span>
-              </div>
+
             </div>
 
             <div className="mb-6">
