@@ -10,7 +10,6 @@ interface HeaderProps {
 
 export default function Header({ currentPage = '' }: HeaderProps) {
   const [config, setConfig] = useState<SiteConfig | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
@@ -72,18 +71,18 @@ export default function Header({ currentPage = '' }: HeaderProps) {
         </Link>
       </div>
 
-      {/* Navigation - Plus discrète */}
+      {/* Navigation - Liens directement visibles */}
       <nav className="backdrop-blur-sm shadow-sm bg-white/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-12">
+          <div className="flex justify-center items-center h-12">
             
-            {/* Desktop Navigation - Cachée */}
-            <div className="hidden md:flex space-x-8 mx-auto opacity-0 pointer-events-none">
+            {/* Navigation toujours visible */}
+            <div className="flex space-x-2 sm:space-x-4 md:space-x-8">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
+                  className={`px-2 sm:px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-all duration-300 transform hover:scale-105 ${
                     currentPage === item.name
                       ? 'bg-black text-white shadow-lg'
                       : 'text-black hover:bg-black hover:text-white'
@@ -92,91 +91,9 @@ export default function Header({ currentPage = '' }: HeaderProps) {
                   {item.name}
                 </Link>
               ))}
-            </div>
-
-            {/* Mobile menu button - Plus visible */}
-            <div className="md:hidden mx-auto">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-inset transition-colors"
-              >
-                <span className="sr-only">Ouvrir le menu</span>
-                {!isMenuOpen ? (
-                  <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                ) : (
-                  <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                )}
-              </button>
-            </div>
-
-            {/* Desktop menu button - Centré et visible */}
-            <div className="hidden md:block mx-auto">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-inset transition-colors"
-              >
-                <span className="sr-only">Ouvrir le menu</span>
-                {!isMenuOpen ? (
-                  <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                ) : (
-                  <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                )}
-              </button>
             </div>
           </div>
         </div>
-
-        {/* Mobile menu */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 border-t">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ${
-                    currentPage === item.name
-                      ? 'bg-black text-white shadow-lg'
-                      : 'text-black hover:bg-black hover:text-white'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Desktop menu */}
-        {isMenuOpen && (
-          <div className="hidden md:block">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 border-t">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ${
-                    currentPage === item.name
-                      ? 'bg-black text-white shadow-lg'
-                      : 'text-black hover:bg-black hover:text-white'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
       </nav>
     </header>
   );
