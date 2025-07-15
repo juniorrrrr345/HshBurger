@@ -160,27 +160,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             </div>
 
             {/* Product Features */}
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">Caractéristiques :</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Produit 100% naturel
-                </li>
-                <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Contrôlé et certifié
-                </li>
-                <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Livraison rapide et discrète
-                </li>
-                <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
-                  Paiement sécurisé
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
 
@@ -230,7 +209,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 {config.shopInfo.name}. Tous droits réservés.</p>
         </div>
       </footer>
     </div>
