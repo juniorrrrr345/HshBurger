@@ -76,10 +76,7 @@ export default function Header({ currentPage = '' }: HeaderProps) {
             <div className="md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset transition-colors"
-                style={{ 
-                  backgroundColor: isMenuOpen ? config.shopInfo.primaryColor : 'transparent'
-                }}
+                className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-inset transition-colors"
               >
                 <span className="sr-only">Ouvrir le menu</span>
                 {!isMenuOpen ? (
@@ -106,22 +103,9 @@ export default function Header({ currentPage = '' }: HeaderProps) {
                   href={item.href}
                   className={`block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ${
                     currentPage === item.name
-                      ? 'text-white shadow-lg'
-                      : 'text-gray-700 hover:text-white hover:shadow-md'
+                      ? 'bg-black text-white shadow-lg'
+                      : 'text-black hover:bg-black hover:text-white'
                   }`}
-                  style={{
-                    backgroundColor: currentPage === item.name ? config.shopInfo.primaryColor : 'transparent'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (currentPage !== item.name) {
-                      e.currentTarget.style.backgroundColor = config.shopInfo.primaryColor;
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (currentPage !== item.name) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }
-                  }}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
