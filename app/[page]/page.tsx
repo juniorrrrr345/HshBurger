@@ -118,7 +118,7 @@ export default function DynamicPage({ params }: PageProps) {
             {/* Sections personnalisées */}
             {currentPage.content?.sections && currentPage.content.sections.length > 0 ? (
               <div className="space-y-12">
-                {currentPage.content.sections.map((section, index) => (
+                {currentPage.content.sections.map((section: { title: string; content: string; type: 'text' | 'image' | 'video' | 'social' }, index: number) => (
                   <div key={index} className="bg-white rounded-lg shadow-md p-8 border border-gray-200">
                     <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
                       {section.title}
