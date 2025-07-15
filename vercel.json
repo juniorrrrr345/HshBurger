@@ -1,13 +1,6 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm run build",
-  "outputDirectory": ".next",
   "installCommand": "npm install",
-  "regions": ["fra1"],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
+  "regions": ["fra1"]
 }
