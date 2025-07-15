@@ -15,19 +15,11 @@ export default function AdminPage() {
   const [editingFarm, setEditingFarm] = useState<Farm | null>(null);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
 
-  // Debug: surveiller les changements d'editingPage
   useEffect(() => {
-    console.log('🔄 editingPage changed:', editingPage);
-  }, [editingPage]);
-
-  useEffect(() => {
-    console.log('🔄 Loading config...');
     const loadedConfig = getConfig();
-    console.log('📋 Loaded config:', loadedConfig);
     
     // S'assurer que la propriété pages existe
     if (!loadedConfig.pages) {
-      console.log('➕ Creating default pages');
       loadedConfig.pages = [
         { id: 1, name: "Accueil", href: "/", isDefault: true },
         { id: 2, name: "Produits", href: "/produits", isDefault: true },
@@ -35,9 +27,7 @@ export default function AdminPage() {
         { id: 4, name: "Réseaux Sociaux", href: "/reseaux-sociaux", isDefault: true }
       ];
     }
-    console.log('📄 Final config.pages:', loadedConfig.pages);
     setConfig(loadedConfig);
-    console.log('✅ Config set in state');
   }, []);
 
   const handleSave = async () => {
@@ -238,109 +228,78 @@ export default function AdminPage() {
 
   // Page management
   const addPage = () => {
-    try {
-      console.log('🚀 addPage function called');
-      console.log('📊 config exists:', !!config);
-      
-      if (!config) {
-        console.error('❌ No config found');
-        alert('Erreur: Configuration non trouvée');
-        return;
-      }
-      
-      // S'assurer que pages existe
-      if (!config.pages) {
-        console.log('➕ Creating pages array');
-        config.pages = [];
-      }
-      
-      const newPage: Page = {
-        id: getNextId(config.pages || []),
-        name: '',
-        href: '',
-        isDefault: false
-      };
-      
-      console.log('📄 New page created:', newPage);
-      console.log('🔄 Setting editingPage...');
-      console.log('editingPage before:', editingPage);
-      
-      setEditingPage(newPage);
-      
-      console.log('✅ addPage completed');
-      
-      // Vérifier après un délai si editingPage a changé
-      setTimeout(() => {
-        console.log('📋 editingPage after timeout:', editingPage);
-      }, 100);
-      
-    } catch (error) {
-      console.error('❌ Error in addPage:', error);
-      alert('Erreur lors de l\'ajout de page: ' + error);
-    }
-  };
-
-  const savePage = () => {
-    console.log('savePage function called');
-    console.log('config:', config);
-    console.log('editingPage:', editingPage);
-    
-    if (!config || !editingPage) {
-      console.log('Missing config or editingPage');
+    if (!config) {
+      alert('Configuration non trouvée');
       return;
     }
     
     // S'assurer que pages existe
     if (!config.pages) {
-      console.log('Creating pages array in savePage');
+      config.pages = [];
+    }
+    
+    const newPage: Page = {
+      id: getNextId(config.pages || []),
+      name: '',
+      href: '',
+      isDefault: false
+    };
+    
+    setEditingPage(newPage);
+  };
+
+  const savePage = () => {
+    if (!config || !editingPage) {
+      alert('Données manquantes pour sauvegarder');
+      return;
+    }
+    
+    if (!editingPage.name.trim() || !editingPage.href.trim()) {
+      alert('Veuillez remplir tous les champs');
+      return;
+    }
+    
+    // S'assurer que pages existe
+    if (!config.pages) {
       config.pages = [];
     }
     
     const existingIndex = config.pages.findIndex(p => p.id === editingPage.id);
-    console.log('existingIndex:', existingIndex);
     let newPages;
     
     if (existingIndex >= 0) {
-      console.log('Updating existing page');
+      // Modifier une page existante
       newPages = [...config.pages];
       newPages[existingIndex] = editingPage;
     } else {
-      console.log('Adding new page');
+      // Ajouter une nouvelle page
       newPages = [...config.pages, editingPage];
     }
     
-    console.log('newPages:', newPages);
     setConfig({ ...config, pages: newPages });
     setEditingPage(null);
-    console.log('savePage completed');
   };
 
   const deletePage = (id: number) => {
-    console.log('deletePage function called with id:', id);
-    console.log('config:', config);
-    console.log('config.pages:', config?.pages);
-    
     if (!config || !config.pages) {
-      console.log('Missing config or pages');
+      alert('Configuration non trouvée');
       return;
     }
+    
     const pageToDelete = config.pages.find(p => p.id === id);
-    console.log('pageToDelete:', pageToDelete);
     
     if (pageToDelete?.isDefault) {
-      console.log('Cannot delete default page');
       alert('Impossible de supprimer une page par défaut');
       return;
     }
     
-    const newPages = config.pages.filter(p => p.id !== id);
-    console.log('newPages after filter:', newPages);
-    
-    setConfig({
-      ...config,
-      pages: newPages
-    });
-    console.log('deletePage completed');
+    if (confirm(`Êtes-vous sûr de vouloir supprimer la page "${pageToDelete?.name}" ?`)) {
+      const newPages = config.pages.filter(p => p.id !== id);
+      setConfig({
+        ...config,
+        pages: newPages
+      });
+    }
   };
 
   if (!config) {
@@ -926,11 +885,7 @@ export default function AdminPage() {
                             Annuler
                           </button>
                           <button
-                            onClick={() => {
-                              console.log('Bouton Enregistrer cliqué');
-                              console.log('editingPage:', editingPage);
-                              savePage();
-                            }}
+                            onClick={savePage}
                             disabled={!editingPage.name.trim() || !editingPage.href.trim()}
                             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                           >
@@ -1437,77 +1392,13 @@ export default function AdminPage() {
                 {/* Navigation Management Section */}
                 <div className="bg-gray-50 rounded-lg p-6">
                   <div className="flex justify-between items-center mb-4">
-                    <div>
-                      <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
-                      <div className="text-sm text-gray-600 mt-1">
-                        Pages: {config?.pages?.length || 0} | 
-                        EditingPage: {editingPage ? `${editingPage.name} (${editingPage.href})` : 'null'}
-                      </div>
-                    </div>
-                    <div className="flex space-x-1 flex-wrap">
-                                             <button
-                         onClick={() => {
-                           console.log('TEST BUTTON CLICKED!');
-                           alert('Bouton de test fonctionne !');
-                         }}
-                         className="bg-yellow-500 text-white px-3 py-2 rounded-md hover:bg-yellow-600 transition-colors text-sm"
-                       >
-                         Test
-                       </button>
-                                               <button
-                          onClick={() => {
-                            console.log('=== DEBUG INFO ===');
-                            console.log('config:', config);
-                            console.log('config.pages:', config?.pages);
-                            console.log('editingPage:', editingPage);
-                            console.log('typeof addPage:', typeof addPage);
-                            console.log('typeof setEditingPage:', typeof setEditingPage);
-                          }}
-                          className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors text-sm"
-                        >
-                          Debug
-                        </button>
-                                                 <button
-                           onClick={() => {
-                             console.log('🧪 Test setEditingPage direct');
-                             const testPage = { id: 999, name: 'Test', href: '/test', isDefault: false };
-                             console.log('Setting test page:', testPage);
-                             setEditingPage(testPage);
-                           }}
-                           className="bg-purple-500 text-white px-3 py-2 rounded-md hover:bg-purple-600 transition-colors text-sm"
-                         >
-                           Test Modal
-                         </button>
-                         <button
-                           onClick={() => {
-                             console.log('🔧 Test simple add page');
-                             if (!config) {
-                               alert('Config manquante!');
-                               return;
-                             }
-                             const newTestPage = { id: Date.now(), name: 'Test Simple', href: '/test-simple', isDefault: false };
-                             const newPages = [...(config.pages || []), newTestPage];
-                             console.log('Adding page directly to config:', newTestPage);
-                             console.log('New pages array:', newPages);
-                             setConfig({ ...config, pages: newPages });
-                             alert('Page ajoutée directement!');
-                           }}
-                           className="bg-orange-500 text-white px-3 py-2 rounded-md hover:bg-orange-600 transition-colors text-sm"
-                         >
-                           Add Direct
-                         </button>
-                      <button
-                        onClick={() => {
-                          console.log('Bouton Ajouter cliqué');
-                          console.log('Config:', config);
-                          console.log('Config.pages:', config?.pages);
-                          addPage();
-                        }}
-                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                      >
-                        Ajouter une page
-                      </button>
-                    </div>
+                                         <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
+                     <button
+                       onClick={addPage}
+                       className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                     >
+                       Ajouter une page
+                     </button>
                   </div>
                   
                   <div className="space-y-4">
@@ -1524,34 +1415,14 @@ export default function AdminPage() {
                         </div>
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => {
-                              console.log('🔄 Bouton Modifier cliqué pour:', page);
-                              console.log('📋 Page complète:', JSON.stringify(page, null, 2));
-                              console.log('🔍 editingPage before:', editingPage);
-                              
-                              try {
-                                setEditingPage(page);
-                                console.log('✅ setEditingPage appelé avec succès');
-                                
-                                // Vérifier après un délai
-                                setTimeout(() => {
-                                  console.log('⏰ editingPage après 100ms:', editingPage);
-                                }, 100);
-                                
-                              } catch (error) {
-                                console.error('❌ Erreur lors de setEditingPage:', error);
-                              }
-                            }}
+                            onClick={() => setEditingPage(page)}
                             className="text-blue-600 hover:text-blue-800 text-sm"
                           >
                             Modifier
                           </button>
                           {!page.isDefault && (
                             <button
-                              onClick={() => {
-                                console.log('Bouton Supprimer cliqué pour page ID:', page.id);
-                                deletePage(page.id);
-                              }}
+                              onClick={() => deletePage(page.id)}
                               className="text-red-600 hover:text-red-800 text-sm"
                             >
                               Supprimer
