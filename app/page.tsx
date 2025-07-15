@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SiteConfig, getConfig } from './lib/config';
 import Header from './components/Header';
+import OptimizedImage from './components/OptimizedImage';
 
 export default function HomePage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -55,34 +56,34 @@ export default function HomePage() {
       {/* Category Filter */}
       <section className="py-8 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <h2 className="text-2xl font-bold mb-4 md:mb-0" style={{ color: config.shopInfo.secondaryColor }}>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <h2 className="text-2xl font-bold mb-4 md:mb-0 text-center md:text-left" style={{ color: config.shopInfo.secondaryColor }}>
               {config.pageContent.homepage.sectionTitle}
             </h2>
             
             {/* Category Dropdown */}
-            <div className="relative">
+            <div className="relative w-full md:w-auto dropdown-container">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
+                className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md mobile-button"
                 style={{ 
                   backgroundColor: config.shopInfo.primaryColor,
                   color: config.shopInfo.textColor 
                 }}
               >
-                <span>
+                <span className="truncate text-improved">
                   {selectedCategory === 'all' 
-                    ? '🌟 Toutes les catégories' 
+                    ? `🌟 ${config.pageContent.homepage.allCategoriesLabel}` 
                     : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
                   }
                 </span>
-                <svg className={`w-4 h-4 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-4 h-4 transition-transform duration-300 flex-shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-10">
+                <div className="dropdown-fix bg-white rounded-lg shadow-lg border max-h-60 overflow-y-auto">
                   <div className="py-1">
                     <button
                       onClick={() => {
@@ -93,7 +94,7 @@ export default function HomePage() {
                         selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
                       }`}
                     >
-                      🌟 Toutes les catégories
+                      🌟 {config.pageContent.homepage.allCategoriesLabel}
                     </button>
                     {config.categories.map((category) => (
                       <button
@@ -123,11 +124,12 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.slice(0, 6).map((product) => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                <div className="aspect-square relative">
-                  <img
+                <div className="aspect-square relative bg-gray-100 mobile-image-container">
+                  <OptimizedImage
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
+                    fallbackIcon="📦"
                   />
                   {product.popular && (
                     <div 
@@ -146,7 +148,7 @@ export default function HomePage() {
                   <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 mb-4">{product.description}</p>
+                  <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
                   
                   <div className="mb-4">
                     <div className="flex flex-wrap gap-2">

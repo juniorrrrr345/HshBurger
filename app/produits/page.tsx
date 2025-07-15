@@ -141,12 +141,24 @@ export default function ProduitsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProducts.map((product) => (
                 <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                  <div className="aspect-square relative">
+                  <div className="aspect-square relative bg-gray-100">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center product-image mobile-optimized"
+                      loading="lazy"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const placeholder = target.parentElement?.querySelector('.image-placeholder');
+                        if (placeholder) {
+                          (placeholder as HTMLElement).style.display = 'flex';
+                        }
+                      }}
                     />
+                    <div className="image-placeholder absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-400 text-4xl" style={{ display: 'none' }}>
+                      📦
+                    </div>
                     {product.popular && (
                       <div 
                         className="absolute top-2 right-2 text-white px-3 py-1 rounded-full text-sm font-semibold filter drop-shadow-md"

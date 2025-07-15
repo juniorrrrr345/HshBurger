@@ -840,6 +840,46 @@ export default function AdminPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Label des catégories</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.categoriesLabel}
+                        onChange={(e) => updatePageContent('homepage', 'categoriesLabel', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Catégories"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Label Farm</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.farmLabel}
+                        onChange={(e) => updatePageContent('homepage', 'farmLabel', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Farm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Label toutes les catégories</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.allCategoriesLabel}
+                        onChange={(e) => updatePageContent('homepage', 'allCategoriesLabel', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Toutes les catégories"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Label produits Farm</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.farmProductsLabel}
+                        onChange={(e) => updatePageContent('homepage', 'farmProductsLabel', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Produits de la ferme"
+                      />
+                    </div>
                   </div>
                 </div>
 
