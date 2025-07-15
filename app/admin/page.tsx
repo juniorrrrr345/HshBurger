@@ -227,9 +227,14 @@ export default function AdminPage() {
 
   // Page management
   const addPage = () => {
-    if (!config) return;
+    console.log('addPage function called');
+    if (!config) {
+      console.log('No config found');
+      return;
+    }
     // S'assurer que pages existe
     if (!config.pages) {
+      console.log('Creating pages array');
       config.pages = [];
     }
     const newPage: Page = {
@@ -238,42 +243,73 @@ export default function AdminPage() {
       href: '',
       isDefault: false
     };
+    console.log('New page created:', newPage);
+    console.log('Setting editingPage...');
     setEditingPage(newPage);
+    console.log('addPage completed');
   };
 
   const savePage = () => {
-    if (!config || !editingPage) return;
+    console.log('savePage function called');
+    console.log('config:', config);
+    console.log('editingPage:', editingPage);
+    
+    if (!config || !editingPage) {
+      console.log('Missing config or editingPage');
+      return;
+    }
     
     // S'assurer que pages existe
     if (!config.pages) {
+      console.log('Creating pages array in savePage');
       config.pages = [];
     }
     
     const existingIndex = config.pages.findIndex(p => p.id === editingPage.id);
+    console.log('existingIndex:', existingIndex);
     let newPages;
     
     if (existingIndex >= 0) {
+      console.log('Updating existing page');
       newPages = [...config.pages];
       newPages[existingIndex] = editingPage;
     } else {
+      console.log('Adding new page');
       newPages = [...config.pages, editingPage];
     }
     
+    console.log('newPages:', newPages);
     setConfig({ ...config, pages: newPages });
     setEditingPage(null);
+    console.log('savePage completed');
   };
 
   const deletePage = (id: number) => {
-    if (!config || !config.pages) return;
+    console.log('deletePage function called with id:', id);
+    console.log('config:', config);
+    console.log('config.pages:', config?.pages);
+    
+    if (!config || !config.pages) {
+      console.log('Missing config or pages');
+      return;
+    }
     const pageToDelete = config.pages.find(p => p.id === id);
+    console.log('pageToDelete:', pageToDelete);
+    
     if (pageToDelete?.isDefault) {
+      console.log('Cannot delete default page');
       alert('Impossible de supprimer une page par défaut');
       return;
     }
+    
+    const newPages = config.pages.filter(p => p.id !== id);
+    console.log('newPages after filter:', newPages);
+    
     setConfig({
       ...config,
-      pages: config.pages.filter(p => p.id !== id)
+      pages: newPages
     });
+    console.log('deletePage completed');
   };
 
   if (!config) {
@@ -859,7 +895,11 @@ export default function AdminPage() {
                             Annuler
                           </button>
                           <button
-                            onClick={savePage}
+                            onClick={() => {
+                              console.log('Bouton Enregistrer cliqué');
+                              console.log('editingPage:', editingPage);
+                              savePage();
+                            }}
                             disabled={!editingPage.name.trim() || !editingPage.href.trim()}
                             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                           >
@@ -1367,12 +1407,28 @@ export default function AdminPage() {
                 <div className="bg-gray-50 rounded-lg p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
-                    <button
-                      onClick={addPage}
-                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                    >
-                      Ajouter une page
-                    </button>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => {
+                          console.log('TEST BUTTON CLICKED!');
+                          alert('Bouton de test fonctionne !');
+                        }}
+                        className="bg-yellow-500 text-white px-3 py-2 rounded-md hover:bg-yellow-600 transition-colors text-sm"
+                      >
+                        Test
+                      </button>
+                      <button
+                        onClick={() => {
+                          console.log('Bouton Ajouter cliqué');
+                          console.log('Config:', config);
+                          console.log('Config.pages:', config?.pages);
+                          addPage();
+                        }}
+                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                      >
+                        Ajouter une page
+                      </button>
+                    </div>
                   </div>
                   
                   <div className="space-y-4">
@@ -1389,14 +1445,20 @@ export default function AdminPage() {
                         </div>
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => setEditingPage(page)}
+                            onClick={() => {
+                              console.log('Bouton Modifier cliqué pour:', page);
+                              setEditingPage(page);
+                            }}
                             className="text-blue-600 hover:text-blue-800 text-sm"
                           >
                             Modifier
                           </button>
                           {!page.isDefault && (
                             <button
-                              onClick={() => deletePage(page.id)}
+                              onClick={() => {
+                                console.log('Bouton Supprimer cliqué pour page ID:', page.id);
+                                deletePage(page.id);
+                              }}
                               className="text-red-600 hover:text-red-800 text-sm"
                             >
                               Supprimer
