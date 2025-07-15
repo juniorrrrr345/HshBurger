@@ -237,15 +237,36 @@ export default function AdminPage() {
       id: newId,
       name: '',
       href: '',
-      isDefault: false
+      isDefault: false,
+      content: {
+        title: '',
+        subtitle: '',
+        description: '',
+        heroTitle: '',
+        heroSubtitle: '',
+        heroButtonText: '',
+        sectionTitle: ''
+      }
     };
     
     setEditingPage(newPage);
   };
 
   const editExistingPage = (page: Page) => {
-    // Copier la page pour l'édition
-    setEditingPage({ ...page });
+    // Copier la page pour l'édition et s'assurer que le contenu est initialisé
+    setEditingPage({ 
+      ...page, 
+      content: {
+        title: '',
+        subtitle: '',
+        description: '',
+        heroTitle: '',
+        heroSubtitle: '',
+        heroButtonText: '',
+        sectionTitle: '',
+        ...page.content
+      }
+    });
   };
 
   const savePage = () => {
@@ -1461,6 +1482,203 @@ export default function AdminPage() {
                     )}
                   </div>
                 </div>
+
+                {/* Modal d'édition de page */}
+                {editingPage && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 my-8 max-h-[90vh] overflow-y-auto">
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-medium text-gray-900">
+                          {editingPage.id ? 'Modifier la page' : 'Ajouter une page'}
+                        </h3>
+                        <button
+                          onClick={() => setEditingPage(null)}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      
+                      <div className="space-y-6">
+                        {/* Informations de base */}
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-gray-900 mb-4">Informations de base</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Nom de la page *
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.name}
+                                onChange={(e) => setEditingPage({...editingPage, name: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Ex: À propos"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                URL de la page *
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.href}
+                                onChange={(e) => setEditingPage({...editingPage, href: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Ex: /a-propos"
+                              />
+                              <p className="text-xs text-gray-500 mt-1">
+                                Commencez par / pour une page relative
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Contenu de la page */}
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-gray-900 mb-4">Contenu de la page</h4>
+                          <div className="space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Titre principal
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.content?.title || ''}
+                                onChange={(e) => setEditingPage({
+                                  ...editingPage, 
+                                  content: { ...editingPage.content, title: e.target.value }
+                                })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Titre de la page"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Sous-titre
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.content?.subtitle || ''}
+                                onChange={(e) => setEditingPage({
+                                  ...editingPage, 
+                                  content: { ...editingPage.content, subtitle: e.target.value }
+                                })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Sous-titre de la page"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Description
+                              </label>
+                              <textarea
+                                value={editingPage.content?.description || ''}
+                                onChange={(e) => setEditingPage({
+                                  ...editingPage, 
+                                  content: { ...editingPage.content, description: e.target.value }
+                                })}
+                                rows={3}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Description de la page"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Titre du héros
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.content?.heroTitle || ''}
+                                onChange={(e) => setEditingPage({
+                                  ...editingPage, 
+                                  content: { ...editingPage.content, heroTitle: e.target.value }
+                                })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Titre du héros"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Sous-titre du héros
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.content?.heroSubtitle || ''}
+                                onChange={(e) => setEditingPage({
+                                  ...editingPage, 
+                                  content: { ...editingPage.content, heroSubtitle: e.target.value }
+                                })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Sous-titre du héros"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Texte du bouton
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.content?.heroButtonText || ''}
+                                onChange={(e) => setEditingPage({
+                                  ...editingPage, 
+                                  content: { ...editingPage.content, heroButtonText: e.target.value }
+                                })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Texte du bouton"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Titre de section
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.content?.sectionTitle || ''}
+                                onChange={(e) => setEditingPage({
+                                  ...editingPage, 
+                                  content: { ...editingPage.content, sectionTitle: e.target.value }
+                                })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Titre de section"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {editingPage.isDefault && (
+                          <div className="bg-blue-50 p-3 rounded-md">
+                            <p className="text-sm text-blue-800">
+                              ⚠️ Cette page est marquée comme page par défaut et ne peut pas être supprimée.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex justify-end space-x-3 mt-6">
+                        <button
+                          onClick={() => setEditingPage(null)}
+                          className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                        >
+                          Annuler
+                        </button>
+                        <button
+                          onClick={savePage}
+                          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                        >
+                          {editingPage.id ? 'Modifier' : 'Ajouter'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Social Media Section */}
                 <div className="bg-gray-50 rounded-lg p-6">

@@ -35,6 +35,26 @@ export interface Page {
   name: string;
   href: string;
   isDefault: boolean; // Les pages par défaut ne peuvent pas être supprimées
+  content?: {
+    title?: string;
+    subtitle?: string;
+    description?: string;
+    heroTitle?: string;
+    heroSubtitle?: string;
+    heroButtonText?: string;
+    sectionTitle?: string;
+    categoriesLabel?: string;
+    farmLabel?: string;
+    allCategoriesLabel?: string;
+    farmProductsLabel?: string;
+    filterTitle?: string;
+    popularText?: string;
+    detailsText?: string;
+    orderText?: string;
+    pageTitle?: string;
+    pageSubtitle?: string;
+    copyrightText?: string;
+  };
 }
 
 export interface SocialMediaLink {
