@@ -59,6 +59,8 @@ export interface SiteConfig {
   adminSettings: {
     categoriesTabName: string;
     farmsTabName: string;
+    categoriesButtonText: string;
+    farmsButtonText: string;
   };
   pageContent: {
     homepage: {
@@ -289,7 +291,9 @@ export const defaultConfig: SiteConfig = {
   ],
   adminSettings: {
     categoriesTabName: "Catégories",
-    farmsTabName: "Fermes"
+    farmsTabName: "Fermes",
+    categoriesButtonText: "Catégories",
+    farmsButtonText: "Fermes"
   },
   pageContent: {
     homepage: {

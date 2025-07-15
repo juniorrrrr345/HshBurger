@@ -66,26 +66,22 @@ export default function HomePage() {
       <section className="py-8 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold mb-4 md:mb-0" style={{ color: config.shopInfo.primaryColor }}>
+            <h2 className="text-2xl font-bold mb-4 md:mb-0 text-black">
               {config.pageContent.homepage.sectionTitle}
             </h2>
             
             {/* Category Dropdown */}
-            <div className="relative">
+            <div className="relative w-full md:w-auto">
               <button
                 onClick={() => {
                   setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
                   setIsFarmDropdownOpen(false);
                 }}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
-                style={{ 
-                  backgroundColor: config.shopInfo.primaryColor,
-                  color: config.shopInfo.textColor 
-                }}
+                className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
               >
-                <span>
+                <span className="text-sm md:text-base">
                   {selectedCategory === 'all' 
-                    ? '🌟 Toutes les catégories' 
+                    ? `🌟 Toutes les ${config.adminSettings.categoriesButtonText.toLowerCase()}` 
                     : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
                   }
                 </span>
@@ -95,7 +91,7 @@ export default function HomePage() {
               </button>
               
               {isCategoryDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-20">
+                <div className="absolute left-0 md:right-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
                   <div className="py-1">
                     <button
                       onClick={() => {
@@ -103,11 +99,11 @@ export default function HomePage() {
                         setSelectedFarm('all');
                         setIsCategoryDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
                         selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
                       }`}
                     >
-                      🌟 Toutes les catégories
+                      🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
                     </button>
                     {config.categories.map((category) => (
                       <button
@@ -117,11 +113,12 @@ export default function HomePage() {
                           setSelectedFarm('all');
                           setIsCategoryDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
                           selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
                         }`}
                       >
-                        {category.emoji} {category.name}
+                        <span className="mr-2">{category.emoji}</span>
+                        {category.name}
                       </button>
                     ))}
                   </div>
@@ -133,21 +130,17 @@ export default function HomePage() {
           {/* Farm Filter (only show when Farm category is selected) */}
           {selectedCategory === 'Farm' && (
             <div className="flex justify-center mb-6">
-              <div className="relative">
+              <div className="relative w-full md:w-auto">
                 <button
                   onClick={() => {
                     setIsFarmDropdownOpen(!isFarmDropdownOpen);
                     setIsCategoryDropdownOpen(false);
                   }}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
-                  style={{ 
-                    backgroundColor: config.shopInfo.primaryColor,
-                    color: config.shopInfo.textColor 
-                  }}
+                  className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
                 >
-                  <span>
+                  <span className="text-sm md:text-base">
                     {selectedFarm === 'all' 
-                      ? '🌾 Toutes les fermes' 
+                      ? `🌾 Toutes les ${config.adminSettings.farmsButtonText.toLowerCase()}` 
                       : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`
                     }
                   </span>
@@ -157,18 +150,18 @@ export default function HomePage() {
                 </button>
                 
                 {isFarmDropdownOpen && (
-                  <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-10">
+                  <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
                     <div className="py-1">
                       <button
                         onClick={() => {
                           setSelectedFarm('all');
                           setIsFarmDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
                           selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''
                         }`}
                       >
-                        🌾 Toutes les fermes
+                        🌾 Toutes les {config.adminSettings.farmsButtonText.toLowerCase()}
                       </button>
                       {config.farms.map((farm) => (
                         <button
@@ -177,11 +170,12 @@ export default function HomePage() {
                             setSelectedFarm(farm.name);
                             setIsFarmDropdownOpen(false);
                           }}
-                          className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
                             selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''
                           }`}
                         >
-                          {farm.emoji} {farm.name}
+                          <span className="mr-2">{farm.emoji}</span>
+                          {farm.name}
                         </button>
                       ))}
                     </div>
@@ -199,11 +193,15 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.slice(0, 6).map((product) => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                <div className="aspect-square relative">
+                <div className="aspect-square relative bg-gray-100">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-t-lg"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMDAgMTUwQzIyNSAyNTAgMTUwIDI1MCAyMDAgMTUwWiIgZmlsbD0iI0QxRDVEMCIvPgo8L3N2Zz4K';
+                    }}
                   />
                   {product.popular && (
                     <div 

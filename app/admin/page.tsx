@@ -874,6 +874,38 @@ export default function AdminPage() {
                         Ce nom sera affiché dans la navigation du panel d'administration
                       </p>
                     </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom du bouton "Catégories"
+                      </label>
+                      <input
+                        type="text"
+                        value={config.adminSettings.categoriesButtonText}
+                        onChange={(e) => updateConfig('adminSettings', { categoriesButtonText: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Catégories"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ce nom sera affiché sur les boutons de filtrage des catégories
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom du bouton "Fermes"
+                      </label>
+                      <input
+                        type="text"
+                        value={config.adminSettings.farmsButtonText}
+                        onChange={(e) => updateConfig('adminSettings', { farmsButtonText: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Fermes"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ce nom sera affiché sur les boutons de filtrage des fermes
+                      </p>
+                    </div>
                   </div>
 
                   {/* Aperçu de la navigation */}
@@ -886,6 +918,25 @@ export default function AdminPage() {
                         <span className="text-green-600 font-medium">{config.adminSettings.farmsTabName}</span>
                         <span className="text-gray-500">Réseaux Sociaux</span>
                         <span className="text-gray-500">Paramètres Admin</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Aperçu des boutons de filtrage */}
+                  <div className="mt-6">
+                    <h5 className="text-sm font-medium text-gray-700 mb-3">Aperçu des boutons de filtrage</h5>
+                    <div className="bg-white rounded-lg border p-4 space-y-4">
+                      <div className="flex items-center space-x-4">
+                        <span className="text-sm text-gray-600">Bouton Catégories:</span>
+                        <button className="px-4 py-2 bg-black text-white rounded-lg text-sm">
+                          🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
+                        </button>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <span className="text-sm text-gray-600">Bouton Fermes:</span>
+                        <button className="px-4 py-2 bg-black text-white rounded-lg text-sm">
+                          🌾 Toutes les {config.adminSettings.farmsButtonText.toLowerCase()}
+                        </button>
                       </div>
                     </div>
                   </div>
