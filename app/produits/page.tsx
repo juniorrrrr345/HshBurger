@@ -215,7 +215,7 @@ export default function ProduitsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
               {filteredProducts.map((product) => (
                 <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                   <div className="aspect-square relative bg-gray-100">
@@ -247,18 +247,18 @@ export default function ProduitsPage() {
                     )}
                   </div>
                   
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
+                  <div className="p-3 md:p-6">
+                    <h3 className="text-sm md:text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent line-clamp-2">
                       {product.name}
                     </h3>
-                    <p className="text-gray-600 mb-4">{product.description}</p>
+                    <p className="text-gray-600 mb-3 md:mb-4 text-xs md:text-sm line-clamp-2">{product.description}</p>
                     
-                    <div className="mb-4">
-                      <div className="flex flex-wrap gap-2">
+                    <div className="mb-3 md:mb-4">
+                      <div className="flex flex-wrap gap-1 md:gap-2">
                         {product.variants.map((variant, index) => (
-                          <div key={index} className="flex items-center bg-gray-100 px-3 py-1 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
-                            <span className="text-sm font-medium text-gray-700">{variant.name}</span>
-                            <span className="text-sm font-bold ml-2" style={{ color: config.shopInfo.primaryColor }}>
+                          <div key={index} className="flex items-center bg-gray-100 px-2 md:px-3 py-1 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
+                            <span className="text-xs md:text-sm font-medium text-gray-700">{variant.name}</span>
+                            <span className="text-xs md:text-sm font-bold ml-1 md:ml-2" style={{ color: config.shopInfo.primaryColor }}>
                               €{variant.price}
                             </span>
                           </div>
@@ -266,10 +266,10 @@ export default function ProduitsPage() {
                       </div>
                     </div>
                     
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-1 md:space-x-2">
                       <Link
                         href={`/produit/${product.id}`}
-                        className="flex-1 bg-gray-100 text-center py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium"
+                        className="flex-1 bg-gray-100 text-center py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium text-xs md:text-sm"
                       >
                         Voir détails
                       </Link>
@@ -277,7 +277,7 @@ export default function ProduitsPage() {
                         href={product.orderLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 text-white text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium filter drop-shadow-md"
+                        className="flex-1 text-white text-center py-1.5 md:py-2 px-2 md:px-4 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium filter drop-shadow-md text-xs md:text-sm"
                         style={{ backgroundColor: config.shopInfo.primaryColor }}
                       >
                         Commander
