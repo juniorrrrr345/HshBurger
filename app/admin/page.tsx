@@ -262,9 +262,10 @@ export default function AdminPage() {
             <nav className="-mb-px flex space-x-8 px-6 overflow-x-auto">
               {[
                 { id: 'products', name: 'Produits' },
-                { id: 'categories', name: 'Catégories' },
-                { id: 'farms', name: 'Fermes' },
+                { id: 'categories', name: config.adminSettings.categoriesTabName },
+                { id: 'farms', name: config.adminSettings.farmsTabName },
                 { id: 'social', name: 'Réseaux Sociaux' },
+                { id: 'admin-settings', name: 'Paramètres Admin' },
                 { id: 'shop', name: 'Boutique' },
                 { id: 'pages', name: 'Pages' },
                 { id: 'contact', name: 'Contact' }
@@ -502,12 +503,12 @@ export default function AdminPage() {
             {activeTab === 'categories' && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">Gestion des Catégories</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Gestion des {config.adminSettings.categoriesTabName}</h3>
                   <button
                     onClick={addCategory}
                     className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
                   >
-                    + Ajouter une catégorie
+                    + Ajouter une {config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}
                   </button>
                 </div>
 
@@ -547,7 +548,7 @@ export default function AdminPage() {
                     <div className="bg-white rounded-lg max-w-md w-full">
                       <div className="p-6">
                         <h3 className="text-lg font-medium mb-4">
-                          {editingCategory.id ? 'Modifier la catégorie' : 'Ajouter une catégorie'}
+                          {editingCategory.id ? `Modifier la ${config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}` : `Ajouter une ${config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}`}
                         </h3>
                         
                         <div className="space-y-4">
@@ -608,12 +609,12 @@ export default function AdminPage() {
             {activeTab === 'farms' && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">Gestion des Fermes</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Gestion des {config.adminSettings.farmsTabName}</h3>
                   <button
                     onClick={addFarm}
                     className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
                   >
-                    + Ajouter une ferme
+                    + Ajouter une {config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}
                   </button>
                 </div>
 
@@ -653,7 +654,7 @@ export default function AdminPage() {
                     <div className="bg-white rounded-lg max-w-md w-full">
                       <div className="p-6">
                         <h3 className="text-lg font-medium mb-4">
-                          {editingFarm.id ? 'Modifier la ferme' : 'Ajouter une ferme'}
+                          {editingFarm.id ? `Modifier la ${config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}` : `Ajouter une ${config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}`}
                         </h3>
                         
                         <div className="space-y-4">
@@ -829,6 +830,66 @@ export default function AdminPage() {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Admin Settings Tab */}
+            {activeTab === 'admin-settings' && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium text-gray-900">Paramètres d'Administration</h3>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="text-md font-semibold text-gray-800 mb-4">Personnalisation des Onglets</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom de l'onglet "Catégories"
+                      </label>
+                      <input
+                        type="text"
+                        value={config.adminSettings.categoriesTabName}
+                        onChange={(e) => updateConfig('adminSettings', { categoriesTabName: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Catégories"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ce nom sera affiché dans la navigation du panel d'administration
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom de l'onglet "Fermes"
+                      </label>
+                      <input
+                        type="text"
+                        value={config.adminSettings.farmsTabName}
+                        onChange={(e) => updateConfig('adminSettings', { farmsTabName: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Fermes"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ce nom sera affiché dans la navigation du panel d'administration
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Aperçu de la navigation */}
+                  <div className="mt-6">
+                    <h5 className="text-sm font-medium text-gray-700 mb-3">Aperçu de la navigation</h5>
+                    <div className="bg-white rounded-lg border p-4">
+                      <div className="flex space-x-4 text-sm">
+                        <span className="text-gray-500">Produits</span>
+                        <span className="text-green-600 font-medium">{config.adminSettings.categoriesTabName}</span>
+                        <span className="text-green-600 font-medium">{config.adminSettings.farmsTabName}</span>
+                        <span className="text-gray-500">Réseaux Sociaux</span>
+                        <span className="text-gray-500">Paramètres Admin</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 

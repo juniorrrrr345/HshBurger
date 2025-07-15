@@ -56,6 +56,10 @@ export interface SiteConfig {
   categories: Category[];
   farms: Farm[]; // Fermes au lieu de localisations
   products: Product[];
+  adminSettings: {
+    categoriesTabName: string;
+    farmsTabName: string;
+  };
   pageContent: {
     homepage: {
       heroTitle: string;
@@ -283,6 +287,10 @@ export const defaultConfig: SiteConfig = {
       popular: true
     }
   ],
+  adminSettings: {
+    categoriesTabName: "Catégories",
+    farmsTabName: "Fermes"
+  },
   pageContent: {
     homepage: {
       heroTitle: "Produits CBD Premium",
