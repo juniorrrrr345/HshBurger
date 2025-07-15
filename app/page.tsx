@@ -1,23 +1,29 @@
 import React from 'react';
 import Link from 'next/link';
 
-// Données statiques des produits
+// Données statiques des produits avec plusieurs variantes de prix
 const products = [
   {
     id: 1,
-    name: "Huile CBD 10%",
-    price: 29.90,
-    originalPrice: 39.90,
+    name: "Huile CBD",
+    variants: [
+      { name: "10%", price: 29.90, size: "10ml" },
+      { name: "15%", price: 39.90, size: "10ml" },
+      { name: "20%", price: 49.90, size: "10ml" }
+    ],
     image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
     category: "huiles",
-    description: "Huile de CBD 10% premium, extraction CO2 supercritique.",
-    orderLink: "https://example.com/order/huile-cbd-10"
+    description: "Huile de CBD premium, extraction CO2 supercritique.",
+    orderLink: "https://example.com/order/huile-cbd"
   },
   {
     id: 2,
     name: "Fleurs CBD Amnesia",
-    price: 8.90,
-    originalPrice: 12.90,
+    variants: [
+      { name: "1g", price: 8.90, size: "1g" },
+      { name: "3g", price: 24.90, size: "3g" },
+      { name: "5g", price: 39.90, size: "5g" }
+    ],
     image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
     category: "fleurs",
     description: "Fleurs de CBD Amnesia séchées, arôme fruité.",
@@ -26,8 +32,11 @@ const products = [
   {
     id: 3,
     name: "Résine CBD Hash",
-    price: 12.90,
-    originalPrice: 16.90,
+    variants: [
+      { name: "1g", price: 12.90, size: "1g" },
+      { name: "3g", price: 35.90, size: "3g" },
+      { name: "5g", price: 55.90, size: "5g" }
+    ],
     image: "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop",
     category: "resines",
     description: "Résine CBD Hash artisanale, texture fondante.",
@@ -35,19 +44,25 @@ const products = [
   },
   {
     id: 4,
-    name: "Huile CBD 15%",
-    price: 49.90,
-    originalPrice: 59.90,
+    name: "Huile CBD Full Spectrum",
+    variants: [
+      { name: "5%", price: 19.90, size: "10ml" },
+      { name: "10%", price: 34.90, size: "10ml" },
+      { name: "15%", price: 49.90, size: "10ml" }
+    ],
     image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
     category: "huiles",
-    description: "Huile de CBD 15% concentration élevée.",
-    orderLink: "https://example.com/order/huile-cbd-15"
+    description: "Huile de CBD Full Spectrum, effet d'entourage.",
+    orderLink: "https://example.com/order/huile-full-spectrum"
   },
   {
     id: 5,
     name: "Fleurs CBD Lemon Haze",
-    price: 9.90,
-    originalPrice: 13.90,
+    variants: [
+      { name: "1g", price: 9.90, size: "1g" },
+      { name: "3g", price: 27.90, size: "3g" },
+      { name: "5g", price: 44.90, size: "5g" }
+    ],
     image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
     category: "fleurs",
     description: "Fleurs CBD Lemon Haze au parfum citronné.",
@@ -115,12 +130,14 @@ export default function HomePage() {
                   <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
                   <p className="text-gray-600 mb-4">{product.description}</p>
                   
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-2xl font-bold text-green-600">€{product.price}</span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-gray-500 line-through">€{product.originalPrice}</span>
-                      )}
+                  <div className="mb-4">
+                    <div className="flex flex-wrap gap-2">
+                      {product.variants.map((variant, index) => (
+                        <div key={index} className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                          <span className="text-sm font-medium text-gray-700">{variant.name}</span>
+                          <span className="text-sm text-green-600 font-bold ml-2">€{variant.price}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                   
@@ -200,8 +217,9 @@ export default function HomePage() {
               <p className="text-gray-400">Tél: +33 1 23 45 67 89</p>
             </div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-            <p className="text-gray-400">© 2024 CBD Shop Premium. Tous droits réservés.</p>
+          
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 CBD Shop Premium. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
