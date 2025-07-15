@@ -226,8 +226,7 @@ export default function AdminPage() {
     });
   };
 
-  // ===== NOUVEAU SYSTÈME DE PAGES - REFAIT COMPLÈTEMENT =====
-  
+  // Page management
   const addNewPage = () => {
     if (!config) return;
     
@@ -287,7 +286,8 @@ export default function AdminPage() {
     
     // Message de succès
     const action = isExisting ? 'modifiée' : 'ajoutée';
-    alert(`Page ${action} avec succès !`);
+    setMessage(`Page ${action} avec succès !`);
+    setTimeout(() => setMessage(''), 3000);
   };
 
   const deletePage = (pageId: number) => {
@@ -305,8 +305,13 @@ export default function AdminPage() {
       const newPages = config.pages.filter(p => p.id !== pageId);
       const updatedConfig = { ...config, pages: newPages };
       setConfig(updatedConfig);
-      alert('Page supprimée !');
+      setMessage('Page supprimée !');
+      setTimeout(() => setMessage(''), 3000);
     }
+  };
+
+  const cancelPageEdit = () => {
+    setEditingPage(null);
   };
 
   if (!config) {
@@ -386,7 +391,7 @@ export default function AdminPage() {
           <div className="p-6">
             {message && (
               <div className={`mb-4 p-4 rounded-md ${
-                message.includes('succès') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                message.includes('succès') || message.includes('supprimée') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
               }`}>
                 {message}
               </div>
@@ -893,7 +898,7 @@ export default function AdminPage() {
                         
                         <div className="flex justify-end space-x-3 mt-6">
                           <button
-                            onClick={() => setEditingPage(null)}
+                            onClick={cancelPageEdit}
                             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
                           >
                             Annuler
@@ -1544,6 +1549,81 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal d'édition des pages */}
+      {editingPage && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                {editingPage.id > 0 ? 'Modifier la page' : 'Ajouter une page'}
+              </h3>
+              <button
+                onClick={cancelPageEdit}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nom de la page *
+                </label>
+                <input
+                  type="text"
+                  value={editingPage.name}
+                  onChange={(e) => setEditingPage({ ...editingPage, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Ex: À propos"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  URL de la page *
+                </label>
+                <input
+                  type="text"
+                  value={editingPage.href}
+                  onChange={(e) => setEditingPage({ ...editingPage, href: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Ex: /a-propos"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Commencez par / pour une page interne
+                </p>
+              </div>
+              
+              {editingPage.isDefault && (
+                <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                  <p className="text-sm text-blue-800">
+                    ⚠️ Cette page est marquée comme page par défaut et ne peut pas être supprimée.
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
+                onClick={cancelPageEdit}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={savePage}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                {editingPage.id > 0 ? 'Modifier' : 'Ajouter'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
