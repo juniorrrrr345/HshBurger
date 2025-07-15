@@ -67,6 +67,8 @@ export default function AdminPage() {
       name: '',
       description: '',
       image: '',
+      images: [],
+      video: '',
       category: config.categories[0]?.name || '',
       variants: [{ name: '', price: 0, size: '' }],
       orderLink: '',
@@ -385,6 +387,30 @@ export default function AdminPage() {
                           </div>
                           
                           <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Images multiples (URLs séparées par des virgules)</label>
+                            <textarea
+                              value={editingProduct.images?.join(', ') || ''}
+                              onChange={(e) => setEditingProduct({...editingProduct, images: e.target.value.split(',').map(url => url.trim()).filter(url => url)})}
+                              rows={3}
+                              placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Séparez les URLs par des virgules</p>
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Vidéo URL (optionnel)</label>
+                            <input
+                              type="url"
+                              value={editingProduct.video || ''}
+                              onChange={(e) => setEditingProduct({...editingProduct, video: e.target.value})}
+                              placeholder="https://example.com/video.mp4"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">URL directe vers un fichier vidéo (MP4, WebM, etc.)</p>
+                          </div>
+                          
+                          <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
                             <select
                               value={editingProduct.category}
@@ -393,6 +419,20 @@ export default function AdminPage() {
                             >
                               {config.categories.map(cat => (
                                 <option key={cat.id} value={cat.name}>{cat.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Ferme (optionnel)</label>
+                            <select
+                              value={editingProduct.farm || ''}
+                              onChange={e => setEditingProduct({ ...editingProduct, farm: e.target.value || undefined })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            >
+                              <option value="">Aucune</option>
+                              {config.farms.map(farm => (
+                                <option key={farm.id} value={farm.name}>{farm.name}</option>
                               ))}
                             </select>
                           </div>
@@ -961,6 +1001,17 @@ export default function AdminPage() {
                   </div>
 
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo (URL image)</label>
+                    <input
+                      type="url"
+                      value={config.shopInfo.logoUrl}
+                      onChange={(e) => updateConfig('shopInfo', { logoUrl: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="https://..."
+                    />
+                  </div>
+
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Logo (Emoji)</label>
                     <input
                       type="text"
@@ -1020,6 +1071,18 @@ export default function AdminPage() {
                       className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Image de fond (URL)</label>
+                    <input
+                      type="url"
+                      value={config.shopInfo.backgroundImage}
+                      onChange={(e) => updateConfig('shopInfo', { backgroundImage: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="https://..."
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Laissez vide pour utiliser la couleur de fond</p>
+                  </div>
                 </div>
 
                 {/* Aperçu */}
@@ -1030,7 +1093,11 @@ export default function AdminPage() {
                     style={{ backgroundColor: config.shopInfo.backgroundColor }}
                   >
                     <div className="flex items-center justify-center space-x-2 mb-2">
-                      <span className="text-3xl">{config.shopInfo.logo}</span>
+                      {config.shopInfo.logoUrl ? (
+                        <img src={config.shopInfo.logoUrl} alt="Logo" className="h-12 w-12 object-contain rounded bg-white shadow" />
+                      ) : (
+                        <span className="text-3xl">{config.shopInfo.logo}</span>
+                      )}
                       <h3 
                         className="text-2xl font-bold"
                         style={{ color: config.shopInfo.secondaryColor }}

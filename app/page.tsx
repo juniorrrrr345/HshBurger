@@ -23,20 +23,25 @@ export default function HomePage() {
     </div>;
   }
 
-  // Filtrer les produits selon la catégorie et la ferme sélectionnées
+  // Filtrer les produits selon la catégorie sélectionnée
   let filteredProducts = config.products;
   
   if (selectedCategory !== 'all') {
     filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
-    
-    // Si c'est la catégorie Farm et qu'une ferme spécifique est sélectionnée
-    if (selectedCategory === 'Farm' && selectedFarm !== 'all') {
-      filteredProducts = filteredProducts.filter(product => product.farm === selectedFarm);
-    }
+  }
+  if (selectedFarm !== 'all') {
+    filteredProducts = filteredProducts.filter(product => product.farm === selectedFarm);
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div className="min-h-screen" style={{ 
+      backgroundColor: config.shopInfo.backgroundColor,
+      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+      backgroundSize: '200px 200px',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'repeat',
+      backgroundAttachment: 'fixed'
+    }}>
       <Header currentPage="Accueil" />
 
       {/* Hero Section */}
@@ -56,7 +61,7 @@ export default function HomePage() {
           </p>
           <Link 
             href="/produits" 
-            className="inline-block bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg"
+            className="inline-block bg-white/60 backdrop-blur-md text-black px-8 py-3 rounded-lg font-semibold hover:bg-white/80 transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg border border-white/30 shadow-lg"
           >
             {config.pageContent.homepage.heroButtonText}
           </Link>
@@ -64,119 +69,61 @@ export default function HomePage() {
       </section>
 
       {/* Category and Farm Filter */}
-      <section className="py-8 bg-white shadow-sm">
+      <section className="py-4 bg-white/80 backdrop-blur-sm shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold mb-4 md:mb-0 text-black">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-4">
+            <h2 className="text-lg font-bold mb-2 md:mb-0 text-black">
               {config.pageContent.homepage.sectionTitle}
             </h2>
             
-            {/* Category Dropdown */}
-            <div className="relative w-full md:w-auto">
-              <button
-                onClick={() => {
-                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-                  setIsFarmDropdownOpen(false);
-                }}
-                className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
-              >
-                <span className="text-sm md:text-base">
-                  {selectedCategory === 'all' 
-                    ? `🌟 Toutes les ${config.adminSettings.categoriesButtonText.toLowerCase()}` 
-                    : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
-                  }
-                </span>
-                <svg className={`w-4 h-4 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {isCategoryDropdownOpen && (
-                <div className="absolute left-0 md:right-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
-                  <div className="py-1">
-                    <button
-                      onClick={() => {
-                        setSelectedCategory('all');
-                        setSelectedFarm('all');
-                        setIsCategoryDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                        selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
-                      }`}
-                    >
-                      🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
-                    </button>
-                    {config.categories.map((category) => (
-                      <button
-                        key={category.id}
-                        onClick={() => {
-                          setSelectedCategory(category.name);
-                          setSelectedFarm('all');
-                          setIsCategoryDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                          selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
-                        }`}
-                      >
-                        <span className="mr-2">{category.emoji}</span>
-                        {category.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Farm Filter (only show when Farm category is selected) */}
-          {selectedCategory === 'Farm' && (
-            <div className="flex justify-center mb-6">
-              <div className="relative w-full md:w-auto">
-                <button
-                  onClick={() => {
-                    setIsFarmDropdownOpen(!isFarmDropdownOpen);
-                    setIsCategoryDropdownOpen(false);
-                  }}
-                  className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
-                >
-                  <span className="text-sm md:text-base">
-                    {selectedFarm === 'all' 
-                      ? `🌾 Toutes les ${config.adminSettings.farmsButtonText.toLowerCase()}` 
-                      : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`
-                    }
+            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+              {/* Category Dropdown */}
+              <div className="relative w-full sm:w-auto">
+                <button onClick={() => { setIsCategoryDropdownOpen(!isCategoryDropdownOpen); setIsFarmDropdownOpen(false); }}
+                  className="flex items-center justify-between w-full sm:w-auto space-x-2 px-3 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white text-sm">
+                  <span className="text-xs sm:text-sm">
+                    {selectedCategory === 'all' ? `🌟 Toutes les catégories` : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`}
                   </span>
-                  <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className={`w-3 h-3 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
                 
-                {isFarmDropdownOpen && (
-                  <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
+                {isCategoryDropdownOpen && (
+                  <div className="absolute left-0 sm:left-0 mt-1 w-full sm:w-48 bg-white rounded-lg shadow-xl border z-50 max-h-48 overflow-y-auto">
                     <div className="py-1">
-                      <button
-                        onClick={() => {
-                          setSelectedFarm('all');
-                          setIsFarmDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                          selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''
-                        }`}
-                      >
-                        🌾 Toutes les {config.adminSettings.farmsButtonText.toLowerCase()}
-                      </button>
+                      <button onClick={() => { setSelectedCategory('all'); setIsCategoryDropdownOpen(false); }}
+                        className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🌟 Toutes les catégories</button>
+                      {config.categories.map((category) => (
+                        <button key={category.id} onClick={() => { setSelectedCategory(category.name); setIsCategoryDropdownOpen(false); }}
+                          className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''}`}>
+                          <span className="mr-2">{category.emoji}</span>{category.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              {/* Farm Dropdown */}
+              <div className="relative w-full sm:w-auto">
+                <button onClick={() => { setIsFarmDropdownOpen(!isFarmDropdownOpen); setIsCategoryDropdownOpen(false); }}
+                  className="flex items-center justify-between w-full sm:w-auto space-x-2 px-3 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white text-sm">
+                  <span className="text-xs sm:text-sm">
+                    {selectedFarm === 'all' ? `🏡 Toutes les fermes` : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`}
+                  </span>
+                  <svg className={`w-3 h-3 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isFarmDropdownOpen && (
+                  <div className="absolute left-0 sm:left-0 mt-1 w-full sm:w-48 bg-white rounded-lg shadow-xl border z-50 max-h-48 overflow-y-auto">
+                    <div className="py-1">
+                      <button onClick={() => { setSelectedFarm('all'); setIsFarmDropdownOpen(false); }}
+                        className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🏡 Toutes les fermes</button>
                       {config.farms.map((farm) => (
-                        <button
-                          key={farm.id}
-                          onClick={() => {
-                            setSelectedFarm(farm.name);
-                            setIsFarmDropdownOpen(false);
-                          }}
-                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                            selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''
-                          }`}
-                        >
-                          <span className="mr-2">{farm.emoji}</span>
-                          {farm.name}
+                        <button key={farm.id} onClick={() => { setSelectedFarm(farm.name); setIsFarmDropdownOpen(false); }}
+                          className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''}`}>
+                          <span className="mr-2">{farm.emoji}</span>{farm.name}
                         </button>
                       ))}
                     </div>
@@ -184,12 +131,12 @@ export default function HomePage() {
                 )}
               </div>
             </div>
-          )}
+          </div>
         </div>
       </section>
 
       {/* Products Grid */}
-      <section className="py-16">
+      <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
             {filteredProducts.slice(0, 6).map((product) => (
@@ -206,18 +153,17 @@ export default function HomePage() {
                   />
                   {product.popular && (
                     <div 
-                      className="absolute top-2 right-2 text-white px-3 py-1 rounded-full text-sm font-semibold filter drop-shadow-md"
+                      className="absolute top-1 right-1 text-white px-1 py-0.5 rounded-full text-xs font-semibold filter drop-shadow-md"
                       style={{ backgroundColor: config.shopInfo.primaryColor }}
                     >
                       Populaire
                     </div>
                   )}
-                  <div className="absolute top-2 left-2 text-2xl filter drop-shadow-md">
+                  <div className="absolute top-1 left-1 text-lg filter drop-shadow-md">
                     {config.categories.find(cat => cat.name === product.category)?.emoji}
                   </div>
                   {product.farm && (
-                    <div className="absolute bottom-2 left-2 text-white px-2 py-1 rounded text-xs font-semibold filter drop-shadow-md"
-                         style={{ backgroundColor: config.shopInfo.primaryColor }}>
+                    <div className="absolute bottom-1 left-1 text-black px-1 py-0.5 rounded text-xs font-semibold filter drop-shadow-md bg-white/90 backdrop-blur-sm border border-gray-200">
                       {config.farms.find(farm => farm.name === product.farm)?.emoji} {product.farm}
                     </div>
                   )}
@@ -239,6 +185,11 @@ export default function HomePage() {
                           </span>
                         </div>
                       ))}
+                      {product.variants.length > 1 && (
+                        <div className="flex items-center bg-white/80 px-1 py-0.5 rounded-full">
+                          <span className="text-xs text-gray-500">+{product.variants.length - 1} autres</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -247,7 +198,7 @@ export default function HomePage() {
                       href={`/produit/${product.id}`}
                       className="flex-1 bg-gray-100 text-center py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium text-xs md:text-sm"
                     >
-                      Voir détails
+                      Détails
                     </Link>
                     <a
                       href={product.orderLink}
@@ -264,10 +215,10 @@ export default function HomePage() {
             ))}
           </div>
           
-          <div className="text-center mt-12">
+          <div className="text-center mt-8">
             <Link
               href="/produits"
-              className="inline-block text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg"
+              className="inline-block text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg"
               style={{ backgroundColor: config.shopInfo.primaryColor }}
             >
               Voir tous les produits
@@ -276,41 +227,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🌿</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Produits Naturels
-              </h3>
-              <p className="text-gray-600">100% naturel et bio</p>
-            </div>
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🚚</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Livraison Rapide
-              </h3>
-              <p className="text-gray-600">Expédition sous 24h</p>
-            </div>
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🔒</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Paiement Sécurisé
-              </h3>
-              <p className="text-gray-600">Transactions protégées</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 {config.shopInfo.name}. Tous droits réservés.</p>
-        </div>
-      </footer>
     </div>
   );
 }

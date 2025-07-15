@@ -8,10 +8,15 @@ import OptimizedImage from '../components/OptimizedImage';
 
 export default function ProduitsPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
+  // Ajoute les états pour la pagination et le filtre ferme
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedFarm, setSelectedFarm] = useState<string>('all');
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const PRODUCTS_PER_PAGE = 2;
+  
+
 
   useEffect(() => {
     setConfig(getConfig());
@@ -25,20 +30,27 @@ export default function ProduitsPage() {
     );
   }
 
-  // Filtrer les produits selon la catégorie et la ferme sélectionnées
+  // Filtrer les produits selon la catégorie sélectionnée
   let filteredProducts = config.products;
   
   if (selectedCategory !== 'all') {
     filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
-    
-    // Si c'est la catégorie Farm et qu'une ferme spécifique est sélectionnée
-    if (selectedCategory === 'Farm' && selectedFarm !== 'all') {
-      filteredProducts = filteredProducts.filter(product => product.farm === selectedFarm);
-    }
   }
+  if (selectedFarm !== 'all') {
+    filteredProducts = filteredProducts.filter(product => product.farm === selectedFarm);
+  }
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice((page-1)*PRODUCTS_PER_PAGE, page*PRODUCTS_PER_PAGE);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div className="min-h-screen" style={{ 
+      backgroundColor: config.shopInfo.backgroundColor,
+      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+      backgroundSize: '200px 200px',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'repeat',
+      backgroundAttachment: 'fixed'
+    }}>
       <Header currentPage="Produits" />
 
       {/* Page Header */}
@@ -70,116 +82,57 @@ export default function ProduitsPage() {
               <p className="text-gray-600 mt-1">
                 {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''} 
                 {selectedCategory !== 'all' && ` dans ${selectedCategory}`}
-                {selectedCategory === 'Farm' && selectedFarm !== 'all' && ` - ${selectedFarm}`}
               </p>
             </div>
             
             {/* Category Dropdown */}
-            <div className="relative w-full md:w-auto">
-              <button
-                onClick={() => {
-                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-                  setIsFarmDropdownOpen(false);
-                }}
-                className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
-              >
-                <span className="text-sm md:text-base">
-                  {selectedCategory === 'all' 
-                    ? `🌟 Toutes les ${config.adminSettings.categoriesButtonText.toLowerCase()}` 
-                    : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
-                  }
-                </span>
-                <svg className={`w-4 h-4 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {isCategoryDropdownOpen && (
-                <div className="absolute left-0 md:right-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
-                  <div className="py-1">
-                    <button
-                      onClick={() => {
-                        setSelectedCategory('all');
-                        setSelectedFarm('all');
-                        setIsCategoryDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                        selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
-                      }`}
-                    >
-                      🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
-                    </button>
-                    {config.categories.map((category) => (
-                      <button
-                        key={category.id}
-                        onClick={() => {
-                          setSelectedCategory(category.name);
-                          setSelectedFarm('all');
-                          setIsCategoryDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                          selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
-                        }`}
-                      >
-                        <span className="mr-2">{category.emoji}</span>
-                        {category.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Farm Filter (only show when Farm category is selected) */}
-          {selectedCategory === 'Farm' && (
-            <div className="flex justify-center mb-6">
+            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+              {/* Category Dropdown */}
               <div className="relative w-full md:w-auto">
-                <button
-                  onClick={() => {
-                    setIsFarmDropdownOpen(!isFarmDropdownOpen);
-                    setIsCategoryDropdownOpen(false);
-                  }}
-                  className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
-                >
+                <button onClick={() => { setIsCategoryDropdownOpen(!isCategoryDropdownOpen); setIsFarmDropdownOpen(false); }}
+                  className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white">
                   <span className="text-sm md:text-base">
-                    {selectedFarm === 'all' 
-                      ? `🌾 Toutes les ${config.adminSettings.farmsButtonText.toLowerCase()}` 
-                      : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`
-                    }
+                    {selectedCategory === 'all' ? `🌟 Toutes les catégories` : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`}
+                  </span>
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isCategoryDropdownOpen && (
+                  <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
+                    <div className="py-1">
+                      <button onClick={() => { setSelectedCategory('all'); setIsCategoryDropdownOpen(false); }}
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🌟 Toutes les catégories</button>
+                      {config.categories.map((category) => (
+                        <button key={category.id} onClick={() => { setSelectedCategory(category.name); setIsCategoryDropdownOpen(false); }}
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''}`}>
+                          <span className="mr-2">{category.emoji}</span>{category.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              {/* Farm Dropdown */}
+              <div className="relative w-full md:w-auto">
+                <button onClick={() => { setIsFarmDropdownOpen(!isFarmDropdownOpen); setIsCategoryDropdownOpen(false); }}
+                  className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white">
+                  <span className="text-sm md:text-base">
+                    {selectedFarm === 'all' ? `🏡 Toutes les fermes` : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`}
                   </span>
                   <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-                
                 {isFarmDropdownOpen && (
                   <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
                     <div className="py-1">
-                      <button
-                        onClick={() => {
-                          setSelectedFarm('all');
-                          setIsFarmDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                          selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''
-                        }`}
-                      >
-                        🌾 Toutes les {config.adminSettings.farmsButtonText.toLowerCase()}
-                      </button>
+                      <button onClick={() => { setSelectedFarm('all'); setIsFarmDropdownOpen(false); }}
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🏡 Toutes les fermes</button>
                       {config.farms.map((farm) => (
-                        <button
-                          key={farm.id}
-                          onClick={() => {
-                            setSelectedFarm(farm.name);
-                            setIsFarmDropdownOpen(false);
-                          }}
-                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                            selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''
-                          }`}
-                        >
-                          <span className="mr-2">{farm.emoji}</span>
-                          {farm.name}
+                        <button key={farm.id} onClick={() => { setSelectedFarm(farm.name); setIsFarmDropdownOpen(false); }}
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''}`}>
+                          <span className="mr-2">{farm.emoji}</span>{farm.name}
                         </button>
                       ))}
                     </div>
@@ -187,14 +140,16 @@ export default function ProduitsPage() {
                 )}
               </div>
             </div>
-          )}
+          </div>
+
+
         </div>
       </section>
 
       {/* Products Grid */}
-      <section className="py-16">
+      <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {filteredProducts.length === 0 ? (
+          {paginatedProducts.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">📦</div>
               <h3 className="text-2xl font-bold mb-4 text-gray-600">
@@ -206,7 +161,6 @@ export default function ProduitsPage() {
               <button
                 onClick={() => {
                   setSelectedCategory('all');
-                  setSelectedFarm('all');
                 }}
                 className="inline-block text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 filter drop-shadow-md"
                 style={{ backgroundColor: config.shopInfo.primaryColor }}
@@ -230,18 +184,17 @@ export default function ProduitsPage() {
                     />
                     {product.popular && (
                       <div 
-                        className="absolute top-2 right-2 text-white px-3 py-1 rounded-full text-sm font-semibold filter drop-shadow-md"
+                        className="absolute top-1 right-1 text-white px-1 py-0.5 rounded-full text-xs font-semibold filter drop-shadow-md"
                         style={{ backgroundColor: config.shopInfo.primaryColor }}
                       >
                         Populaire
                       </div>
                     )}
-                    <div className="absolute top-2 left-2 text-2xl filter drop-shadow-md">
+                    <div className="absolute top-1 left-1 text-lg filter drop-shadow-md">
                       {config.categories.find(cat => cat.name === product.category)?.emoji}
                     </div>
                     {product.farm && (
-                      <div className="absolute bottom-2 left-2 text-white px-2 py-1 rounded text-xs font-semibold filter drop-shadow-md"
-                           style={{ backgroundColor: config.shopInfo.primaryColor }}>
+                      <div className="absolute bottom-1 left-1 text-black px-1 py-0.5 rounded text-xs font-semibold filter drop-shadow-md bg-white/90 backdrop-blur-sm border border-gray-200">
                         {config.farms.find(farm => farm.name === product.farm)?.emoji} {product.farm}
                       </div>
                     )}
@@ -263,6 +216,11 @@ export default function ProduitsPage() {
                             </span>
                           </div>
                         ))}
+                        {product.variants.length > 1 && (
+                          <div className="flex items-center bg-white/80 px-1 py-0.5 rounded-full">
+                            <span className="text-xs text-gray-500">+{product.variants.length - 1} autres</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                     
@@ -271,7 +229,7 @@ export default function ProduitsPage() {
                         href={`/produit/${product.id}`}
                         className="flex-1 bg-gray-100 text-center py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium text-xs md:text-sm"
                       >
-                        Voir détails
+                        Détails
                       </Link>
                       <a
                         href={product.orderLink}
@@ -291,12 +249,28 @@ export default function ProduitsPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 {config.shopInfo.name}. Tous droits réservés.</p>
-        </div>
-      </footer>
+      {/* Pagination */}
+      <div className="flex justify-center mt-8 gap-4 py-8">
+        <button 
+          disabled={page === 1} 
+          onClick={() => setPage(page-1)} 
+          className="px-4 py-2 rounded bg-white/90 backdrop-blur-sm border border-gray-200 disabled:opacity-50 hover:bg-white transition-colors font-medium text-black"
+        >
+          Précédent
+        </button>
+        <span className="px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded font-medium text-black">
+          Page {page} / {totalPages}
+        </span>
+        <button 
+          disabled={page === totalPages} 
+          onClick={() => setPage(page+1)} 
+          className="px-4 py-2 rounded bg-white/90 backdrop-blur-sm border border-gray-200 disabled:opacity-50 hover:bg-white transition-colors font-medium text-black"
+        >
+          Suivant
+        </button>
+      </div>
+
+
     </div>
   );
 }

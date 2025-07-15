@@ -11,6 +11,7 @@ interface HeaderProps {
 export default function Header({ currentPage = '' }: HeaderProps) {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -27,36 +28,57 @@ export default function Header({ currentPage = '' }: HeaderProps) {
     { name: 'Réseaux Sociaux', href: '/reseaux-sociaux' }
   ];
 
-  return (
-    <header className="shadow-lg relative bg-white/95 backdrop-blur-md border-b border-gray-200">
-      {/* Logo et nom de la boutique en haut */}
-      <div className="text-center py-4 border-b-2 relative bg-white/90 backdrop-blur-sm">
-        {/* Logo en haut à gauche */}
-        <div className="absolute top-2 left-4">
-          <Link href="/" className="inline-flex items-center space-x-2">
-            <span className="text-3xl filter drop-shadow-lg hover:scale-110 transition-transform">
-              {config.shopInfo.logo}
-            </span>
-          </Link>
-        </div>
+  const handleLogoError = () => {
+    setLogoError(true);
+  };
 
-        <Link href="/" className="inline-flex items-center space-x-2">
-          <h1 className="text-3xl md:text-4xl font-bold text-black hover:scale-105 transition-transform">
-            {config.shopInfo.name}
-          </h1>
+  return (
+    <header className="shadow-lg relative backdrop-blur-md border-b border-gray-200" style={{
+      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }}>
+      {/* Logo et nom de la boutique en haut */}
+      <div className="text-center py-3 border-b-2 relative backdrop-blur-sm bg-white/80">
+        <Link href="/" className="inline-flex items-center justify-center space-x-4 group">
+          {config.shopInfo.logoUrl && !logoError ? (
+            <div className="relative">
+              <img 
+                src={config.shopInfo.logoUrl} 
+                alt="Logo" 
+                className="h-12 w-12 object-contain rounded-lg bg-white shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 filter drop-shadow-lg" 
+                onError={handleLogoError}
+                onLoad={() => setLogoError(false)}
+              />
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+          ) : (
+            <div className="relative">
+              <span className="text-4xl filter drop-shadow-lg hover:scale-110 transition-all duration-300 group-hover:rotate-12 inline-block">
+                {config.shopInfo.logo}
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"></div>
+            </div>
+          )}
+          <div className="text-center">
+            <h1 className="text-3xl md:text-4xl font-bold text-black group-hover:scale-105 transition-all duration-300 bg-gradient-to-r from-black via-gray-800 to-black bg-clip-text text-transparent filter drop-shadow-lg">
+              {config.shopInfo.name}
+            </h1>
+            <p className="text-xs md:text-sm mt-1 text-gray-600 italic group-hover:text-gray-800 transition-colors duration-300">
+              {config.shopInfo.description}
+            </p>
+          </div>
         </Link>
-        <p className="text-sm md:text-base mt-2 text-gray-600 italic">
-          {config.shopInfo.description}
-        </p>
       </div>
 
-      {/* Navigation */}
-      <nav className="bg-white/95 backdrop-blur-sm shadow-sm">
+      {/* Navigation - Plus discrète */}
+      <nav className="backdrop-blur-sm shadow-sm bg-white/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-12">
             
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex space-x-8 mx-auto">
+            {/* Desktop Navigation - Cachée */}
+            <div className="hidden md:flex space-x-8 mx-auto opacity-0 pointer-events-none">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -72,8 +94,27 @@ export default function Header({ currentPage = '' }: HeaderProps) {
               ))}
             </div>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden">
+            {/* Mobile menu button - Plus visible */}
+            <div className="md:hidden mx-auto">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-inset transition-colors"
+              >
+                <span className="sr-only">Ouvrir le menu</span>
+                {!isMenuOpen ? (
+                  <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                ) : (
+                  <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                )}
+              </button>
+            </div>
+
+            {/* Desktop menu button - Centré et visible */}
+            <div className="hidden md:block mx-auto">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-inset transition-colors"
@@ -96,7 +137,29 @@ export default function Header({ currentPage = '' }: HeaderProps) {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 border-t">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ${
+                    currentPage === item.name
+                      ? 'bg-black text-white shadow-lg'
+                      : 'text-black hover:bg-black hover:text-white'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Desktop menu */}
+        {isMenuOpen && (
+          <div className="hidden md:block">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 border-t">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
