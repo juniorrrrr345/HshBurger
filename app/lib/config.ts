@@ -37,6 +37,7 @@ export interface SiteConfig {
     secondaryColor: string;
     textColor: string;
     backgroundColor: string;
+    backgroundImage: string;
   };
   contactInfo: {
     orderLink: string;
@@ -77,7 +78,8 @@ export const defaultConfig: SiteConfig = {
     primaryColor: "#16a34a",
     secondaryColor: "#000000",
     textColor: "#ffffff",
-    backgroundColor: "#f9fafb"
+    backgroundColor: "#f9fafb",
+    backgroundImage: ""
   },
   contactInfo: {
     orderLink: "https://example.com/order",

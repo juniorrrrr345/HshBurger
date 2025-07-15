@@ -30,20 +30,32 @@ export default function Header({ currentPage = '' }: HeaderProps) {
   return (
     <header 
       className="shadow-lg relative"
-      style={{ backgroundColor: config.shopInfo.backgroundColor }}
+      style={{ 
+        backgroundColor: config.shopInfo.backgroundColor,
+        backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
     >
       {/* Logo et nom de la boutique en haut */}
       <div 
-        className="text-center py-4 border-b-2"
+        className="text-center py-4 border-b-2 relative"
         style={{ 
           borderColor: config.shopInfo.primaryColor,
           background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}20, ${config.shopInfo.secondaryColor}20)`
         }}
       >
+        {/* Logo en haut à gauche */}
+        <div className="absolute top-2 left-4">
+          <Link href="/" className="inline-flex items-center space-x-2">
+            <span className="text-3xl filter drop-shadow-lg hover:scale-110 transition-transform">
+              {config.shopInfo.logo}
+            </span>
+          </Link>
+        </div>
+
         <Link href="/" className="inline-flex items-center space-x-2">
-          <span className="text-4xl filter drop-shadow-lg hover:scale-110 transition-transform">
-            {config.shopInfo.logo}
-          </span>
           <h1 
             className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent filter drop-shadow-lg hover:scale-105 transition-transform"
             style={{ 

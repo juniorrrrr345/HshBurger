@@ -756,7 +756,12 @@ export default function AdminPage() {
                   <h4 className="font-medium text-gray-900 mb-4">Aperçu</h4>
                   <div 
                     className="rounded-lg p-4 text-center"
-                    style={{ backgroundColor: config.shopInfo.backgroundColor }}
+                    style={{ 
+                      backgroundColor: config.shopInfo.backgroundColor,
+                      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }}
                   >
                     <div className="flex items-center justify-center space-x-2 mb-2">
                       <span className="text-3xl">{config.shopInfo.logo}</span>
@@ -776,6 +781,42 @@ export default function AdminPage() {
                     >
                       Bouton d'exemple
                     </button>
+                  </div>
+                </div>
+
+                {/* Image de fond */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h4 className="font-medium text-gray-900 mb-4">Image de fond</h4>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">URL de l'image de fond</label>
+                      <input
+                        type="url"
+                        value={config.shopInfo.backgroundImage}
+                        onChange={(e) => updateConfig('shopInfo', { backgroundImage: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="https://example.com/image.jpg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Ou télécharger depuis votre téléphone</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const result = event.target?.result as string;
+                              updateConfig('shopInfo', { backgroundImage: result });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
