@@ -8,8 +8,13 @@ import OptimizedImage from '../components/OptimizedImage';
 
 export default function ProduitsPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
+  // Ajoute les états pour la pagination et le filtre ferme
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedFarm, setSelectedFarm] = useState<string>('all');
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const PRODUCTS_PER_PAGE = 2;
 
   useEffect(() => {
     setConfig(getConfig());
@@ -29,6 +34,11 @@ export default function ProduitsPage() {
   if (selectedCategory !== 'all') {
     filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
   }
+  if (selectedFarm !== 'all') {
+    filteredProducts = filteredProducts.filter(product => product.farm === selectedFarm);
+  }
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice((page-1)*PRODUCTS_PER_PAGE, page*PRODUCTS_PER_PAGE);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
@@ -67,56 +77,59 @@ export default function ProduitsPage() {
             </div>
             
             {/* Category Dropdown */}
-            <div className="relative w-full md:w-auto">
-              <button
-                onClick={() => {
-                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-                }}
-                className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
-              >
-                <span className="text-sm md:text-base">
-                  {selectedCategory === 'all' 
-                    ? `🌟 Toutes les ${config.adminSettings.categoriesButtonText.toLowerCase()}` 
-                    : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
-                  }
-                </span>
-                <svg className={`w-4 h-4 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {isCategoryDropdownOpen && (
-                <div className="absolute left-0 md:right-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
-                  <div className="py-1">
-                    <button
-                      onClick={() => {
-                        setSelectedCategory('all');
-                        setIsCategoryDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                        selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
-                      }`}
-                    >
-                      🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
-                    </button>
-                    {config.categories.map((category) => (
-                      <button
-                        key={category.id}
-                        onClick={() => {
-                          setSelectedCategory(category.name);
-                          setIsCategoryDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                          selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
-                        }`}
-                      >
-                        <span className="mr-2">{category.emoji}</span>
-                        {category.name}
-                      </button>
-                    ))}
+            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+              {/* Category Dropdown */}
+              <div className="relative w-full md:w-auto">
+                <button onClick={() => { setIsCategoryDropdownOpen(!isCategoryDropdownOpen); setIsFarmDropdownOpen(false); }}
+                  className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white">
+                  <span className="text-sm md:text-base">
+                    {selectedCategory === 'all' ? `🌟 Toutes les catégories` : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`}
+                  </span>
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isCategoryDropdownOpen && (
+                  <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
+                    <div className="py-1">
+                      <button onClick={() => { setSelectedCategory('all'); setIsCategoryDropdownOpen(false); }}
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🌟 Toutes les catégories</button>
+                      {config.categories.map((category) => (
+                        <button key={category.id} onClick={() => { setSelectedCategory(category.name); setIsCategoryDropdownOpen(false); }}
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''}`}>
+                          <span className="mr-2">{category.emoji}</span>{category.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+              {/* Farm Dropdown */}
+              <div className="relative w-full md:w-auto">
+                <button onClick={() => { setIsFarmDropdownOpen(!isFarmDropdownOpen); setIsCategoryDropdownOpen(false); }}
+                  className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white">
+                  <span className="text-sm md:text-base">
+                    {selectedFarm === 'all' ? `🏡 Toutes les fermes` : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`}
+                  </span>
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isFarmDropdownOpen && (
+                  <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
+                    <div className="py-1">
+                      <button onClick={() => { setSelectedFarm('all'); setIsFarmDropdownOpen(false); }}
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🏡 Toutes les fermes</button>
+                      {config.farms.map((farm) => (
+                        <button key={farm.id} onClick={() => { setSelectedFarm(farm.name); setIsFarmDropdownOpen(false); }}
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''}`}>
+                          <span className="mr-2">{farm.emoji}</span>{farm.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -127,7 +140,7 @@ export default function ProduitsPage() {
       {/* Products Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {filteredProducts.length === 0 ? (
+          {paginatedProducts.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">📦</div>
               <h3 className="text-2xl font-bold mb-4 text-gray-600">
@@ -147,8 +160,8 @@ export default function ProduitsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProducts.map((product) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {paginatedProducts.map((product) => (
                 <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                   <div className="aspect-square relative bg-gray-100">
                     <img
@@ -222,6 +235,13 @@ export default function ProduitsPage() {
           )}
         </div>
       </section>
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-8 gap-4">
+        <button disabled={page === 1} onClick={() => setPage(page-1)} className="px-4 py-2 rounded bg-gray-200 disabled:opacity-50">Précédent</button>
+        <span className="px-4 py-2">Page {page} / {totalPages}</span>
+        <button disabled={page === totalPages} onClick={() => setPage(page+1)} className="px-4 py-2 rounded bg-gray-200 disabled:opacity-50">Suivant</button>
+      </div>
 
 
     </div>

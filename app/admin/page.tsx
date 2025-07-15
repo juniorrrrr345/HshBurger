@@ -396,6 +396,20 @@ export default function AdminPage() {
                           </div>
                           
                           <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Ferme (optionnel)</label>
+                            <select
+                              value={editingProduct.farm || ''}
+                              onChange={e => setEditingProduct({ ...editingProduct, farm: e.target.value || undefined })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            >
+                              <option value="">Aucune</option>
+                              {config.farms.map(farm => (
+                                <option key={farm.id} value={farm.name}>{farm.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          
+                          <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Lien de commande</label>
                             <input
                               type="url"
