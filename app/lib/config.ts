@@ -201,6 +201,34 @@ export const defaultConfig: SiteConfig = {
       ],
       orderLink: "https://example.com/order/fleurs-lemon-haze",
       popular: false
+    },
+    {
+      id: 6,
+      name: "CBD Farm Fresh",
+      description: "Produits CBD frais de notre ferme locale.",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
+      category: "Farm",
+      variants: [
+        { name: "Pack 1", price: 29.90, size: "1kg" },
+        { name: "Pack 2", price: 49.90, size: "2kg" },
+        { name: "Pack 3", price: 79.90, size: "3kg" }
+      ],
+      orderLink: "https://example.com/order/farm-fresh",
+      popular: true
+    },
+    {
+      id: 7,
+      name: "Huile Farm Bio",
+      description: "Huile CBD bio cultivée dans notre ferme.",
+      image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+      category: "Farm",
+      variants: [
+        { name: "10%", price: 34.90, size: "10ml" },
+        { name: "15%", price: 44.90, size: "10ml" },
+        { name: "20%", price: 54.90, size: "10ml" }
+      ],
+      orderLink: "https://example.com/order/farm-bio",
+      popular: false
     }
   ],
   pageContent: {
