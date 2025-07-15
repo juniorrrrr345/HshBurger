@@ -30,6 +30,13 @@ export interface Farm {
   description: string;
 }
 
+export interface Page {
+  id: number;
+  name: string;
+  href: string;
+  isDefault: boolean; // Les pages par défaut ne peuvent pas être supprimées
+}
+
 export interface SocialMediaLink {
   id: number;
   name: string;
@@ -60,6 +67,7 @@ export interface SiteConfig {
   categories: Category[];
   farms: Farm[]; // Fermes au lieu de localisations
   products: Product[];
+  pages: Page[];
   adminSettings: {
     categoriesTabName: string;
     farmsTabName: string;
@@ -197,6 +205,32 @@ export const defaultConfig: SiteConfig = {
       name: "Riverside",
       emoji: "🌊",
       description: "Produits CBD de la ferme Riverside"
+    }
+  ],
+  pages: [
+    {
+      id: 1,
+      name: "Accueil",
+      href: "/",
+      isDefault: true
+    },
+    {
+      id: 2,
+      name: "Produits",
+      href: "/produits",
+      isDefault: true
+    },
+    {
+      id: 3,
+      name: "Contact",
+      href: "/contact",
+      isDefault: true
+    },
+    {
+      id: 4,
+      name: "Réseaux Sociaux",
+      href: "/reseaux-sociaux",
+      isDefault: true
     }
   ],
   products: [

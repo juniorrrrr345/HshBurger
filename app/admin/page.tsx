@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { SiteConfig, getConfig, saveConfig, getNextId, Product, Category, SocialMediaLink, Farm } from '../lib/config';
+import { SiteConfig, getConfig, saveConfig, getNextId, Product, Category, SocialMediaLink, Farm, Page } from '../lib/config';
 
 export default function AdminPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -13,6 +13,7 @@ export default function AdminPage() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingSocial, setEditingSocial] = useState<SocialMediaLink | null>(null);
   const [editingFarm, setEditingFarm] = useState<Farm | null>(null);
+  const [editingPage, setEditingPage] = useState<Page | null>(null);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -211,6 +212,48 @@ export default function AdminPage() {
     setConfig({
       ...config,
       farms: config.farms.filter(f => f.id !== id)
+    });
+  };
+
+  // Page management
+  const addPage = () => {
+    if (!config) return;
+    const newPage: Page = {
+      id: getNextId(config.pages),
+      name: '',
+      href: '',
+      isDefault: false
+    };
+    setEditingPage(newPage);
+  };
+
+  const savePage = () => {
+    if (!config || !editingPage) return;
+    
+    const existingIndex = config.pages.findIndex(p => p.id === editingPage.id);
+    let newPages;
+    
+    if (existingIndex >= 0) {
+      newPages = [...config.pages];
+      newPages[existingIndex] = editingPage;
+    } else {
+      newPages = [...config.pages, editingPage];
+    }
+    
+    setConfig({ ...config, pages: newPages });
+    setEditingPage(null);
+  };
+
+  const deletePage = (id: number) => {
+    if (!config) return;
+    const pageToDelete = config.pages.find(p => p.id === id);
+    if (pageToDelete?.isDefault) {
+      alert('Impossible de supprimer une page par défaut');
+      return;
+    }
+    setConfig({
+      ...config,
+      pages: config.pages.filter(p => p.id !== id)
     });
   };
 
@@ -748,6 +791,66 @@ export default function AdminPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Page Editor Modal */}
+                {editingPage && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg max-w-md w-full">
+                      <div className="p-6">
+                        <h3 className="text-lg font-medium mb-4">
+                          {editingPage.id ? 'Modifier la page' : 'Ajouter une page'}
+                        </h3>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom de la page</label>
+                            <input
+                              type="text"
+                              value={editingPage.name}
+                              onChange={(e) => setEditingPage({...editingPage, name: e.target.value})}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                              placeholder="Ex: À propos"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Lien (URL)</label>
+                            <input
+                              type="text"
+                              value={editingPage.href}
+                              onChange={(e) => setEditingPage({...editingPage, href: e.target.value})}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                              placeholder="Ex: /a-propos ou https://..."
+                            />
+                          </div>
+                          
+                          <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+                            <p className="text-sm text-yellow-800">
+                              <strong>Note :</strong> Si vous créez une page externe (URL complète), elle s'ouvrira dans un nouvel onglet. 
+                              Pour une page interne, utilisez le format "/nom-de-page".
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-end space-x-2 mt-6">
+                          <button
+                            onClick={() => setEditingPage(null)}
+                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                          >
+                            Annuler
+                          </button>
+                          <button
+                            onClick={savePage}
+                            disabled={!editingPage.name.trim() || !editingPage.href.trim()}
+                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                          >
+                            Enregistrer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -1238,6 +1341,51 @@ export default function AdminPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                     </div>
+                  </div>
+                </div>
+
+                {/* Navigation Management Section */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
+                    <button
+                      onClick={addPage}
+                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                    >
+                      Ajouter une page
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {config.pages.map((page) => (
+                      <div key={page.id} className="bg-white p-4 rounded-md border flex justify-between items-center">
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">{page.name}</div>
+                          <div className="text-sm text-gray-500">{page.href}</div>
+                          {page.isDefault && (
+                            <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mt-1">
+                              Page par défaut
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => setEditingPage(page)}
+                            className="text-blue-600 hover:text-blue-800 text-sm"
+                          >
+                            Modifier
+                          </button>
+                          {!page.isDefault && (
+                            <button
+                              onClick={() => deletePage(page.id)}
+                              className="text-red-600 hover:text-red-800 text-sm"
+                            >
+                              Supprimer
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 

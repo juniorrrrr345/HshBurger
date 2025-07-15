@@ -20,12 +20,8 @@ export default function Header({ currentPage = '' }: HeaderProps) {
     return null;
   }
 
-  const navItems = [
-    { name: 'Accueil', href: '/' },
-    { name: 'Produits', href: '/produits' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Réseaux Sociaux', href: '/reseaux-sociaux' }
-  ];
+  // Utiliser les pages dynamiques de la configuration
+  const navItems = config?.pages || [];
 
   const handleLogoError = () => {
     setLogoError(true);
@@ -78,19 +74,41 @@ export default function Header({ currentPage = '' }: HeaderProps) {
             
             {/* Navigation toujours visible */}
             <div className="flex space-x-2 sm:space-x-4 md:space-x-8">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`px-2 sm:px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-all duration-300 transform hover:scale-105 ${
-                    currentPage === item.name
-                      ? 'bg-black text-white shadow-lg'
-                      : 'text-black hover:bg-black hover:text-white'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const isExternal = item.href.startsWith('http://') || item.href.startsWith('https://');
+                
+                if (isExternal) {
+                  return (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`px-2 sm:px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-all duration-300 transform hover:scale-105 ${
+                        currentPage === item.name
+                          ? 'bg-black text-white shadow-lg'
+                          : 'text-black hover:bg-black hover:text-white'
+                      }`}
+                    >
+                      {item.name}
+                    </a>
+                  );
+                } else {
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`px-2 sm:px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-all duration-300 transform hover:scale-105 ${
+                        currentPage === item.name
+                          ? 'bg-black text-white shadow-lg'
+                          : 'text-black hover:bg-black hover:text-white'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                }
+              })}
             </div>
           </div>
         </div>
