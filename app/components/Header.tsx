@@ -20,8 +20,13 @@ export default function Header({ currentPage = '' }: HeaderProps) {
     return null;
   }
 
-  // Utiliser les pages dynamiques de la configuration
-  const navItems = config?.pages || [];
+  // Utiliser les pages dynamiques de la configuration avec fallback
+  const navItems = config?.pages || [
+    { id: 1, name: "Accueil", href: "/", isDefault: true },
+    { id: 2, name: "Produits", href: "/produits", isDefault: true },
+    { id: 3, name: "Contact", href: "/contact", isDefault: true },
+    { id: 4, name: "Réseaux Sociaux", href: "/reseaux-sociaux", isDefault: true }
+  ];
 
   const handleLogoError = () => {
     setLogoError(true);

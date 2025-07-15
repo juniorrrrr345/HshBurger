@@ -16,7 +16,17 @@ export default function AdminPage() {
   const [editingPage, setEditingPage] = useState<Page | null>(null);
 
   useEffect(() => {
-    setConfig(getConfig());
+    const loadedConfig = getConfig();
+    // S'assurer que la propriété pages existe
+    if (!loadedConfig.pages) {
+      loadedConfig.pages = [
+        { id: 1, name: "Accueil", href: "/", isDefault: true },
+        { id: 2, name: "Produits", href: "/produits", isDefault: true },
+        { id: 3, name: "Contact", href: "/contact", isDefault: true },
+        { id: 4, name: "Réseaux Sociaux", href: "/reseaux-sociaux", isDefault: true }
+      ];
+    }
+    setConfig(loadedConfig);
   }, []);
 
   const handleSave = async () => {
@@ -218,8 +228,12 @@ export default function AdminPage() {
   // Page management
   const addPage = () => {
     if (!config) return;
+    // S'assurer que pages existe
+    if (!config.pages) {
+      config.pages = [];
+    }
     const newPage: Page = {
-      id: getNextId(config.pages),
+      id: getNextId(config.pages || []),
       name: '',
       href: '',
       isDefault: false
@@ -229,6 +243,11 @@ export default function AdminPage() {
 
   const savePage = () => {
     if (!config || !editingPage) return;
+    
+    // S'assurer que pages existe
+    if (!config.pages) {
+      config.pages = [];
+    }
     
     const existingIndex = config.pages.findIndex(p => p.id === editingPage.id);
     let newPages;
@@ -245,7 +264,7 @@ export default function AdminPage() {
   };
 
   const deletePage = (id: number) => {
-    if (!config) return;
+    if (!config || !config.pages) return;
     const pageToDelete = config.pages.find(p => p.id === id);
     if (pageToDelete?.isDefault) {
       alert('Impossible de supprimer une page par défaut');
@@ -1357,7 +1376,7 @@ export default function AdminPage() {
                   </div>
                   
                   <div className="space-y-4">
-                    {config.pages.map((page) => (
+                    {config.pages && config.pages.length > 0 ? config.pages.map((page) => (
                       <div key={page.id} className="bg-white p-4 rounded-md border flex justify-between items-center">
                         <div className="flex-1">
                           <div className="font-medium text-gray-900">{page.name}</div>
@@ -1385,7 +1404,11 @@ export default function AdminPage() {
                           )}
                         </div>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="text-center py-8 text-gray-500">
+                        <p>Aucune page configurée. Cliquez sur "Ajouter une page" pour commencer.</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
