@@ -901,6 +901,23 @@ export default function AdminPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Footer Section */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="text-md font-semibold text-gray-800 mb-4">Bas de page</h4>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Texte du copyright</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.footer.copyrightText}
+                        onChange={(e) => updatePageContent('footer', 'copyrightText', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="© 2024 CBD Shop Premium. Tous droits réservés."
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 

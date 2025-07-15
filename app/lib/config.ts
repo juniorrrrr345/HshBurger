@@ -63,6 +63,9 @@ export interface SiteConfig {
       title: string;
       subtitle: string;
     };
+    footer: {
+      copyrightText: string;
+    };
   };
 }
 
@@ -246,6 +249,9 @@ export const defaultConfig: SiteConfig = {
     socialMedia: {
       title: "Suivez-nous sur les réseaux sociaux",
       subtitle: "Restez connecté avec nous pour les dernières actualités et offres exclusives"
+    },
+    footer: {
+      copyrightText: "© 2024 CBD Shop Premium. Tous droits réservés."
     }
   }
 };
