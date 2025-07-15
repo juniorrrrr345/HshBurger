@@ -175,33 +175,7 @@ export default function ProduitsPage() {
                       >
                         🌾 Produits Farm
                       </button>
-                      <button
-                        onClick={() => {
-                          setIsFarmDropdownOpen(false);
-                          window.open('tel:+33123456789', '_blank');
-                        }}
-                        className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors"
-                      >
-                        📞 Appeler Farm
-                      </button>
-                      <button
-                        onClick={() => {
-                          setIsFarmDropdownOpen(false);
-                          window.open('mailto:farm@cbdshop.fr', '_blank');
-                        }}
-                        className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors"
-                      >
-                        📧 Email Farm
-                      </button>
-                      <button
-                        onClick={() => {
-                          setIsFarmDropdownOpen(false);
-                          window.open('https://maps.google.com/?q=farm+cbd', '_blank');
-                        }}
-                        className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors"
-                      >
-                        📍 Localisation Farm
-                      </button>
+
                     </div>
                   </div>
                 )}
