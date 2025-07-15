@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SiteConfig, getConfig } from '../lib/config';
+import Header from '../components/Header';
 
 export default function ReseauxSociauxPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -18,31 +19,22 @@ export default function ReseauxSociauxPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-gray-900">{config.shopInfo.name}</Link>
-            </div>
-            <nav className="flex space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-green-600">Accueil</Link>
-              <Link href="/produits" className="text-gray-700 hover:text-green-600">Produits</Link>
-              <Link href="/contact" className="text-gray-700 hover:text-green-600">Contact</Link>
-              <Link href="/reseaux-sociaux" className="text-green-600 font-semibold">Réseaux Sociaux</Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+      <Header currentPage="Réseaux Sociaux" />
 
       {/* Page Header */}
-      <section className="bg-green-600 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+      <section 
+        className="text-white py-16 relative overflow-hidden"
+        style={{ 
+          background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}, ${config.shopInfo.secondaryColor})` 
+        }}
+      >
+        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 filter drop-shadow-lg">
             {config.pageContent.socialMedia.title}
           </h1>
-          <p className="text-xl max-w-2xl mx-auto">
+          <p className="text-xl max-w-2xl mx-auto filter drop-shadow-md">
             {config.pageContent.socialMedia.subtitle}
           </p>
         </div>
@@ -50,130 +42,66 @@ export default function ReseauxSociauxPage() {
 
       {/* Social Media Cards */}
       <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Instagram */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
-                <div className="flex items-center justify-center text-white">
-                  <div className="text-4xl mb-2">📸</div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {config.socialMediaLinks.map((social) => (
+              <div key={social.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <div 
+                  className="p-6 relative overflow-hidden"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${social.color}, ${social.color}dd)` 
+                  }}
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-white opacity-10 rounded-full transform translate-x-8 -translate-y-8"></div>
+                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-white opacity-10 rounded-full transform -translate-x-6 translate-y-6"></div>
+                  <div className="relative flex items-center justify-center text-white">
+                    <div className="text-5xl mb-2 filter drop-shadow-lg">{social.emoji}</div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
+                    {social.name}
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    {social.name === 'WhatsApp' ? 'Contactez-nous directement pour toute question ou commande' :
+                     social.name === 'Instagram' ? 'Découvrez nos produits en images et suivez notre actualité quotidienne' :
+                     social.name === 'Facebook' ? 'Rejoignez notre communauté et participez aux discussions' :
+                     social.name === 'Twitter' ? 'Suivez nos actualités et informations en temps réel' :
+                     `Suivez-nous sur ${social.name} pour ne rien manquer !`}
+                  </p>
+                  <a
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 filter drop-shadow-md"
+                    style={{ backgroundColor: social.color }}
+                  >
+                    {social.name === 'WhatsApp' ? 'Nous contacter' : 'Nous suivre'}
+                  </a>
                 </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">Instagram</h3>
-                <p className="text-gray-600 mb-4">
-                  Découvrez nos produits en images et suivez notre actualité quotidienne
-                </p>
-                <a
-                  href={config.socialMediaLinks.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition-all"
-                >
-                  Nous suivre
-                </a>
-              </div>
-            </div>
-
-            {/* Facebook */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="bg-blue-600 p-6">
-                <div className="flex items-center justify-center text-white">
-                  <div className="text-4xl mb-2">📘</div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">Facebook</h3>
-                <p className="text-gray-600 mb-4">
-                  Rejoignez notre communauté et participez aux discussions
-                </p>
-                <a
-                  href={config.socialMediaLinks.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                >
-                  Nous suivre
-                </a>
-              </div>
-            </div>
-
-            {/* Twitter */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="bg-blue-400 p-6">
-                <div className="flex items-center justify-center text-white">
-                  <div className="text-4xl mb-2">🐦</div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">Twitter</h3>
-                <p className="text-gray-600 mb-4">
-                  Suivez nos actualités et informations en temps réel
-                </p>
-                <a
-                  href={config.socialMediaLinks.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-blue-400 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-500 transition-colors"
-                >
-                  Nous suivre
-                </a>
-              </div>
-            </div>
-
-            {/* WhatsApp */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-              <div className="bg-green-500 p-6">
-                <div className="flex items-center justify-center text-white">
-                  <div className="text-4xl mb-2">💬</div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">WhatsApp</h3>
-                <p className="text-gray-600 mb-4">
-                  Contactez-nous directement pour toute question ou commande
-                </p>
-                <a
-                  href={config.socialMediaLinks.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors"
-                >
-                  Nous contacter
-                </a>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </section>
 
-      {/* Call to Action */}
-      <section className="bg-green-600 text-white py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            {config.pageContent.socialMedia.ctaTitle}
-          </h2>
-          <p className="text-xl mb-8">
-            {config.pageContent.socialMedia.ctaSubtitle}
-          </p>
-          <div className="flex justify-center space-x-4">
-            <a
-              href={config.socialMediaLinks.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              Instagram
-            </a>
-            <a
-              href={config.socialMediaLinks.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              Facebook
-            </a>
-          </div>
+          {/* Empty state if no social media links */}
+          {config.socialMediaLinks.length === 0 && (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">📱</div>
+              <h3 className="text-2xl font-bold mb-4 text-gray-600">
+                Aucun réseau social configuré
+              </h3>
+              <p className="text-gray-500 mb-8">
+                Ajoutez vos réseaux sociaux depuis le panel admin pour les afficher ici.
+              </p>
+              <Link
+                href="/admin"
+                className="inline-block text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 filter drop-shadow-md"
+                style={{ backgroundColor: config.shopInfo.primaryColor }}
+              >
+                Accéder au panel admin
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
