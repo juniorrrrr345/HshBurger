@@ -3,9 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { SiteConfig, getConfig } from '../../lib/config';
+import { SiteConfig, getConfig, defaultConfig } from '../../lib/config';
 import Header from '../../components/Header';
 import OptimizedImage from '../../components/OptimizedImage';
+
+export async function generateStaticParams() {
+  return defaultConfig.products.map((product) => ({ id: product.id.toString() }));
+}
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [config, setConfig] = useState<SiteConfig | null>(null);
