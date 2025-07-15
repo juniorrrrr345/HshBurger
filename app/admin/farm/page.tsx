@@ -51,6 +51,8 @@ export default function FarmPage() {
         name: '',
         description: '',
         image: '',
+        images: [],
+        video: '',
         category: 'Farm',
         variants: [{ name: '', price: 0, size: '' }],
         orderLink: '',
@@ -66,6 +68,8 @@ export default function FarmPage() {
       name: product.name,
       description: product.description,
       image: product.image,
+      images: product.images || [],
+      video: product.video || '',
       category: product.category,
       variants: product.variants,
       orderLink: product.orderLink,
@@ -92,6 +96,8 @@ export default function FarmPage() {
         name: '',
         description: '',
         image: '',
+        images: [],
+        video: '',
         category: 'Farm',
         variants: [{ name: '', price: 0, size: '' }],
         orderLink: '',
@@ -148,6 +154,8 @@ export default function FarmPage() {
                 name: '',
                 description: '',
                 image: '',
+                images: [],
+                video: '',
                 category: 'Farm',
                 variants: [{ name: '', price: 0, size: '' }],
                 orderLink: '',
@@ -188,6 +196,32 @@ export default function FarmPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="https://example.com/image.jpg"
                 />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Images multiples (URLs séparées par des virgules)</label>
+                <textarea
+                  value={newProduct.images?.join(', ') || ''}
+                  onChange={(e) => setNewProduct({...newProduct, images: e.target.value.split(',').map(url => url.trim()).filter(url => url)})}
+                  rows={2}
+                  placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">Séparez les URLs par des virgules</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Vidéo URL (optionnel)</label>
+                <input
+                  type="url"
+                  value={newProduct.video || ''}
+                  onChange={(e) => setNewProduct({...newProduct, video: e.target.value})}
+                  placeholder="https://example.com/video.mp4"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">URL directe vers un fichier vidéo (MP4, WebM, etc.)</p>
               </div>
             </div>
 
