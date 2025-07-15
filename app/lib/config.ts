@@ -11,9 +11,17 @@ export interface Product {
   }[];
   orderLink: string;
   popular: boolean;
+  location?: string; // Localisation pour les produits Farm
 }
 
 export interface Category {
+  id: number;
+  name: string;
+  emoji: string;
+  description: string;
+}
+
+export interface Location {
   id: number;
   name: string;
   emoji: string;
@@ -46,6 +54,7 @@ export interface SiteConfig {
   };
   socialMediaLinks: SocialMediaLink[];
   categories: Category[];
+  locations: Location[]; // Nouvelles localisations
   products: Product[];
   pageContent: {
     homepage: {
@@ -131,6 +140,32 @@ export const defaultConfig: SiteConfig = {
       description: "Produits de la ferme CBD"
     }
   ],
+  locations: [
+    {
+      id: 1,
+      name: "Paris",
+      emoji: "🗼",
+      description: "Produits CBD de Paris"
+    },
+    {
+      id: 2,
+      name: "Lyon",
+      emoji: "🏛️",
+      description: "Produits CBD de Lyon"
+    },
+    {
+      id: 3,
+      name: "Marseille",
+      emoji: "⚓",
+      description: "Produits CBD de Marseille"
+    },
+    {
+      id: 4,
+      name: "Bordeaux",
+      emoji: "🍷",
+      description: "Produits CBD de Bordeaux"
+    }
+  ],
   products: [
     {
       id: 1,
@@ -201,6 +236,51 @@ export const defaultConfig: SiteConfig = {
       ],
       orderLink: "https://example.com/order/fleurs-lemon-haze",
       popular: false
+    },
+    {
+      id: 6,
+      name: "Fleurs CBD Paris Premium",
+      description: "Fleurs CBD cultivées à Paris, qualité exceptionnelle.",
+      image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+      category: "Farm",
+      location: "Paris",
+      variants: [
+        { name: "1g", price: 12.90, size: "1g" },
+        { name: "3g", price: 34.90, size: "3g" },
+        { name: "5g", price: 54.90, size: "5g" }
+      ],
+      orderLink: "https://example.com/order/fleurs-paris",
+      popular: true
+    },
+    {
+      id: 7,
+      name: "Huile CBD Lyon Artisanale",
+      description: "Huile CBD artisanale de Lyon, méthode traditionnelle.",
+      image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+      category: "Farm",
+      location: "Lyon",
+      variants: [
+        { name: "10%", price: 32.90, size: "10ml" },
+        { name: "15%", price: 42.90, size: "10ml" },
+        { name: "20%", price: 52.90, size: "10ml" }
+      ],
+      orderLink: "https://example.com/order/huile-lyon",
+      popular: false
+    },
+    {
+      id: 8,
+      name: "Résine CBD Marseille",
+      description: "Résine CBD de Marseille, goût méditerranéen.",
+      image: "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop",
+      category: "Farm",
+      location: "Marseille",
+      variants: [
+        { name: "1g", price: 14.90, size: "1g" },
+        { name: "3g", price: 38.90, size: "3g" },
+        { name: "5g", price: 58.90, size: "5g" }
+      ],
+      orderLink: "https://example.com/order/resine-marseille",
+      popular: true
     }
   ],
   pageContent: {
