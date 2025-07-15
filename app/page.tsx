@@ -9,6 +9,7 @@ export default function HomePage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -25,22 +26,22 @@ export default function HomePage() {
     : config.products.filter(product => product.category === selectedCategory);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div className="min-h-screen bg-white">
       <Header currentPage="Accueil" />
 
       {/* Hero Section */}
       <section 
         className="text-white py-20 relative overflow-hidden"
         style={{ 
-          background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}, ${config.shopInfo.secondaryColor})` 
+          background: `linear-gradient(135deg, #000000, #333333)` 
         }}
       >
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 filter drop-shadow-lg">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6 filter drop-shadow-lg text-white">
             {config.pageContent.homepage.heroTitle}
           </h2>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto filter drop-shadow-md">
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto filter drop-shadow-md text-white">
             {config.pageContent.homepage.heroSubtitle}
           </p>
           <Link 
