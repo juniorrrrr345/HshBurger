@@ -2,6 +2,7 @@
   "name": "boutique-cbd",
   "version": "0.1.0",
   "private": true,
+  "description": "Boutique CBD avec panel admin ",
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/init-config.js && next build",
