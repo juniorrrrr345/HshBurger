@@ -46,9 +46,6 @@ export default function OptimizedImage({
         onError={handleImageError}
         onLoad={handleImageLoad}
         style={{
-          imageRendering: 'auto',
-          imageRendering: '-webkit-optimize-contrast',
-          imageRendering: 'crisp-edges',
           backfaceVisibility: 'hidden',
           transform: 'translateZ(0)',
           WebkitTransform: 'translateZ(0)'
