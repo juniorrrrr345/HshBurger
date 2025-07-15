@@ -10,6 +10,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
+  const [selectedFarmCategory, setSelectedFarmCategory] = useState<string>('all');
 
   useEffect(() => {
     setConfig(getConfig());
@@ -57,7 +58,7 @@ export default function HomePage() {
                 >
                   <span>
                     {selectedCategory === 'all' 
-                      ? '🌟 Toutes les catégories' 
+                      ? `🌟 ${config.pageContent.homepage.categoryDropdownTitle}` 
                       : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
                     }
                   </span>
@@ -78,7 +79,7 @@ export default function HomePage() {
                           selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
                         }`}
                       >
-                        🌟 Toutes les catégories
+                        🌟 {config.pageContent.homepage.categoryDropdownTitle}
                       </button>
                       {config.categories.map((category) => (
                         <button
@@ -114,6 +115,15 @@ export default function HomePage() {
                 {isFarmDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-10">
                     <div className="py-1">
+                      <button
+                        onClick={() => {
+                          setSelectedCategory('Farm');
+                          setIsFarmDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors"
+                      >
+                        🌾 Produits Farm
+                      </button>
                       <button
                         onClick={() => {
                           setIsFarmDropdownOpen(false);

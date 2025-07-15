@@ -887,6 +887,16 @@ export default function AdminPage() {
                         placeholder="Appeler Farm"
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Nom du volet roulant Catégories</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.categoryDropdownTitle}
+                        onChange={(e) => updatePageContent('homepage', 'categoryDropdownTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Catégories"
+                      />
+                    </div>
                   </div>
                 </div>
 

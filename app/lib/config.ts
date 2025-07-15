@@ -56,6 +56,7 @@ export interface SiteConfig {
       sectionTitle: string;
       dropdownTitle: string;
       farmDropdownTitle: string;
+      categoryDropdownTitle: string;
     };
     contact: {
       title: string;
@@ -253,7 +254,8 @@ export const defaultConfig: SiteConfig = {
       heroButtonText: "Voir nos produits",
       sectionTitle: "Nos Produits Populaires",
       dropdownTitle: "Filtrer par catégorie",
-      farmDropdownTitle: "Appeler Farm"
+      farmDropdownTitle: "Appeler Farm",
+      categoryDropdownTitle: "Catégories"
     },
     contact: {
       title: "Contactez-nous",
