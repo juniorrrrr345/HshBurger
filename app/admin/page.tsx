@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import AdminLayout from '@/components/admin/AdminLayout';
-import LoadingSpinner from '@/components/admin/LoadingSpinner';
+import Diagnostic from '@/components/Diagnostic';
 import { useProducts, usePages, useCategories } from '@/hooks/useShop';
 import { Package, FileText, Grid, Eye, ShoppingCart, TrendingUp, Users, Star } from 'lucide-react';
 
@@ -12,8 +12,41 @@ export default function AdminDashboard() {
   const { pages, loading: pagesLoading } = usePages();
   const { categories, loading: categoriesLoading } = useCategories();
 
+  // Ajout d'un état de chargement pour éviter les erreurs d'hydratation
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Simuler un délai de chargement pour éviter les erreurs d'hydratation
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Chargement...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   if (productsLoading || pagesLoading || categoriesLoading) {
-    return <LoadingSpinner />;
+    return (
+      <AdminLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Chargement des données...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
   }
 
   const stats = [
@@ -59,6 +92,7 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
+      <Diagnostic currentPath="/admin" />
       <div className="space-y-6">
         {/* En-tête */}
         <div>
@@ -192,42 +226,6 @@ export default function AdminDashboard() {
                 <Eye size={20} className="mr-2" />
                 Voir la boutique
               </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Aperçu des performances */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="card">
-            <div className="card-body text-center">
-              <div className="bg-blue-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="text-blue-600" size={32} />
-              </div>
-              <h3 className="font-semibold text-lg mb-2">Croissance</h3>
-              <p className="text-2xl font-bold text-green-600 mb-1">+15%</p>
-              <p className="text-sm text-gray-600">Ventes ce mois</p>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="card-body text-center">
-              <div className="bg-green-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Users className="text-green-600" size={32} />
-              </div>
-              <h3 className="font-semibold text-lg mb-2">Visiteurs</h3>
-              <p className="text-2xl font-bold text-blue-600 mb-1">1.2k</p>
-              <p className="text-sm text-gray-600">Cette semaine</p>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="card-body text-center">
-              <div className="bg-yellow-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Star className="text-yellow-600" size={32} />
-              </div>
-              <h3 className="font-semibold text-lg mb-2">Satisfaction</h3>
-              <p className="text-2xl font-bold text-yellow-600 mb-1">4.8/5</p>
-              <p className="text-sm text-gray-600">Note moyenne</p>
             </div>
           </div>
         </div>

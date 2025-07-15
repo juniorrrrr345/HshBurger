@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import ProductCard from '@/components/ProductCard';
+import Diagnostic from '@/components/Diagnostic';
 import { useProducts, useShopSettings } from '@/hooks/useShop';
 import { ArrowRight, Leaf, Shield, Truck, Award } from 'lucide-react';
 
@@ -23,6 +24,7 @@ export default function HomePage() {
 
   return (
     <Layout>
+      <Diagnostic currentPath="/" />
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-green-600 to-green-800 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
