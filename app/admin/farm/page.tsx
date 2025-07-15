@@ -8,7 +8,17 @@ export default function FarmPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
-  const [newProduct, setNewProduct] = useState({
+  const [newProduct, setNewProduct] = useState<{
+    name: string;
+    description: string;
+    image: string;
+    images: string[];
+    video: string;
+    category: string;
+    variants: { name: string; price: number; size: string; }[];
+    orderLink: string;
+    popular: boolean;
+  }>({
     name: '',
     description: '',
     image: '',
@@ -37,6 +47,8 @@ export default function FarmPage() {
       const product = {
         ...newProduct,
         id: getNextId(config.products),
+        images: newProduct.images || [],
+        video: newProduct.video || '',
         variants: newProduct.variants.filter(v => v.name && v.price > 0)
       };
 
