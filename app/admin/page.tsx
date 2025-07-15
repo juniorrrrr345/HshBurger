@@ -1,28 +1,38 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { SiteConfig, getConfigAsync, saveConfigAsync, getNextId, Product, Category, SocialMediaLink, Farm, Page } from '../lib/config';
+import AdminLayout from './components/AdminLayout';
+import AdminCard from './components/AdminCard';
+import AdminButton from './components/AdminButton';
+import AdminInput from './components/AdminInput';
+import AdminTextarea from './components/AdminTextarea';
 import ErrorBoundary from './components/ErrorBoundary';
+import { Plus, Edit, Trash2, Save, X, Package, ShoppingCart, Home, Users, Settings, BarChart3 } from 'lucide-react';
 
 export default function AdminPage() {
+  const searchParams = useSearchParams();
   const [config, setConfig] = useState<SiteConfig | null>(null);
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingSocial, setEditingSocial] = useState<SocialMediaLink | null>(null);
   const [editingFarm, setEditingFarm] = useState<Farm | null>(null);
-  const [editingPage, setEditingPage] = useState<Page | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab') || 'dashboard';
+    setActiveTab(tab);
+  }, [searchParams]);
 
   useEffect(() => {
     const loadConfig = async () => {
       try {
         const loadedConfig = await getConfigAsync();
         
-        // S'assurer que la propriété pages existe
         if (!loadedConfig.pages) {
           loadedConfig.pages = [
             { id: 1, name: "Accueil", href: "/", isDefault: true },
@@ -70,20 +80,6 @@ export default function AdminPage() {
       [section]: {
         ...config[section],
         ...updates
-      }
-    });
-  };
-
-  const updatePageContent = (page: keyof SiteConfig['pageContent'], key: string, value: string) => {
-    if (!config) return;
-    setConfig({
-      ...config,
-      pageContent: {
-        ...config.pageContent,
-        [page]: {
-          ...config.pageContent[page],
-          [key]: value
-        }
       }
     });
   };
@@ -243,1336 +239,530 @@ export default function AdminPage() {
     });
   };
 
-  // ===== NOUVEAU SYSTÈME DE PAGES - REFAIT COMPLÈTEMENT =====
-  
-  const addNewPage = () => {
-    if (!config) return;
-    
-    // Créer une nouvelle page avec un ID unique
-    const newId = Math.max(...(config.pages?.map(p => p.id) || [0])) + 1;
-    const newPage: Page = {
-      id: newId,
-      name: '',
-      href: '',
-      isDefault: false
-    };
-    
-    setEditingPage(newPage);
-  };
-
-  const editExistingPage = (page: Page) => {
-    // Copier la page pour l'édition
-    setEditingPage({ ...page });
-  };
-
-  const savePage = () => {
-    if (!editingPage || !config) {
-      alert('Erreur: données manquantes');
-      return;
-    }
-    
-    // Validation
-    if (!editingPage.name.trim()) {
-      alert('Veuillez saisir un nom de page');
-      return;
-    }
-    
-    if (!editingPage.href.trim()) {
-      alert('Veuillez saisir une URL');
-      return;
-    }
-    
-    // Préparer la nouvelle liste de pages
-    const currentPages = config.pages || [];
-    const isExisting = currentPages.some(p => p.id === editingPage.id);
-    
-    let newPages;
-    if (isExisting) {
-      // Modifier une page existante
-      newPages = currentPages.map(p => 
-        p.id === editingPage.id ? { ...editingPage } : p
-      );
-    } else {
-      // Ajouter une nouvelle page
-      newPages = [...currentPages, { ...editingPage }];
-    }
-    
-    // Sauvegarder
-    const updatedConfig = { ...config, pages: newPages };
-    setConfig(updatedConfig);
-    setEditingPage(null);
-    
-    // Message de succès
-    const action = isExisting ? 'modifiée' : 'ajoutée';
-    alert(`Page ${action} avec succès !`);
-  };
-
-  const deletePage = (pageId: number) => {
-    if (!config || !config.pages) return;
-    
-    const page = config.pages.find(p => p.id === pageId);
-    if (!page) return;
-    
-    if (page.isDefault) {
-      alert('Impossible de supprimer une page par défaut');
-      return;
-    }
-    
-    if (confirm(`Supprimer la page "${page.name}" ?`)) {
-      const newPages = config.pages.filter(p => p.id !== pageId);
-      const updatedConfig = { ...config, pages: newPages };
-      setConfig(updatedConfig);
-      alert('Page supprimée !');
-    }
-  };
-
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Chargement du panel admin...</p>
+      <AdminLayout activeTab={activeTab} onTabChange={setActiveTab}>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   if (!config) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <AdminLayout activeTab={activeTab} onTabChange={setActiveTab}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Chargement du panel admin...</p>
+          <p className="text-red-600">Erreur lors du chargement de la configuration</p>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <Link href="/" className="text-2xl font-bold text-gray-900">
-                🛠️ Panel Admin
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className={`px-4 py-2 rounded-md font-medium ${
-                  isSaving
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-green-600 text-white hover:bg-green-700'
-                } transition-colors`}
-              >
-                {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
-              </button>
-              <Link
-                href="/"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Retour au site
-              </Link>
-            </div>
+    <ErrorBoundary>
+      <AdminLayout activeTab={activeTab} onTabChange={setActiveTab}>
+        {/* Message */}
+        {message && (
+          <div className={`mb-4 p-4 rounded-md ${
+            message.includes('succès') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+          }`}>
+            {message}
           </div>
-        </div>
-      </header>
+        )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          {/* Tabs */}
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8 px-6 overflow-x-auto">
-              {[
-                { id: 'products', name: 'Produits' },
-                { id: 'categories', name: config.adminSettings.categoriesTabName },
-                { id: 'farms', name: config.adminSettings.farmsTabName },
-                { id: 'social', name: 'Réseaux Sociaux' },
-                { id: 'admin-settings', name: 'Paramètres Admin' },
-                { id: 'shop', name: 'Boutique' },
-                { id: 'pages', name: 'Pages' },
-                { id: 'contact', name: 'Contact' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? 'border-green-500 text-green-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  {tab.name}
-                </button>
-              ))}
-            </nav>
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <AdminCard title="Produits" description={`${config.products.length} produits`}>
+                <div className="flex items-center">
+                  <Package className="h-8 w-8 text-blue-600 mr-3" />
+                  <div>
+                    <p className="text-2xl font-bold">{config.products.length}</p>
+                    <p className="text-sm text-gray-500">Produits</p>
+                  </div>
+                </div>
+              </AdminCard>
+
+              <AdminCard title="Catégories" description={`${config.categories.length} catégories`}>
+                <div className="flex items-center">
+                  <ShoppingCart className="h-8 w-8 text-green-600 mr-3" />
+                  <div>
+                    <p className="text-2xl font-bold">{config.categories.length}</p>
+                    <p className="text-sm text-gray-500">Catégories</p>
+                  </div>
+                </div>
+              </AdminCard>
+
+              <AdminCard title="Fermes" description={`${config.farms.length} fermes`}>
+                <div className="flex items-center">
+                  <Home className="h-8 w-8 text-purple-600 mr-3" />
+                  <div>
+                    <p className="text-2xl font-bold">{config.farms.length}</p>
+                    <p className="text-sm text-gray-500">Fermes</p>
+                  </div>
+                </div>
+              </AdminCard>
+
+              <AdminCard title="Réseaux sociaux" description={`${config.socialMediaLinks.length} liens`}>
+                <div className="flex items-center">
+                  <Users className="h-8 w-8 text-orange-600 mr-3" />
+                  <div>
+                    <p className="text-2xl font-bold">{config.socialMediaLinks.length}</p>
+                    <p className="text-sm text-gray-500">Liens</p>
+                  </div>
+                </div>
+              </AdminCard>
+            </div>
+
+            <AdminCard title="Actions rapides">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <AdminButton onClick={() => setActiveTab('products')} className="w-full">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Ajouter un produit
+                </AdminButton>
+                <AdminButton onClick={() => setActiveTab('categories')} variant="secondary" className="w-full">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Ajouter une catégorie
+                </AdminButton>
+                <AdminButton onClick={() => setActiveTab('farms')} variant="secondary" className="w-full">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Ajouter une ferme
+                </AdminButton>
+                <AdminButton onClick={handleSave} loading={isSaving} variant="success" className="w-full">
+                  <Save className="mr-2 h-4 w-4" />
+                  Sauvegarder
+                </AdminButton>
+              </div>
+            </AdminCard>
           </div>
+        )}
 
-          {/* Content */}
-          <div className="p-6">
-            {message && (
-              <div className={`mb-4 p-4 rounded-md ${
-                message.includes('succès') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-              }`}>
-                {message}
-              </div>
-            )}
+        {/* Products Tab */}
+        {activeTab === 'products' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900">Gestion des produits</h2>
+              <AdminButton onClick={addProduct}>
+                <Plus className="mr-2 h-4 w-4" />
+                Ajouter un produit
+              </AdminButton>
+            </div>
 
-            {/* Products Tab */}
-            {activeTab === 'products' && (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">Gestion des Produits</h3>
-                  <button
-                    onClick={addProduct}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                  >
-                    + Ajouter un produit
-                  </button>
+            {editingProduct ? (
+              <AdminCard title="Éditer le produit">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <AdminInput
+                    label="Nom du produit"
+                    value={editingProduct.name}
+                    onChange={(value) => setEditingProduct({ ...editingProduct, name: value })}
+                    required
+                  />
+                  <AdminInput
+                    label="Catégorie"
+                    value={editingProduct.category}
+                    onChange={(value) => setEditingProduct({ ...editingProduct, category: value })}
+                  />
+                  <AdminTextarea
+                    label="Description"
+                    value={editingProduct.description}
+                    onChange={(value) => setEditingProduct({ ...editingProduct, description: value })}
+                    rows={3}
+                    className="md:col-span-2"
+                  />
+                  <AdminInput
+                    label="Image principale"
+                    value={editingProduct.image}
+                    onChange={(value) => setEditingProduct({ ...editingProduct, image: value })}
+                    type="url"
+                  />
+                  <AdminInput
+                    label="Lien de commande"
+                    value={editingProduct.orderLink}
+                    onChange={(value) => setEditingProduct({ ...editingProduct, orderLink: value })}
+                    type="url"
+                  />
                 </div>
-
-                {/* Products list */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {config.products.map((product) => (
-                    <div key={product.id} className="bg-gray-50 rounded-lg p-4 space-y-3">
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-start">
-                          <h4 className="font-semibold text-gray-900 text-base">{product.name}</h4>
-                          <div className="flex flex-col space-y-1 ml-2">
-                            <button
-                              onClick={() => setEditingProduct(product)}
-                              className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
-                            >
-                              Modifier
-                            </button>
-                            <button
-                              onClick={() => deleteProduct(product.id)}
-                              className="text-red-600 hover:text-red-800 text-sm px-2 py-1 bg-red-50 rounded hover:bg-red-100 transition-colors"
-                            >
-                              Supprimer
-                            </button>
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-600 font-medium">{product.category}</p>
-                        <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
-                        <div className="flex flex-wrap gap-1">
-                          {product.variants.map((variant, index) => (
-                            <span key={index} className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                              {variant.name}: €{variant.price}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex items-center mt-4">
+                  <input
+                    type="checkbox"
+                    id="popular"
+                    checked={editingProduct.popular}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, popular: e.target.checked })}
+                    className="mr-2"
+                  />
+                  <label htmlFor="popular" className="text-sm text-gray-700">Produit populaire</label>
                 </div>
-
-                {/* Product Editor Modal */}
-                {editingProduct && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                      <div className="p-6">
-                        <h3 className="text-lg font-medium mb-4">
-                          {editingProduct.id ? 'Modifier le produit' : 'Ajouter un produit'}
-                        </h3>
-                        
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                            <input
-                              type="text"
-                              value={editingProduct.name}
-                              onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                            <textarea
-                              value={editingProduct.description}
-                              onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})}
-                              rows={3}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                            <input
-                              type="url"
-                              value={editingProduct.image}
-                              onChange={(e) => setEditingProduct({...editingProduct, image: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Images multiples (URLs séparées par des virgules)</label>
-                            <textarea
-                              value={editingProduct.images?.join(', ') || ''}
-                              onChange={(e) => setEditingProduct({...editingProduct, images: e.target.value.split(',').map(url => url.trim()).filter(url => url)})}
-                              rows={3}
-                              placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                            <p className="text-xs text-gray-500 mt-1">Séparez les URLs par des virgules</p>
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Vidéo URL (optionnel)</label>
-                            <input
-                              type="url"
-                              value={editingProduct.video || ''}
-                              onChange={(e) => setEditingProduct({...editingProduct, video: e.target.value})}
-                              placeholder="https://example.com/video.mp4"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                            <p className="text-xs text-gray-500 mt-1">URL directe vers un fichier vidéo (MP4, WebM, etc.)</p>
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
-                            <select
-                              value={editingProduct.category}
-                              onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            >
-                              {config.categories.map(cat => (
-                                <option key={cat.id} value={cat.name}>{cat.name}</option>
-                              ))}
-                            </select>
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Ferme (optionnel)</label>
-                            <select
-                              value={editingProduct.farm || ''}
-                              onChange={e => setEditingProduct({ ...editingProduct, farm: e.target.value || undefined })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            >
-                              <option value="">Aucune</option>
-                              {config.farms.map(farm => (
-                                <option key={farm.id} value={farm.name}>{farm.name}</option>
-                              ))}
-                            </select>
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Lien de commande</label>
-                            <input
-                              type="url"
-                              value={editingProduct.orderLink}
-                              onChange={(e) => setEditingProduct({...editingProduct, orderLink: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                          
-                          <div className="flex items-center">
-                            <input
-                              type="checkbox"
-                              id="popular"
-                              checked={editingProduct.popular}
-                              onChange={(e) => setEditingProduct({...editingProduct, popular: e.target.checked})}
-                              className="mr-2"
-                            />
-                            <label htmlFor="popular" className="text-sm text-gray-700">Produit populaire</label>
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Variantes de prix</label>
-                            {editingProduct.variants.map((variant, index) => (
-                              <div key={index} className="flex space-x-2 mb-2">
-                                <input
-                                  type="text"
-                                  placeholder="Nom (ex: 10%, 1g)"
-                                  value={variant.name}
-                                  onChange={(e) => {
-                                    const newVariants = [...editingProduct.variants];
-                                    newVariants[index].name = e.target.value;
-                                    setEditingProduct({...editingProduct, variants: newVariants});
-                                  }}
-                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                />
-                                <input
-                                  type="number"
-                                  placeholder="Prix"
-                                  value={variant.price}
-                                  onChange={(e) => {
-                                    const newVariants = [...editingProduct.variants];
-                                    newVariants[index].price = parseFloat(e.target.value) || 0;
-                                    setEditingProduct({...editingProduct, variants: newVariants});
-                                  }}
-                                  className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                />
-                                <input
-                                  type="text"
-                                  placeholder="Taille"
-                                  value={variant.size}
-                                  onChange={(e) => {
-                                    const newVariants = [...editingProduct.variants];
-                                    newVariants[index].size = e.target.value;
-                                    setEditingProduct({...editingProduct, variants: newVariants});
-                                  }}
-                                  className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                                />
-                                <button
-                                  onClick={() => {
-                                    const newVariants = editingProduct.variants.filter((_, i) => i !== index);
-                                    setEditingProduct({...editingProduct, variants: newVariants});
-                                  }}
-                                  className="text-red-600 hover:text-red-800 px-2"
-                                >
-                                  ×
-                                </button>
-                              </div>
-                            ))}
-                            <button
-                              onClick={() => {
-                                const newVariants = [...editingProduct.variants, { name: '', price: 0, size: '' }];
-                                setEditingProduct({...editingProduct, variants: newVariants});
-                              }}
-                              className="text-green-600 hover:text-green-800 text-sm"
-                            >
-                              + Ajouter une variante
-                            </button>
-                          </div>
-                        </div>
-                        
-                        <div className="flex justify-end space-x-2 mt-6">
-                          <button
-                            onClick={() => setEditingProduct(null)}
-                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                          >
-                            Annuler
-                          </button>
-                          <button
-                            onClick={saveProduct}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                          >
-                            Enregistrer
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Categories Tab */}
-            {activeTab === 'categories' && (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">Gestion des {config.adminSettings.categoriesTabName}</h3>
-                  <button
-                    onClick={addCategory}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                  >
-                    + Ajouter une {config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}
-                  </button>
+                <div className="flex space-x-2 mt-4">
+                  <AdminButton onClick={saveProduct} variant="success">
+                    <Save className="mr-2 h-4 w-4" />
+                    Sauvegarder
+                  </AdminButton>
+                  <AdminButton onClick={() => setEditingProduct(null)} variant="secondary">
+                    <X className="mr-2 h-4 w-4" />
+                    Annuler
+                  </AdminButton>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {config.categories.map((category) => (
-                    <div key={category.id} className="bg-gray-50 rounded-lg p-4 space-y-3">
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-start">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-2xl">{category.emoji}</span>
-                            <h4 className="font-semibold text-gray-900 text-base">{category.name}</h4>
-                          </div>
-                          <div className="flex flex-col space-y-1 ml-2">
-                            <button
-                              onClick={() => setEditingCategory(category)}
-                              className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
-                            >
-                              Modifier
-                            </button>
-                            <button
-                              onClick={() => deleteCategory(category.id)}
-                              className="text-red-600 hover:text-red-800 text-sm px-2 py-1 bg-red-50 rounded hover:bg-red-100 transition-colors"
-                            >
-                              Supprimer
-                            </button>
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-500 leading-relaxed">{category.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Category Editor Modal */}
-                {editingCategory && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                      <div className="p-6">
-                        <h3 className="text-lg font-medium mb-4">
-                          {editingCategory.id ? `Modifier la ${config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}` : `Ajouter une ${config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}`}
-                        </h3>
-                        
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                            <input
-                              type="text"
-                              value={editingCategory.name}
-                              onChange={(e) => setEditingCategory({...editingCategory, name: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Emoji</label>
-                            <input
-                              type="text"
-                              value={editingCategory.emoji}
-                              onChange={(e) => setEditingCategory({...editingCategory, emoji: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="🌿"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                            <textarea
-                              value={editingCategory.description}
-                              onChange={(e) => setEditingCategory({...editingCategory, description: e.target.value})}
-                              rows={3}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="flex justify-end space-x-2 mt-6">
-                          <button
-                            onClick={() => setEditingCategory(null)}
-                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                          >
-                            Annuler
-                          </button>
-                          <button
-                            onClick={saveCategory}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                          >
-                            Enregistrer
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Farms Tab */}
-            {activeTab === 'farms' && (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">Gestion des {config.adminSettings.farmsTabName}</h3>
-                  <button
-                    onClick={addFarm}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                  >
-                    + Ajouter une {config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {config.farms.map((farm) => (
-                    <div key={farm.id} className="bg-gray-50 rounded-lg p-4 space-y-3">
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-start">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-2xl">{farm.emoji}</span>
-                            <h4 className="font-semibold text-gray-900 text-base">{farm.name}</h4>
-                          </div>
-                          <div className="flex flex-col space-y-1 ml-2">
-                            <button
-                              onClick={() => setEditingFarm(farm)}
-                              className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
-                            >
-                              Modifier
-                            </button>
-                            <button
-                              onClick={() => deleteFarm(farm.id)}
-                              className="text-red-600 hover:text-red-800 text-sm px-2 py-1 bg-red-50 rounded hover:bg-red-100 transition-colors"
-                            >
-                              Supprimer
-                            </button>
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-500 leading-relaxed">{farm.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Farm Editor Modal */}
-                {editingFarm && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                      <div className="p-6">
-                        <h3 className="text-lg font-medium mb-4">
-                          {editingFarm.id ? `Modifier la ${config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}` : `Ajouter une ${config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}`}
-                        </h3>
-                        
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                            <input
-                              type="text"
-                              value={editingFarm.name}
-                              onChange={(e) => setEditingFarm({...editingFarm, name: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Emoji</label>
-                            <input
-                              type="text"
-                              value={editingFarm.emoji}
-                              onChange={(e) => setEditingFarm({...editingFarm, emoji: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="🏔️"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                            <textarea
-                              value={editingFarm.description}
-                              onChange={(e) => setEditingFarm({...editingFarm, description: e.target.value})}
-                              rows={3}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="flex justify-end space-x-2 mt-6">
-                          <button
-                            onClick={() => setEditingFarm(null)}
-                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                          >
-                            Annuler
-                          </button>
-                          <button
-                            onClick={saveFarm}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                          >
-                            Enregistrer
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* MODAL SIMPLE POUR PAGES */}
-                {editingPage && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                      <div className="p-6">
-                        <h3 className="text-lg font-medium mb-4">
-                          {config?.pages?.some(p => p.id === editingPage.id) ? 'Modifier la page' : 'Ajouter une page'}
-                        </h3>
-                        
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Nom de la page *
-                            </label>
-                            <input
-                              type="text"
-                              value={editingPage.name || ''}
-                              onChange={(e) => setEditingPage({...editingPage, name: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="Ex: À propos, Conditions..."
-                              autoFocus
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              URL de la page *
-                            </label>
-                            <input
-                              type="text"
-                              value={editingPage.href || ''}
-                              onChange={(e) => setEditingPage({...editingPage, href: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="Ex: /a-propos ou https://external.com"
-                            />
-                          </div>
-                          
-                          <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                            <p className="text-sm text-blue-800">
-                              💡 <strong>Exemples :</strong><br />
-                              • Page interne : <code>/a-propos</code><br />
-                              • Lien externe : <code>https://monsite.com</code><br />
-                              • Email : <code>mailto:contact@monsite.com</code>
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex justify-end space-x-3 mt-6">
-                          <button
-                            onClick={() => setEditingPage(null)}
-                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
-                          >
-                            Annuler
-                          </button>
-                          <button
-                            onClick={savePage}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                          >
-                            Enregistrer
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Social Media Tab */}
-            {activeTab === 'social' && (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">Gestion des Réseaux Sociaux</h3>
-                  <button
-                    onClick={addSocialMedia}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                  >
-                    + Ajouter un réseau social
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {config.socialMediaLinks.map((social) => (
-                    <div key={social.id} className="bg-gray-50 rounded-lg p-4 space-y-2">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-2xl">{social.emoji}</span>
-                            <h4 className="font-semibold text-gray-900">{social.name}</h4>
-                          </div>
-                          <p className="text-sm text-gray-500 truncate">{social.url}</p>
-                          <div 
-                            className="w-4 h-4 rounded-full inline-block mt-1"
-                            style={{ backgroundColor: social.color }}
-                          ></div>
-                        </div>
-                        <div className="flex flex-col space-y-1">
-                          <button
-                            onClick={() => setEditingSocial(social)}
-                            className="text-blue-600 hover:text-blue-800 text-sm"
-                          >
-                            Modifier
-                          </button>
-                          <button
-                            onClick={() => deleteSocialMedia(social.id)}
-                            className="text-red-600 hover:text-red-800 text-sm"
-                          >
-                            Supprimer
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Social Media Editor Modal */}
-                {editingSocial && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                      <div className="p-6">
-                        <h3 className="text-lg font-medium mb-4">
-                          {editingSocial.id ? 'Modifier le réseau social' : 'Ajouter un réseau social'}
-                        </h3>
-                        
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                            <input
-                              type="text"
-                              value={editingSocial.name}
-                              onChange={(e) => setEditingSocial({...editingSocial, name: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="Instagram"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Emoji</label>
-                            <input
-                              type="text"
-                              value={editingSocial.emoji}
-                              onChange={(e) => setEditingSocial({...editingSocial, emoji: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="📸"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
-                            <input
-                              type="url"
-                              value={editingSocial.url}
-                              onChange={(e) => setEditingSocial({...editingSocial, url: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="https://instagram.com/username"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Couleur</label>
-                            <input
-                              type="color"
-                              value={editingSocial.color}
-                              onChange={(e) => setEditingSocial({...editingSocial, color: e.target.value})}
-                              className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="flex justify-end space-x-2 mt-6">
-                          <button
-                            onClick={() => setEditingSocial(null)}
-                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                          >
-                            Annuler
-                          </button>
-                          <button
-                            onClick={saveSocialMedia}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                          >
-                            Enregistrer
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Admin Settings Tab */}
-            {activeTab === 'admin-settings' && (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">Paramètres d'Administration</h3>
-                </div>
-
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h4 className="text-md font-semibold text-gray-800 mb-4">Personnalisation des Onglets</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nom de l'onglet "Catégories"
-                      </label>
-                      <input
-                        type="text"
-                        value={config.adminSettings.categoriesTabName}
-                        onChange={(e) => updateConfig('adminSettings', { categoriesTabName: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Catégories"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Ce nom sera affiché dans la navigation du panel d'administration
-                      </p>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nom de l'onglet "Fermes"
-                      </label>
-                      <input
-                        type="text"
-                        value={config.adminSettings.farmsTabName}
-                        onChange={(e) => updateConfig('adminSettings', { farmsTabName: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Fermes"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Ce nom sera affiché dans la navigation du panel d'administration
-                      </p>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nom du bouton "Catégories"
-                      </label>
-                      <input
-                        type="text"
-                        value={config.adminSettings.categoriesButtonText}
-                        onChange={(e) => updateConfig('adminSettings', { categoriesButtonText: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Catégories"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Ce nom sera affiché sur les boutons de filtrage des catégories
-                      </p>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nom du bouton "Fermes"
-                      </label>
-                      <input
-                        type="text"
-                        value={config.adminSettings.farmsButtonText}
-                        onChange={(e) => updateConfig('adminSettings', { farmsButtonText: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Fermes"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Ce nom sera affiché sur les boutons de filtrage des fermes
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Aperçu de la navigation */}
-                  <div className="mt-6">
-                    <h5 className="text-sm font-medium text-gray-700 mb-3">Aperçu de la navigation</h5>
-                    <div className="bg-white rounded-lg border p-4">
-                      <div className="flex space-x-4 text-sm">
-                        <span className="text-gray-500">Produits</span>
-                        <span className="text-green-600 font-medium">{config.adminSettings.categoriesTabName}</span>
-                        <span className="text-green-600 font-medium">{config.adminSettings.farmsTabName}</span>
-                        <span className="text-gray-500">Réseaux Sociaux</span>
-                        <span className="text-gray-500">Paramètres Admin</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Aperçu des boutons de filtrage */}
-                  <div className="mt-6">
-                    <h5 className="text-sm font-medium text-gray-700 mb-3">Aperçu des boutons de filtrage</h5>
-                    <div className="bg-white rounded-lg border p-4 space-y-4">
-                      <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-600">Bouton Catégories:</span>
-                        <button className="px-4 py-2 bg-black text-white rounded-lg text-sm">
-                          🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
-                        </button>
-                      </div>
-                      <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-600">Bouton Fermes:</span>
-                        <button className="px-4 py-2 bg-black text-white rounded-lg text-sm">
-                          🌾 Toutes les {config.adminSettings.farmsButtonText.toLowerCase()}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Shop Tab */}
-            {activeTab === 'shop' && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-900">Configuration de la Boutique</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Nom de la boutique</label>
-                    <input
-                      type="text"
-                      value={config.shopInfo.name}
-                      onChange={(e) => updateConfig('shopInfo', { name: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo (URL image)</label>
-                    <input
-                      type="url"
-                      value={config.shopInfo.logoUrl}
-                      onChange={(e) => updateConfig('shopInfo', { logoUrl: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="https://..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo (Emoji)</label>
-                    <input
-                      type="text"
-                      value={config.shopInfo.logo}
-                      onChange={(e) => updateConfig('shopInfo', { logo: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="🌿"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                    <textarea
-                      value={config.shopInfo.description}
-                      onChange={(e) => updateConfig('shopInfo', { description: e.target.value })}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Couleur principale</label>
-                    <input
-                      type="color"
-                      value={config.shopInfo.primaryColor}
-                      onChange={(e) => updateConfig('shopInfo', { primaryColor: e.target.value })}
-                      className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Couleur secondaire</label>
-                    <input
-                      type="color"
-                      value={config.shopInfo.secondaryColor}
-                      onChange={(e) => updateConfig('shopInfo', { secondaryColor: e.target.value })}
-                      className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Couleur du texte</label>
-                    <input
-                      type="color"
-                      value={config.shopInfo.textColor}
-                      onChange={(e) => updateConfig('shopInfo', { textColor: e.target.value })}
-                      className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Couleur de fond</label>
-                    <input
-                      type="color"
-                      value={config.shopInfo.backgroundColor}
-                      onChange={(e) => updateConfig('shopInfo', { backgroundColor: e.target.value })}
-                      className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Image de fond (URL)</label>
-                    <input
-                      type="url"
-                      value={config.shopInfo.backgroundImage}
-                      onChange={(e) => updateConfig('shopInfo', { backgroundImage: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="https://..."
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Laissez vide pour utiliser la couleur de fond</p>
-                  </div>
-                </div>
-
-                {/* Aperçu */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-medium text-gray-900 mb-4">Aperçu</h4>
-                  <div 
-                    className="rounded-lg p-4 text-center"
-                    style={{ backgroundColor: config.shopInfo.backgroundColor }}
-                  >
-                    <div className="flex items-center justify-center space-x-2 mb-2">
-                      {config.shopInfo.logoUrl ? (
-                        <img src={config.shopInfo.logoUrl} alt="Logo" className="h-12 w-12 object-contain rounded bg-white shadow" />
-                      ) : (
-                        <span className="text-3xl">{config.shopInfo.logo}</span>
+              </AdminCard>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {config.products.map((product) => (
+                  <AdminCard key={product.id} title={product.name} className="relative">
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-600">{product.description}</p>
+                      <p className="text-sm font-medium">Catégorie: {product.category}</p>
+                      {product.popular && (
+                        <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                          Populaire
+                        </span>
                       )}
-                      <h3 
-                        className="text-2xl font-bold"
-                        style={{ color: config.shopInfo.secondaryColor }}
+                    </div>
+                    <div className="absolute top-2 right-2 flex space-x-1">
+                      <AdminButton
+                        onClick={() => setEditingProduct(product)}
+                        variant="secondary"
+                        size="sm"
                       >
-                        {config.shopInfo.name}
-                      </h3>
+                        <Edit className="h-3 w-3" />
+                      </AdminButton>
+                      <AdminButton
+                        onClick={() => deleteProduct(product.id)}
+                        variant="danger"
+                        size="sm"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </AdminButton>
                     </div>
-                    <p style={{ color: config.shopInfo.secondaryColor }}>
-                      {config.shopInfo.description}
-                    </p>
-                    <button
-                      className="mt-4 px-4 py-2 rounded-md text-white font-medium"
-                      style={{ backgroundColor: config.shopInfo.primaryColor }}
-                    >
-                      Bouton d'exemple
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Pages Tab */}
-            {activeTab === 'pages' && (
-              <div className="space-y-8">
-                <h3 className="text-lg font-medium text-gray-900">Configuration des Pages</h3>
-                
-                {/* Homepage Section */}
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h4 className="text-md font-semibold text-gray-800 mb-4">Page d'accueil</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre principal</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.homepage.heroTitle}
-                        onChange={(e) => updatePageContent('homepage', 'heroTitle', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Sous-titre</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.homepage.heroSubtitle}
-                        onChange={(e) => updatePageContent('homepage', 'heroSubtitle', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Texte du bouton</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.homepage.heroButtonText}
-                        onChange={(e) => updatePageContent('homepage', 'heroButtonText', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre de la section produits</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.homepage.sectionTitle}
-                        onChange={(e) => updatePageContent('homepage', 'sectionTitle', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Label des catégories</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.homepage.categoriesLabel}
-                        onChange={(e) => updatePageContent('homepage', 'categoriesLabel', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Catégories"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Label Farm</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.homepage.farmLabel}
-                        onChange={(e) => updatePageContent('homepage', 'farmLabel', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Farm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Label toutes les catégories</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.homepage.allCategoriesLabel}
-                        onChange={(e) => updatePageContent('homepage', 'allCategoriesLabel', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Toutes les catégories"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Label produits Farm</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.homepage.farmProductsLabel}
-                        onChange={(e) => updatePageContent('homepage', 'farmProductsLabel', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Produits de la ferme"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contact Section */}
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h4 className="text-md font-semibold text-gray-800 mb-4">Page Contact</h4>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.contact.title}
-                        onChange={(e) => updatePageContent('contact', 'title', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Sous-titre</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.contact.subtitle}
-                        onChange={(e) => updatePageContent('contact', 'subtitle', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                      <textarea
-                        value={config.pageContent.contact.description}
-                        onChange={(e) => updatePageContent('contact', 'description', e.target.value)}
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* NOUVEAU SYSTÈME DE PAGES - SIMPLE ET FONCTIONNEL */}
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900">📄 Gestion des Pages</h3>
-                      <p className="text-sm text-gray-600">
-                        {config?.pages?.length || 0} page(s) configurée(s)
-                      </p>
-                    </div>
-                    <button
-                      onClick={addNewPage}
-                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                    >
-                      + Ajouter une page
-                    </button>
-                  </div>
-                  
-                  {/* Liste des pages */}
-                  <div className="space-y-3">
-                    {config?.pages?.map((page) => (
-                      <div key={page.id} className="bg-white p-4 rounded-lg border flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2">
-                            <h4 className="font-medium text-gray-900">{page.name || 'Sans nom'}</h4>
-                            {page.isDefault && (
-                              <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                                Défaut
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-500 mt-1">{page.href || 'Sans URL'}</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => editExistingPage(page)}
-                            className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                          >
-                            Modifier
-                          </button>
-                          {!page.isDefault && (
-                            <button
-                              onClick={() => deletePage(page.id)}
-                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                            >
-                              Supprimer
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    
-                    {(!config?.pages || config.pages.length === 0) && (
-                      <div className="text-center py-8 text-gray-500">
-                        <p>Aucune page configurée</p>
-                        <p className="text-sm">Cliquez sur "Ajouter une page" pour commencer</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Social Media Section */}
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h4 className="text-md font-semibold text-gray-800 mb-4">Page Réseaux Sociaux</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre principal</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.socialMedia.title}
-                        onChange={(e) => updatePageContent('socialMedia', 'title', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Sous-titre</label>
-                      <input
-                        type="text"
-                        value={config.pageContent.socialMedia.subtitle}
-                        onChange={(e) => updatePageContent('socialMedia', 'subtitle', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Contact Tab */}
-            {activeTab === 'contact' && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-900">Configuration du Contact</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Lien de commande</label>
-                    <input
-                      type="url"
-                      value={config.contactInfo.orderLink}
-                      onChange={(e) => updateConfig('contactInfo', { orderLink: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="https://example.com/order"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Texte du bouton de commande</label>
-                    <input
-                      type="text"
-                      value={config.contactInfo.orderText}
-                      onChange={(e) => updateConfig('contactInfo', { orderText: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Commandez maintenant"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input
-                      type="email"
-                      value={config.contactInfo.email}
-                      onChange={(e) => updateConfig('contactInfo', { email: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="contact@example.com"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
-                    <input
-                      type="tel"
-                      value={config.contactInfo.phone}
-                      onChange={(e) => updateConfig('contactInfo', { phone: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="+33 1 23 45 67 89"
-                    />
-                  </div>
-                </div>
+                  </AdminCard>
+                ))}
               </div>
             )}
           </div>
-        </div>
-    </div>
+        )}
+
+        {/* Categories Tab */}
+        {activeTab === 'categories' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900">Gestion des catégories</h2>
+              <AdminButton onClick={addCategory}>
+                <Plus className="mr-2 h-4 w-4" />
+                Ajouter une catégorie
+              </AdminButton>
+            </div>
+
+            {editingCategory ? (
+              <AdminCard title="Éditer la catégorie">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <AdminInput
+                    label="Nom de la catégorie"
+                    value={editingCategory.name}
+                    onChange={(value) => setEditingCategory({ ...editingCategory, name: value })}
+                    required
+                  />
+                  <AdminInput
+                    label="Emoji"
+                    value={editingCategory.emoji}
+                    onChange={(value) => setEditingCategory({ ...editingCategory, emoji: value })}
+                  />
+                  <AdminTextarea
+                    label="Description"
+                    value={editingCategory.description}
+                    onChange={(value) => setEditingCategory({ ...editingCategory, description: value })}
+                    rows={3}
+                    className="md:col-span-2"
+                  />
+                </div>
+                <div className="flex space-x-2 mt-4">
+                  <AdminButton onClick={saveCategory} variant="success">
+                    <Save className="mr-2 h-4 w-4" />
+                    Sauvegarder
+                  </AdminButton>
+                  <AdminButton onClick={() => setEditingCategory(null)} variant="secondary">
+                    <X className="mr-2 h-4 w-4" />
+                    Annuler
+                  </AdminButton>
+                </div>
+              </AdminCard>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {config.categories.map((category) => (
+                  <AdminCard key={category.id} title={`${category.emoji} ${category.name}`}>
+                    <p className="text-sm text-gray-600 mb-4">{category.description}</p>
+                    <div className="flex justify-end space-x-2">
+                      <AdminButton
+                        onClick={() => setEditingCategory(category)}
+                        variant="secondary"
+                        size="sm"
+                      >
+                        <Edit className="mr-1 h-3 w-3" />
+                        Modifier
+                      </AdminButton>
+                      <AdminButton
+                        onClick={() => deleteCategory(category.id)}
+                        variant="danger"
+                        size="sm"
+                      >
+                        <Trash2 className="mr-1 h-3 w-3" />
+                        Supprimer
+                      </AdminButton>
+                    </div>
+                  </AdminCard>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Farms Tab */}
+        {activeTab === 'farms' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900">Gestion des fermes</h2>
+              <AdminButton onClick={addFarm}>
+                <Plus className="mr-2 h-4 w-4" />
+                Ajouter une ferme
+              </AdminButton>
+            </div>
+
+            {editingFarm ? (
+              <AdminCard title="Éditer la ferme">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <AdminInput
+                    label="Nom de la ferme"
+                    value={editingFarm.name}
+                    onChange={(value) => setEditingFarm({ ...editingFarm, name: value })}
+                    required
+                  />
+                  <AdminInput
+                    label="Emoji"
+                    value={editingFarm.emoji}
+                    onChange={(value) => setEditingFarm({ ...editingFarm, emoji: value })}
+                  />
+                  <AdminTextarea
+                    label="Description"
+                    value={editingFarm.description}
+                    onChange={(value) => setEditingFarm({ ...editingFarm, description: value })}
+                    rows={3}
+                    className="md:col-span-2"
+                  />
+                </div>
+                <div className="flex space-x-2 mt-4">
+                  <AdminButton onClick={saveFarm} variant="success">
+                    <Save className="mr-2 h-4 w-4" />
+                    Sauvegarder
+                  </AdminButton>
+                  <AdminButton onClick={() => setEditingFarm(null)} variant="secondary">
+                    <X className="mr-2 h-4 w-4" />
+                    Annuler
+                  </AdminButton>
+                </div>
+              </AdminCard>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {config.farms.map((farm) => (
+                  <AdminCard key={farm.id} title={`${farm.emoji} ${farm.name}`}>
+                    <p className="text-sm text-gray-600 mb-4">{farm.description}</p>
+                    <div className="flex justify-end space-x-2">
+                      <AdminButton
+                        onClick={() => setEditingFarm(farm)}
+                        variant="secondary"
+                        size="sm"
+                      >
+                        <Edit className="mr-1 h-3 w-3" />
+                        Modifier
+                      </AdminButton>
+                      <AdminButton
+                        onClick={() => deleteFarm(farm.id)}
+                        variant="danger"
+                        size="sm"
+                      >
+                        <Trash2 className="mr-1 h-3 w-3" />
+                        Supprimer
+                      </AdminButton>
+                    </div>
+                  </AdminCard>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Social Media Tab */}
+        {activeTab === 'social' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900">Gestion des réseaux sociaux</h2>
+              <AdminButton onClick={addSocialMedia}>
+                <Plus className="mr-2 h-4 w-4" />
+                Ajouter un réseau social
+              </AdminButton>
+            </div>
+
+            {editingSocial ? (
+              <AdminCard title="Éditer le réseau social">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <AdminInput
+                    label="Nom du réseau"
+                    value={editingSocial.name}
+                    onChange={(value) => setEditingSocial({ ...editingSocial, name: value })}
+                    required
+                  />
+                  <AdminInput
+                    label="Emoji"
+                    value={editingSocial.emoji}
+                    onChange={(value) => setEditingSocial({ ...editingSocial, emoji: value })}
+                  />
+                  <AdminInput
+                    label="URL"
+                    value={editingSocial.url}
+                    onChange={(value) => setEditingSocial({ ...editingSocial, url: value })}
+                    type="url"
+                    required
+                  />
+                  <AdminInput
+                    label="Couleur"
+                    value={editingSocial.color}
+                    onChange={(value) => setEditingSocial({ ...editingSocial, color: value })}
+                    type="color"
+                  />
+                </div>
+                <div className="flex space-x-2 mt-4">
+                  <AdminButton onClick={saveSocialMedia} variant="success">
+                    <Save className="mr-2 h-4 w-4" />
+                    Sauvegarder
+                  </AdminButton>
+                  <AdminButton onClick={() => setEditingSocial(null)} variant="secondary">
+                    <X className="mr-2 h-4 w-4" />
+                    Annuler
+                  </AdminButton>
+                </div>
+              </AdminCard>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {config.socialMediaLinks.map((social) => (
+                  <AdminCard key={social.id} title={`${social.emoji} ${social.name}`}>
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-600 break-all">{social.url}</p>
+                      <div className="flex items-center">
+                        <div
+                          className="w-4 h-4 rounded-full mr-2"
+                          style={{ backgroundColor: social.color }}
+                        ></div>
+                        <span className="text-xs text-gray-500">{social.color}</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-end space-x-2 mt-4">
+                      <AdminButton
+                        onClick={() => setEditingSocial(social)}
+                        variant="secondary"
+                        size="sm"
+                      >
+                        <Edit className="mr-1 h-3 w-3" />
+                        Modifier
+                      </AdminButton>
+                      <AdminButton
+                        onClick={() => deleteSocialMedia(social.id)}
+                        variant="danger"
+                        size="sm"
+                      >
+                        <Trash2 className="mr-1 h-3 w-3" />
+                        Supprimer
+                      </AdminButton>
+                    </div>
+                  </AdminCard>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">Paramètres de la boutique</h2>
+
+            <AdminCard title="Informations de la boutique">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <AdminInput
+                  label="Nom de la boutique"
+                  value={config.shopInfo.name}
+                  onChange={(value) => updateConfig('shopInfo', { name: value })}
+                />
+                <AdminInput
+                  label="Logo (emoji)"
+                  value={config.shopInfo.logo}
+                  onChange={(value) => updateConfig('shopInfo', { logo: value })}
+                />
+                <AdminTextarea
+                  label="Description"
+                  value={config.shopInfo.description}
+                  onChange={(value) => updateConfig('shopInfo', { description: value })}
+                  rows={3}
+                  className="md:col-span-2"
+                />
+                <AdminInput
+                  label="Couleur primaire"
+                  value={config.shopInfo.primaryColor}
+                  onChange={(value) => updateConfig('shopInfo', { primaryColor: value })}
+                  type="color"
+                />
+                <AdminInput
+                  label="Couleur secondaire"
+                  value={config.shopInfo.secondaryColor}
+                  onChange={(value) => updateConfig('shopInfo', { secondaryColor: value })}
+                  type="color"
+                />
+              </div>
+            </AdminCard>
+
+            <AdminCard title="Informations de contact">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <AdminInput
+                  label="Email"
+                  value={config.contactInfo.email}
+                  onChange={(value) => updateConfig('contactInfo', { email: value })}
+                  type="email"
+                />
+                <AdminInput
+                  label="Téléphone"
+                  value={config.contactInfo.phone}
+                  onChange={(value) => updateConfig('contactInfo', { phone: value })}
+                />
+                <AdminInput
+                  label="Lien de commande"
+                  value={config.contactInfo.orderLink}
+                  onChange={(value) => updateConfig('contactInfo', { orderLink: value })}
+                  type="url"
+                />
+                <AdminInput
+                  label="Texte du bouton de commande"
+                  value={config.contactInfo.orderText}
+                  onChange={(value) => updateConfig('contactInfo', { orderText: value })}
+                />
+              </div>
+            </AdminCard>
+
+            <div className="flex justify-end">
+              <AdminButton onClick={handleSave} loading={isSaving} variant="success">
+                <Save className="mr-2 h-4 w-4" />
+                Sauvegarder les paramètres
+              </AdminButton>
+            </div>
+          </div>
+        )}
+
+        {/* Save button for all tabs */}
+        {activeTab !== 'settings' && (
+          <div className="fixed bottom-6 right-6">
+            <AdminButton onClick={handleSave} loading={isSaving} variant="success" size="lg">
+              <Save className="mr-2 h-4 w-4" />
+              Sauvegarder
+            </AdminButton>
+          </div>
+        )}
+      </AdminLayout>
+    </ErrorBoundary>
   );
 }
