@@ -34,9 +34,11 @@ export default function Header({ currentPage = '' }: HeaderProps) {
         {/* Logo en haut à gauche */}
         <div className="absolute top-2 left-4">
           <Link href="/" className="inline-flex items-center space-x-2">
-            <span className="text-3xl filter drop-shadow-lg hover:scale-110 transition-transform">
-              {config.shopInfo.logo}
-            </span>
+            {config.shopInfo.logoUrl ? (
+              <img src={config.shopInfo.logoUrl} alt="Logo" className="h-10 w-10 object-contain rounded bg-white shadow" />
+            ) : (
+              <span className="text-3xl filter drop-shadow-lg hover:scale-110 transition-transform">{config.shopInfo.logo}</span>
+            )}
           </Link>
         </div>
 

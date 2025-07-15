@@ -959,6 +959,17 @@ export default function AdminPage() {
                   </div>
 
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo (URL image)</label>
+                    <input
+                      type="url"
+                      value={config.shopInfo.logoUrl}
+                      onChange={(e) => updateConfig('shopInfo', { logoUrl: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="https://..."
+                    />
+                  </div>
+
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Logo (Emoji)</label>
                     <input
                       type="text"
@@ -1028,7 +1039,11 @@ export default function AdminPage() {
                     style={{ backgroundColor: config.shopInfo.backgroundColor }}
                   >
                     <div className="flex items-center justify-center space-x-2 mb-2">
-                      <span className="text-3xl">{config.shopInfo.logo}</span>
+                      {config.shopInfo.logoUrl ? (
+                        <img src={config.shopInfo.logoUrl} alt="Logo" className="h-12 w-12 object-contain rounded bg-white shadow" />
+                      ) : (
+                        <span className="text-3xl">{config.shopInfo.logo}</span>
+                      )}
                       <h3 
                         className="text-2xl font-bold"
                         style={{ color: config.shopInfo.secondaryColor }}

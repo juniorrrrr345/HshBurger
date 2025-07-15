@@ -41,6 +41,7 @@ export interface SiteConfig {
     name: string;
     description: string;
     logo: string;
+    logoUrl: string;
     primaryColor: string;
     secondaryColor: string;
     textColor: string;
@@ -102,6 +103,7 @@ export const defaultConfig: SiteConfig = {
     name: "CBD Shop Premium",
     description: "Votre boutique CBD de confiance",
     logo: "🌿",
+    logoUrl: "",
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
     textColor: "#ffffff",

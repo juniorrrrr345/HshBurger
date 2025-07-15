@@ -49,7 +49,7 @@ export default function HomePage() {
           </p>
           <Link 
             href="/produits" 
-            className="inline-block bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg"
+            className="inline-block bg-white/60 backdrop-blur-md text-black px-8 py-3 rounded-lg font-semibold hover:bg-white/80 transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg border border-white/30 shadow-lg"
           >
             {config.pageContent.homepage.heroButtonText}
           </Link>
