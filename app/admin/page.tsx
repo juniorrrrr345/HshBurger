@@ -1378,68 +1378,48 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Navigation Management Section */}
+                                {/* Pages Management Section */}
                 <div className="bg-gray-50 rounded-lg p-6">
-                                      <div className="flex justify-between items-center mb-4">
-                      <div>
-                        <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
-                        <p className="text-sm text-gray-600">
-                          Pages actuelles: {config?.pages?.length || 0}
-                        </p>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => {
-                            alert('Test réussi ! Les boutons fonctionnent.');
-                            console.log('Config pages:', config?.pages);
-                          }}
-                          className="bg-yellow-500 text-white px-3 py-2 rounded-md hover:bg-yellow-600 transition-colors text-sm"
-                        >
-                          🧪 Test
-                        </button>
-                        <button
-                          onClick={handleAddPage}
-                          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                        >
-                          ➕ Ajouter une page
-                        </button>
-                      </div>
-                   </div>
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-medium text-gray-900">Gestion des Pages</h3>
+                    <button
+                      onClick={handleAddPage}
+                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                    >
+                      + Ajouter une page
+                    </button>
+                  </div>
                   
-                  <div className="space-y-4">
-                    {config.pages && config.pages.length > 0 ? config.pages.map((page) => (
-                      <div key={page.id} className="bg-white p-4 rounded-md border flex justify-between items-center">
-                        <div className="flex-1">
-                          <div className="font-medium text-gray-900">{page.name}</div>
-                          <div className="text-sm text-gray-500">{page.href}</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {config.pages && config.pages.map((page) => (
+                      <div key={page.id} className="bg-white p-4 rounded-lg border shadow-sm hover:shadow-md transition-all">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="font-semibold text-gray-900 truncate">{page.name}</h4>
                           {page.isDefault && (
-                            <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mt-1">
-                              Page par défaut
+                            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full ml-2 flex-shrink-0">
+                              Défaut
                             </span>
                           )}
                         </div>
+                        <p className="text-sm text-gray-600 mb-3 truncate">{page.href}</p>
                         <div className="flex space-x-2">
                           <button
                             onClick={() => handleEditPage(page)}
-                            className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors"
+                            className="flex-1 bg-blue-500 text-white text-sm py-1 px-2 rounded hover:bg-blue-600 transition-colors"
                           >
-                            ✏️ Modifier
+                            Modifier
                           </button>
                           {!page.isDefault && (
                             <button
                               onClick={() => handleDeletePage(page.id)}
-                              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors"
+                              className="flex-1 bg-red-500 text-white text-sm py-1 px-2 rounded hover:bg-red-600 transition-colors"
                             >
-                              🗑️ Supprimer
+                              Supprimer
                             </button>
                           )}
                         </div>
                       </div>
-                    )) : (
-                      <div className="text-center py-8 text-gray-500">
-                        <p>Aucune page configurée. Cliquez sur "Ajouter une page" pour commencer.</p>
-                      </div>
-                    )}
+                    ))}
                   </div>
                 </div>
 

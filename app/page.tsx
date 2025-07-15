@@ -17,6 +17,22 @@ export default function HomePage() {
     setConfig(getConfig());
   }, []);
 
+  // Fermer les dropdowns quand on clique ailleurs
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.dropdown-container')) {
+        setIsCategoryDropdownOpen(false);
+        setIsFarmDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   if (!config) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600"></div>
@@ -69,16 +85,16 @@ export default function HomePage() {
       </section>
 
       {/* Category and Farm Filter */}
-      <section className="py-4 bg-white/80 backdrop-blur-sm shadow-sm">
+      <section className="py-4 bg-white/80 backdrop-blur-sm shadow-sm relative z-[1000]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between mb-4">
             <h2 className="text-lg font-bold mb-2 md:mb-0 text-black">
               {config.pageContent.homepage.sectionTitle}
             </h2>
             
-            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto relative z-[1001]">
               {/* Category Dropdown */}
-              <div className="relative w-full sm:w-auto">
+              <div className="relative w-full sm:w-auto min-w-0 dropdown-container">
                 <button onClick={() => { setIsCategoryDropdownOpen(!isCategoryDropdownOpen); setIsFarmDropdownOpen(false); }}
                   className="flex items-center justify-between w-full sm:w-auto space-x-2 px-3 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white text-sm">
                   <span className="text-xs sm:text-sm">
@@ -90,13 +106,13 @@ export default function HomePage() {
                 </button>
                 
                 {isCategoryDropdownOpen && (
-                  <div className="absolute left-0 sm:left-0 mt-1 w-full sm:w-48 bg-white rounded-lg shadow-xl border z-[9999] max-h-48 overflow-y-auto">
+                  <div className="absolute left-0 right-0 sm:left-0 sm:right-auto mt-1 w-full sm:w-64 md:w-72 bg-white rounded-lg shadow-xl border z-[9999] max-h-60 overflow-y-auto">
                     <div className="py-1">
-                      <button onClick={() => { setSelectedCategory('all'); setIsCategoryDropdownOpen(false); }}
-                        className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}</button>
-                      {config.categories.map((category) => (
-                        <button key={category.id} onClick={() => { setSelectedCategory(category.name); setIsCategoryDropdownOpen(false); }}
-                          className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''}`}>
+                                              <button onClick={() => { setSelectedCategory('all'); setIsCategoryDropdownOpen(false); }}
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}</button>
+                                              {config.categories.map((category) => (
+                          <button key={category.id} onClick={() => { setSelectedCategory(category.name); setIsCategoryDropdownOpen(false); }}
+                            className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''}`}>
                           <span className="mr-2">{category.emoji}</span>{category.name}
                         </button>
                       ))}
@@ -105,7 +121,7 @@ export default function HomePage() {
                 )}
               </div>
               {/* Farm Dropdown */}
-              <div className="relative w-full sm:w-auto">
+              <div className="relative w-full sm:w-auto min-w-0 dropdown-container">
                 <button onClick={() => { setIsFarmDropdownOpen(!isFarmDropdownOpen); setIsCategoryDropdownOpen(false); }}
                   className="flex items-center justify-between w-full sm:w-auto space-x-2 px-3 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white text-sm">
                   <span className="text-xs sm:text-sm">
@@ -116,13 +132,13 @@ export default function HomePage() {
                   </svg>
                 </button>
                 {isFarmDropdownOpen && (
-                  <div className="absolute left-0 sm:left-0 mt-1 w-full sm:w-48 bg-white rounded-lg shadow-xl border z-[9999] max-h-48 overflow-y-auto">
+                  <div className="absolute left-0 right-0 sm:left-0 sm:right-auto mt-1 w-full sm:w-64 md:w-72 bg-white rounded-lg shadow-xl border z-[9999] max-h-60 overflow-y-auto">
                     <div className="py-1">
-                      <button onClick={() => { setSelectedFarm('all'); setIsFarmDropdownOpen(false); }}
-                        className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🏡 Toutes les {config.adminSettings.farmsButtonText.toLowerCase()}</button>
-                      {config.farms.map((farm) => (
-                        <button key={farm.id} onClick={() => { setSelectedFarm(farm.name); setIsFarmDropdownOpen(false); }}
-                          className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-100 transition-colors ${selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''}`}>
+                                              <button onClick={() => { setSelectedFarm('all'); setIsFarmDropdownOpen(false); }}
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''}`}>🏡 Toutes les {config.adminSettings.farmsButtonText.toLowerCase()}</button>
+                                              {config.farms.map((farm) => (
+                          <button key={farm.id} onClick={() => { setSelectedFarm(farm.name); setIsFarmDropdownOpen(false); }}
+                            className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''}`}>
                           <span className="mr-2">{farm.emoji}</span>{farm.name}
                         </button>
                       ))}
