@@ -166,7 +166,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div className="mt-20">
-            <h2 className="text-2xl font-bold mb-8 text-center" style={{ color: config.shopInfo.secondaryColor }}>
+            <h2 className="text-2xl font-bold mb-8 text-center text-black">
               Autres produits de la catégorie {category?.emoji} {product.category}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
