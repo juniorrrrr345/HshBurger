@@ -11,9 +11,17 @@ export interface Product {
   }[];
   orderLink: string;
   popular: boolean;
+  farm?: string; // Ferme pour les produits Farm
 }
 
 export interface Category {
+  id: number;
+  name: string;
+  emoji: string;
+  description: string;
+}
+
+export interface Farm {
   id: number;
   name: string;
   emoji: string;
@@ -47,7 +55,14 @@ export interface SiteConfig {
   };
   socialMediaLinks: SocialMediaLink[];
   categories: Category[];
+  farms: Farm[]; // Fermes au lieu de localisations
   products: Product[];
+  adminSettings: {
+    categoriesTabName: string;
+    farmsTabName: string;
+    categoriesButtonText: string;
+    farmsButtonText: string;
+  };
   pageContent: {
     homepage: {
       heroTitle: string;
@@ -87,10 +102,10 @@ export const defaultConfig: SiteConfig = {
     name: "CBD Shop Premium",
     description: "Votre boutique CBD de confiance",
     logo: "🌿",
-    primaryColor: "#22c55e",
-    secondaryColor: "#16a34a",
+    primaryColor: "#000000",
+    secondaryColor: "#ffffff",
     textColor: "#ffffff",
-    backgroundColor: "#f9fafb",
+    backgroundColor: "#ffffff",
     backgroundImage: ""
   },
   contactInfo: {
@@ -146,6 +161,32 @@ export const defaultConfig: SiteConfig = {
       name: "Boutique",
       emoji: "🌾",
       description: "Produits exclusifs CBD"
+    }
+  ],
+  farms: [
+    {
+      id: 1,
+      name: "Mountain",
+      emoji: "🏔️",
+      description: "Produits CBD de la ferme Mountain"
+    },
+    {
+      id: 2,
+      name: "Valley",
+      emoji: "🏞️",
+      description: "Produits CBD de la ferme Valley"
+    },
+    {
+      id: 3,
+      name: "Forest",
+      emoji: "🌲",
+      description: "Produits CBD de la ferme Forest"
+    },
+    {
+      id: 4,
+      name: "Riverside",
+      emoji: "🌊",
+      description: "Produits CBD de la ferme Riverside"
     }
   ],
   products: [
@@ -221,49 +262,66 @@ export const defaultConfig: SiteConfig = {
     },
     {
       id: 6,
-      name: "CBD Farm Fresh",
-      description: "Produits CBD frais de notre ferme locale.",
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
+      name: "Fleurs CBD Mountain Premium",
+      description: "Fleurs CBD cultivées à la ferme Mountain, qualité exceptionnelle.",
+      image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
       category: "Farm",
+      farm: "Mountain",
       variants: [
-        { name: "Pack 1", price: 29.90, size: "1kg" },
-        { name: "Pack 2", price: 49.90, size: "2kg" },
-        { name: "Pack 3", price: 79.90, size: "3kg" }
+        { name: "1g", price: 12.90, size: "1g" },
+        { name: "3g", price: 34.90, size: "3g" },
+        { name: "5g", price: 54.90, size: "5g" }
       ],
-      orderLink: "https://example.com/order/farm-fresh",
+      orderLink: "https://example.com/order/fleurs-mountain",
       popular: true
     },
     {
       id: 7,
-      name: "Huile Farm Bio",
-      description: "Huile CBD bio cultivée dans notre ferme.",
+      name: "Huile CBD Valley Artisanale",
+      description: "Huile CBD artisanale de la ferme Valley, méthode traditionnelle.",
       image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
       category: "Farm",
+      farm: "Valley",
       variants: [
-        { name: "10%", price: 34.90, size: "10ml" },
-        { name: "15%", price: 44.90, size: "10ml" },
-        { name: "20%", price: 54.90, size: "10ml" }
+        { name: "10%", price: 32.90, size: "10ml" },
+        { name: "15%", price: 42.90, size: "10ml" },
+        { name: "20%", price: 52.90, size: "10ml" }
       ],
-      orderLink: "https://example.com/order/farm-bio",
+      orderLink: "https://example.com/order/huile-valley",
       popular: false
+    },
+    {
+      id: 8,
+      name: "Résine CBD Forest",
+      description: "Résine CBD de la ferme Forest, goût naturel.",
+      image: "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop",
+      category: "Farm",
+      farm: "Forest",
+      variants: [
+        { name: "1g", price: 14.90, size: "1g" },
+        { name: "3g", price: 38.90, size: "3g" },
+        { name: "5g", price: 58.90, size: "5g" }
+      ],
+      orderLink: "https://example.com/order/resine-forest",
+      popular: true
     }
   ],
+  adminSettings: {
+    categoriesTabName: "Catégories",
+    farmsTabName: "Fermes",
+    categoriesButtonText: "Catégories",
+    farmsButtonText: "Fermes"
+  },
   pageContent: {
     homepage: {
       heroTitle: "Produits CBD Premium",
       heroSubtitle: "Découvrez notre sélection de produits CBD de qualité supérieure",
       heroButtonText: "Voir nos produits",
       sectionTitle: "Nos Produits Populaires",
-<<<<<<< HEAD
-      dropdownTitle: "Filtrer par catégorie",
-      farmDropdownTitle: "Appeler Farm",
-      categoryDropdownTitle: "Catégories"
-=======
       categoriesLabel: "Types de produits",
       farmLabel: "Boutique",
       allCategoriesLabel: "Tous nos produits",
       farmProductsLabel: "Produits exclusifs"
->>>>>>> cursor/am-liorer-affichage-et-renommer-cat-gories-fermes-68e8
     },
     contact: {
       title: "Contactez-nous",

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { SiteConfig, getConfig, saveConfig, getNextId, Product, Category, SocialMediaLink } from '../lib/config';
+import { SiteConfig, getConfig, saveConfig, getNextId, Product, Category, SocialMediaLink, Farm } from '../lib/config';
 
 export default function AdminPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -12,6 +12,7 @@ export default function AdminPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingSocial, setEditingSocial] = useState<SocialMediaLink | null>(null);
+  const [editingFarm, setEditingFarm] = useState<Farm | null>(null);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -174,6 +175,43 @@ export default function AdminPage() {
     });
   };
 
+  // Farm management
+  const addFarm = () => {
+    if (!config) return;
+    const newFarm: Farm = {
+      id: getNextId(config.farms),
+      name: '',
+      emoji: '',
+      description: ''
+    };
+    setEditingFarm(newFarm);
+  };
+
+  const saveFarm = () => {
+    if (!config || !editingFarm) return;
+    
+    const existingIndex = config.farms.findIndex(f => f.id === editingFarm.id);
+    let newFarms;
+    
+    if (existingIndex >= 0) {
+      newFarms = [...config.farms];
+      newFarms[existingIndex] = editingFarm;
+    } else {
+      newFarms = [...config.farms, editingFarm];
+    }
+    
+    setConfig({ ...config, farms: newFarms });
+    setEditingFarm(null);
+  };
+
+  const deleteFarm = (id: number) => {
+    if (!config) return;
+    setConfig({
+      ...config,
+      farms: config.farms.filter(f => f.id !== id)
+    });
+  };
+
   if (!config) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-center">
@@ -224,8 +262,10 @@ export default function AdminPage() {
             <nav className="-mb-px flex space-x-8 px-6 overflow-x-auto">
               {[
                 { id: 'products', name: 'Produits' },
-                { id: 'categories', name: 'Catégories' },
+                { id: 'categories', name: config.adminSettings.categoriesTabName },
+                { id: 'farms', name: config.adminSettings.farmsTabName },
                 { id: 'social', name: 'Réseaux Sociaux' },
+                { id: 'admin-settings', name: 'Paramètres Admin' },
                 { id: 'shop', name: 'Boutique' },
                 { id: 'pages', name: 'Pages' },
                 { id: 'contact', name: 'Contact' }
@@ -463,12 +503,12 @@ export default function AdminPage() {
             {activeTab === 'categories' && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">Gestion des Catégories</h3>
+                  <h3 className="text-lg font-medium text-gray-900">Gestion des {config.adminSettings.categoriesTabName}</h3>
                   <button
                     onClick={addCategory}
                     className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
                   >
-                    + Ajouter une catégorie
+                    + Ajouter une {config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}
                   </button>
                 </div>
 
@@ -508,7 +548,7 @@ export default function AdminPage() {
                     <div className="bg-white rounded-lg max-w-md w-full">
                       <div className="p-6">
                         <h3 className="text-lg font-medium mb-4">
-                          {editingCategory.id ? 'Modifier la catégorie' : 'Ajouter une catégorie'}
+                          {editingCategory.id ? `Modifier la ${config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}` : `Ajouter une ${config.adminSettings.categoriesTabName.slice(0, -1).toLowerCase()}`}
                         </h3>
                         
                         <div className="space-y-4">
@@ -553,6 +593,112 @@ export default function AdminPage() {
                           </button>
                           <button
                             onClick={saveCategory}
+                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                          >
+                            Enregistrer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Farms Tab */}
+            {activeTab === 'farms' && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium text-gray-900">Gestion des {config.adminSettings.farmsTabName}</h3>
+                  <button
+                    onClick={addFarm}
+                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                  >
+                    + Ajouter une {config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {config.farms.map((farm) => (
+                    <div key={farm.id} className="bg-gray-50 rounded-lg p-4 space-y-2">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-2xl">{farm.emoji}</span>
+                            <h4 className="font-semibold text-gray-900">{farm.name}</h4>
+                          </div>
+                          <p className="text-sm text-gray-500">{farm.description}</p>
+                        </div>
+                        <div className="flex flex-col space-y-1">
+                          <button
+                            onClick={() => setEditingFarm(farm)}
+                            className="text-blue-600 hover:text-blue-800 text-sm"
+                          >
+                            Modifier
+                          </button>
+                          <button
+                            onClick={() => deleteFarm(farm.id)}
+                            className="text-red-600 hover:text-red-800 text-sm"
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Farm Editor Modal */}
+                {editingFarm && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg max-w-md w-full">
+                      <div className="p-6">
+                        <h3 className="text-lg font-medium mb-4">
+                          {editingFarm.id ? `Modifier la ${config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}` : `Ajouter une ${config.adminSettings.farmsTabName.slice(0, -1).toLowerCase()}`}
+                        </h3>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                            <input
+                              type="text"
+                              value={editingFarm.name}
+                              onChange={(e) => setEditingFarm({...editingFarm, name: e.target.value})}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Emoji</label>
+                            <input
+                              type="text"
+                              value={editingFarm.emoji}
+                              onChange={(e) => setEditingFarm({...editingFarm, emoji: e.target.value})}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                              placeholder="🏔️"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea
+                              value={editingFarm.description}
+                              onChange={(e) => setEditingFarm({...editingFarm, description: e.target.value})}
+                              rows={3}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-end space-x-2 mt-6">
+                          <button
+                            onClick={() => setEditingFarm(null)}
+                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                          >
+                            Annuler
+                          </button>
+                          <button
+                            onClick={saveFarm}
                             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                           >
                             Enregistrer
@@ -684,6 +830,117 @@ export default function AdminPage() {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Admin Settings Tab */}
+            {activeTab === 'admin-settings' && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium text-gray-900">Paramètres d'Administration</h3>
+                </div>
+
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="text-md font-semibold text-gray-800 mb-4">Personnalisation des Onglets</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom de l'onglet "Catégories"
+                      </label>
+                      <input
+                        type="text"
+                        value={config.adminSettings.categoriesTabName}
+                        onChange={(e) => updateConfig('adminSettings', { categoriesTabName: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Catégories"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ce nom sera affiché dans la navigation du panel d'administration
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom de l'onglet "Fermes"
+                      </label>
+                      <input
+                        type="text"
+                        value={config.adminSettings.farmsTabName}
+                        onChange={(e) => updateConfig('adminSettings', { farmsTabName: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Fermes"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ce nom sera affiché dans la navigation du panel d'administration
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom du bouton "Catégories"
+                      </label>
+                      <input
+                        type="text"
+                        value={config.adminSettings.categoriesButtonText}
+                        onChange={(e) => updateConfig('adminSettings', { categoriesButtonText: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Catégories"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ce nom sera affiché sur les boutons de filtrage des catégories
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Nom du bouton "Fermes"
+                      </label>
+                      <input
+                        type="text"
+                        value={config.adminSettings.farmsButtonText}
+                        onChange={(e) => updateConfig('adminSettings', { farmsButtonText: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Fermes"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Ce nom sera affiché sur les boutons de filtrage des fermes
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Aperçu de la navigation */}
+                  <div className="mt-6">
+                    <h5 className="text-sm font-medium text-gray-700 mb-3">Aperçu de la navigation</h5>
+                    <div className="bg-white rounded-lg border p-4">
+                      <div className="flex space-x-4 text-sm">
+                        <span className="text-gray-500">Produits</span>
+                        <span className="text-green-600 font-medium">{config.adminSettings.categoriesTabName}</span>
+                        <span className="text-green-600 font-medium">{config.adminSettings.farmsTabName}</span>
+                        <span className="text-gray-500">Réseaux Sociaux</span>
+                        <span className="text-gray-500">Paramètres Admin</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Aperçu des boutons de filtrage */}
+                  <div className="mt-6">
+                    <h5 className="text-sm font-medium text-gray-700 mb-3">Aperçu des boutons de filtrage</h5>
+                    <div className="bg-white rounded-lg border p-4 space-y-4">
+                      <div className="flex items-center space-x-4">
+                        <span className="text-sm text-gray-600">Bouton Catégories:</span>
+                        <button className="px-4 py-2 bg-black text-white rounded-lg text-sm">
+                          🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
+                        </button>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <span className="text-sm text-gray-600">Bouton Fermes:</span>
+                        <button className="px-4 py-2 bg-black text-white rounded-lg text-sm">
+                          🌾 Toutes les {config.adminSettings.farmsButtonText.toLowerCase()}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
