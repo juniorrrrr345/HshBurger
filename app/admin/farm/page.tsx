@@ -12,6 +12,8 @@ export default function FarmPage() {
     name: '',
     description: '',
     image: '',
+    images: [],
+    video: '',
     category: 'Farm',
     variants: [{ name: '', price: 0, size: '' }],
     orderLink: '',
