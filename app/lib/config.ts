@@ -53,6 +53,10 @@ export interface SiteConfig {
       heroSubtitle: string;
       heroButtonText: string;
       sectionTitle: string;
+      categoriesLabel: string;
+      farmLabel: string;
+      allCategoriesLabel: string;
+      farmProductsLabel: string;
     };
     contact: {
       title: string;
@@ -208,7 +212,11 @@ export const defaultConfig: SiteConfig = {
       heroTitle: "Produits CBD Premium",
       heroSubtitle: "Découvrez notre sélection de produits CBD de qualité supérieure",
       heroButtonText: "Voir nos produits",
-      sectionTitle: "Nos Produits Populaires"
+      sectionTitle: "Nos Produits Populaires",
+      categoriesLabel: "Catégories",
+      farmLabel: "Farm",
+      allCategoriesLabel: "Toutes les catégories",
+      farmProductsLabel: "Produits de la ferme"
     },
     contact: {
       title: "Contactez-nous",
