@@ -1043,6 +1043,18 @@ export default function AdminPage() {
                       className="w-full h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Image de fond (URL)</label>
+                    <input
+                      type="url"
+                      value={config.shopInfo.backgroundImage}
+                      onChange={(e) => updateConfig('shopInfo', { backgroundImage: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="https://..."
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Laissez vide pour utiliser la couleur de fond</p>
+                  </div>
                 </div>
 
                 {/* Aperçu */}

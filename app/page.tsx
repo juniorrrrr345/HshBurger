@@ -34,7 +34,13 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div className="min-h-screen" style={{ 
+      backgroundColor: config.shopInfo.backgroundColor,
+      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       <Header currentPage="Accueil" />
 
       {/* Hero Section */}

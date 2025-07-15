@@ -41,7 +41,13 @@ export default function ProduitsPage() {
   const paginatedProducts = filteredProducts.slice((page-1)*PRODUCTS_PER_PAGE, page*PRODUCTS_PER_PAGE);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div className="min-h-screen" style={{ 
+      backgroundColor: config.shopInfo.backgroundColor,
+      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       <Header currentPage="Produits" />
 
       {/* Page Header */}

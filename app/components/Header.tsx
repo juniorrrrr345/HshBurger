@@ -11,6 +11,7 @@ interface HeaderProps {
 export default function Header({ currentPage = '' }: HeaderProps) {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -27,13 +28,23 @@ export default function Header({ currentPage = '' }: HeaderProps) {
     { name: 'Réseaux Sociaux', href: '/reseaux-sociaux' }
   ];
 
+  const handleLogoError = () => {
+    setLogoError(true);
+  };
+
   return (
     <header className="shadow-lg relative bg-white/95 backdrop-blur-md border-b border-gray-200">
       {/* Logo et nom de la boutique en haut */}
       <div className="text-center py-4 border-b-2 relative bg-white/90 backdrop-blur-sm">
         <Link href="/" className="inline-flex items-center justify-center space-x-3">
-          {config.shopInfo.logoUrl ? (
-            <img src={config.shopInfo.logoUrl} alt="Logo" className="h-10 w-10 object-contain rounded bg-white shadow" />
+          {config.shopInfo.logoUrl && !logoError ? (
+            <img 
+              src={config.shopInfo.logoUrl} 
+              alt="Logo" 
+              className="h-10 w-10 object-contain rounded bg-white shadow" 
+              onError={handleLogoError}
+              onLoad={() => setLogoError(false)}
+            />
           ) : (
             <span className="text-3xl filter drop-shadow-lg hover:scale-110 transition-transform">{config.shopInfo.logo}</span>
           )}

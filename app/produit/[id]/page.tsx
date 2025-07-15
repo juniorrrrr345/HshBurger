@@ -31,7 +31,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   const relatedProducts = config.products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 3);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div className="min-h-screen" style={{ 
+      backgroundColor: config.shopInfo.backgroundColor,
+      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       <Header />
 
       {/* Breadcrumb */}
