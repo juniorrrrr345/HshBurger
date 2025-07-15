@@ -1525,8 +1525,22 @@ export default function AdminPage() {
                         <div className="flex space-x-2">
                           <button
                             onClick={() => {
-                              console.log('Bouton Modifier cliqué pour:', page);
-                              setEditingPage(page);
+                              console.log('🔄 Bouton Modifier cliqué pour:', page);
+                              console.log('📋 Page complète:', JSON.stringify(page, null, 2));
+                              console.log('🔍 editingPage before:', editingPage);
+                              
+                              try {
+                                setEditingPage(page);
+                                console.log('✅ setEditingPage appelé avec succès');
+                                
+                                // Vérifier après un délai
+                                setTimeout(() => {
+                                  console.log('⏰ editingPage après 100ms:', editingPage);
+                                }, 100);
+                                
+                              } catch (error) {
+                                console.error('❌ Erreur lors de setEditingPage:', error);
+                              }
                             }}
                             className="text-blue-600 hover:text-blue-800 text-sm"
                           >
