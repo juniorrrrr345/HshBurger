@@ -9,7 +9,9 @@ import OptimizedImage from './components/OptimizedImage';
 export default function HomePage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedFarm, setSelectedFarm] = useState<string>('all');
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -21,11 +23,16 @@ export default function HomePage() {
     </div>;
   }
 
-  // Filtrer les produits selon la catégorie sélectionnée
+  // Filtrer les produits selon la catégorie et la ferme sélectionnées
   let filteredProducts = config.products;
   
   if (selectedCategory !== 'all') {
     filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
+  }
+  
+  // Si Farm est sélectionnée et qu'une ferme spécifique est choisie
+  if (selectedCategory === 'Farm' && selectedFarm !== 'all') {
+    filteredProducts = filteredProducts.filter(product => product.farm === selectedFarm);
   }
 
   return (
@@ -64,55 +71,116 @@ export default function HomePage() {
               {config.pageContent.homepage.sectionTitle}
             </h2>
             
-            {/* Category Dropdown */}
-            <div className="relative w-full md:w-auto">
-              <button
-                onClick={() => {
-                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-                }}
-                className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
-              >
-                <span className="text-sm md:text-base">
-                  {selectedCategory === 'all' 
-                    ? `🌟 Toutes les ${config.adminSettings.categoriesButtonText.toLowerCase()}` 
-                    : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
-                  }
-                </span>
-                <svg className={`w-4 h-4 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {isCategoryDropdownOpen && (
-                <div className="absolute left-0 md:right-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
-                  <div className="py-1">
-                    <button
-                      onClick={() => {
-                        setSelectedCategory('all');
-                        setIsCategoryDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                        selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
-                      }`}
-                    >
-                      🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
-                    </button>
-                    {config.categories.map((category) => (
+            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+              {/* Category Dropdown */}
+              <div className="relative w-full md:w-auto">
+                <button
+                  onClick={() => {
+                    setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
+                    setIsFarmDropdownOpen(false);
+                  }}
+                  className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
+                >
+                  <span className="text-sm md:text-base">
+                    {selectedCategory === 'all' 
+                      ? `🌟 Toutes les ${config.adminSettings.categoriesButtonText.toLowerCase()}` 
+                      : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
+                    }
+                  </span>
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {isCategoryDropdownOpen && (
+                  <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
+                    <div className="py-1">
                       <button
-                        key={category.id}
                         onClick={() => {
-                          setSelectedCategory(category.name);
+                          setSelectedCategory('all');
+                          setSelectedFarm('all');
                           setIsCategoryDropdownOpen(false);
                         }}
                         className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                          selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
+                          selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
                         }`}
                       >
-                        <span className="mr-2">{category.emoji}</span>
-                        {category.name}
+                        🌟 Toutes les {config.adminSettings.categoriesButtonText.toLowerCase()}
                       </button>
-                    ))}
+                      {config.categories.map((category) => (
+                        <button
+                          key={category.id}
+                          onClick={() => {
+                            setSelectedCategory(category.name);
+                            setSelectedFarm('all');
+                            setIsCategoryDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
+                            selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
+                          }`}
+                        >
+                          <span className="mr-2">{category.emoji}</span>
+                          {category.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                )}
+              </div>
+
+              {/* Farm Dropdown (only show when Farm category is selected) */}
+              {selectedCategory === 'Farm' && (
+                <div className="relative w-full md:w-auto">
+                  <button
+                    onClick={() => {
+                      setIsFarmDropdownOpen(!isFarmDropdownOpen);
+                      setIsCategoryDropdownOpen(false);
+                    }}
+                    className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
+                  >
+                    <span className="text-sm md:text-base">
+                      {selectedFarm === 'all' 
+                        ? `🏡 Toutes les fermes` 
+                        : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`
+                      }
+                    </span>
+                    <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  
+                  {isFarmDropdownOpen && (
+                    <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
+                      <div className="py-1">
+                        <button
+                          onClick={() => {
+                            setSelectedFarm('all');
+                            setIsFarmDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
+                            selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''
+                          }`}
+                        >
+                          🏡 Toutes les fermes
+                        </button>
+                        {config.farms.map((farm) => (
+                          <button
+                            key={farm.id}
+                            onClick={() => {
+                              setSelectedFarm(farm.name);
+                              setIsFarmDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
+                              selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''
+                            }`}
+                          >
+                            <span className="mr-2">{farm.emoji}</span>
+                            {farm.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -210,11 +278,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        </div>
-      </footer>
+
     </div>
   );
 }
