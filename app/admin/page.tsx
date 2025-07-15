@@ -325,18 +325,7 @@ export default function AdminPage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Chargement du panel admin...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!config) {
+  if (isLoading || !config) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -1572,6 +1561,7 @@ export default function AdminPage() {
             )}
           </div>
         </div>
+      </div>
     </div>
   );
 }
