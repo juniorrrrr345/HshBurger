@@ -25,22 +25,22 @@ export default function ProduitsPage() {
     : config.products.filter(product => product.category === selectedCategory);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div className="min-h-screen bg-white">
       <Header currentPage="Produits" />
 
       {/* Page Header */}
       <section 
         className="text-white py-16 relative overflow-hidden"
         style={{ 
-          background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}, ${config.shopInfo.secondaryColor})` 
+          background: `linear-gradient(135deg, #000000, #333333)` 
         }}
       >
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 filter drop-shadow-lg">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 filter drop-shadow-lg text-white">
             Nos Produits
           </h1>
-          <p className="text-xl max-w-2xl mx-auto filter drop-shadow-md">
+          <p className="text-xl max-w-2xl mx-auto filter drop-shadow-md text-white">
             Découvrez toute notre gamme de produits CBD de qualité premium
           </p>
         </div>
