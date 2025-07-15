@@ -75,112 +75,113 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-lg">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Product Image */}
-          <div className="aspect-square">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-cover rounded-lg shadow-lg"
-            />
-          </div>
+            {/* Product Image */}
+            <div className="aspect-square">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover rounded-lg shadow-lg"
+              />
+            </div>
 
-          {/* Product Info */}
-          <div className="flex flex-col justify-center">
-            <div className="mb-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <span className="text-2xl">{category?.emoji}</span>
-                <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                  {product.category}
-                </span>
-                {product.popular && (
-                  <span className="text-sm font-medium text-white px-3 py-1 rounded-full bg-black">
-                    Populaire
+            {/* Product Info */}
+            <div className="flex flex-col justify-center">
+              <div className="mb-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <span className="text-2xl">{category?.emoji}</span>
+                  <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                    {product.category}
                   </span>
-                )}
+                  {product.popular && (
+                    <span className="text-sm font-medium text-white px-3 py-1 rounded-full bg-black">
+                      Populaire
+                    </span>
+                  )}
+                </div>
+                <h1 className="text-3xl font-bold mb-4 text-black">
+                  {product.name}
+                </h1>
+                <p className="text-gray-600 text-lg mb-6">{product.description}</p>
               </div>
-              <h1 className="text-3xl font-bold mb-4 text-black">
-                {product.name}
-              </h1>
-              <p className="text-gray-600 text-lg mb-6">{product.description}</p>
-            </div>
 
-            {/* Variants */}
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-3 text-gray-900">Choisissez votre variante :</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {product.variants.map((variant, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedVariant(index)}
-                    className={`p-4 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 ${
-                      selectedVariant === index 
-                        ? 'border-black bg-gray-100 shadow-md' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="text-center">
-                      <div className="font-semibold text-gray-900">{variant.name}</div>
-                      <div className="text-sm text-gray-600">{variant.size}</div>
-                      <div className="text-lg font-bold mt-1 text-black">
-                        €{variant.price}
+              {/* Variants */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3 text-gray-900">Choisissez votre variante :</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {product.variants.map((variant, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedVariant(index)}
+                      className={`p-4 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 ${
+                        selectedVariant === index 
+                          ? 'border-black bg-gray-100 shadow-md' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="font-semibold text-gray-900">{variant.name}</div>
+                        <div className="text-sm text-gray-600">{variant.size}</div>
+                        <div className="text-lg font-bold mt-1 text-black">
+                          €{variant.price}
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Price Display */}
-            <div className="mb-6">
-              <div className="flex items-center space-x-4">
-                <span className="text-4xl font-bold text-black">
-                  €{product.variants[selectedVariant].price}
-                </span>
-                <span className="text-gray-600">
-                  pour {product.variants[selectedVariant].size}
-                </span>
+              {/* Price Display */}
+              <div className="mb-6">
+                <div className="flex items-center space-x-4">
+                  <span className="text-4xl font-bold text-black">
+                    €{product.variants[selectedVariant].price}
+                  </span>
+                  <span className="text-gray-600">
+                    pour {product.variants[selectedVariant].size}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Actions */}
-            <div className="flex space-x-4">
-              <a
-                href={product.orderLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 bg-black text-white text-center py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:bg-gray-800"
-              >
-                Commander maintenant
-              </a>
-              <Link
-                href="/produits"
-                className="flex-1 bg-gray-100 text-black text-center py-4 px-6 rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
-              >
-                Voir d'autres produits
-              </Link>
-            </div>
+              {/* Actions */}
+              <div className="flex space-x-4">
+                <a
+                  href={product.orderLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-black text-white text-center py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:bg-gray-800"
+                >
+                  Commander maintenant
+                </a>
+                <Link
+                  href="/produits"
+                  className="flex-1 bg-gray-100 text-black text-center py-4 px-6 rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
+                >
+                  Voir d'autres produits
+                </Link>
+              </div>
 
-            {/* Product Features */}
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">Caractéristiques :</h3>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center">
-                  <span className="text-black mr-2">✓</span>
-                  Produit 100% naturel
-                </li>
-                <li className="flex items-center">
-                  <span className="text-black mr-2">✓</span>
-                  Contrôlé et certifié
-                </li>
-                <li className="flex items-center">
-                  <span className="text-black mr-2">✓</span>
-                  Livraison rapide et discrète
-                </li>
-                <li className="flex items-center">
-                  <span className="text-black mr-2">✓</span>
-                  Paiement sécurisé
-                </li>
-              </ul>
+              {/* Product Features */}
+              <div className="mt-8 pt-8 border-t border-gray-200">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900">Caractéristiques :</h3>
+                <ul className="space-y-2 text-gray-600">
+                  <li className="flex items-center">
+                    <span className="text-black mr-2">✓</span>
+                    Produit 100% naturel
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-black mr-2">✓</span>
+                    Contrôlé et certifié
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-black mr-2">✓</span>
+                    Livraison rapide et discrète
+                  </li>
+                  <li className="flex items-center">
+                    <span className="text-black mr-2">✓</span>
+                    Paiement sécurisé
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -226,8 +227,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           </div>
         )}
       </div>
-
-
     </div>
   );
 }
