@@ -226,84 +226,86 @@ export default function AdminPage() {
     });
   };
 
-  // Page management - Version simplifiée qui fonctionne
-  const handleAddPage = () => {
-    console.log('🆕 Ajouter une page cliqué');
+  // ===== NOUVEAU SYSTÈME DE PAGES - REFAIT COMPLÈTEMENT =====
+  
+  const addNewPage = () => {
+    if (!config) return;
+    
+    // Créer une nouvelle page avec un ID unique
+    const newId = Math.max(...(config.pages?.map(p => p.id) || [0])) + 1;
     const newPage: Page = {
-      id: Date.now(), // ID unique basé sur timestamp
+      id: newId,
       name: '',
       href: '',
       isDefault: false
     };
-    console.log('📄 Nouvelle page créée:', newPage);
+    
     setEditingPage(newPage);
-    console.log('✅ Modal d\'ajout ouvert');
   };
 
-  const handleSavePage = () => {
-    if (!editingPage || !config) return;
-    
-    if (!editingPage.name.trim() || !editingPage.href.trim()) {
-      alert('Veuillez remplir le nom et l\'URL de la page');
+  const editExistingPage = (page: Page) => {
+    // Copier la page pour l'édition
+    setEditingPage({ ...page });
+  };
+
+  const savePage = () => {
+    if (!editingPage || !config) {
+      alert('Erreur: données manquantes');
       return;
     }
     
-    const currentPages = config.pages || [];
-    let updatedPages;
-    
-    // Vérifier si c'est une modification ou un ajout
-    const existingPageIndex = currentPages.findIndex(p => p.id === editingPage.id);
-    
-    if (existingPageIndex >= 0) {
-      // Modification d'une page existante
-      updatedPages = [...currentPages];
-      updatedPages[existingPageIndex] = { ...editingPage };
-    } else {
-      // Ajout d'une nouvelle page
-      updatedPages = [...currentPages, { ...editingPage }];
+    // Validation
+    if (!editingPage.name.trim()) {
+      alert('Veuillez saisir un nom de page');
+      return;
     }
     
-    // Mettre à jour la configuration
-    const newConfig = { ...config, pages: updatedPages };
-    setConfig(newConfig);
+    if (!editingPage.href.trim()) {
+      alert('Veuillez saisir une URL');
+      return;
+    }
+    
+    // Préparer la nouvelle liste de pages
+    const currentPages = config.pages || [];
+    const isExisting = currentPages.some(p => p.id === editingPage.id);
+    
+    let newPages;
+    if (isExisting) {
+      // Modifier une page existante
+      newPages = currentPages.map(p => 
+        p.id === editingPage.id ? { ...editingPage } : p
+      );
+    } else {
+      // Ajouter une nouvelle page
+      newPages = [...currentPages, { ...editingPage }];
+    }
+    
+    // Sauvegarder
+    const updatedConfig = { ...config, pages: newPages };
+    setConfig(updatedConfig);
     setEditingPage(null);
     
-    alert('Page sauvegardée avec succès !');
+    // Message de succès
+    const action = isExisting ? 'modifiée' : 'ajoutée';
+    alert(`Page ${action} avec succès !`);
   };
 
-  const handleEditPage = (page: Page) => {
-    console.log('✏️ Modifier page cliqué pour:', page);
-    setEditingPage({ ...page });
-    console.log('✅ Modal de modification ouvert');
-  };
-
-  const handleDeletePage = (pageId: number) => {
-    console.log('🗑️ Supprimer page cliqué pour ID:', pageId);
+  const deletePage = (pageId: number) => {
+    if (!config || !config.pages) return;
     
-    if (!config || !config.pages) {
-      console.log('❌ Config ou pages manquant');
-      return;
-    }
+    const page = config.pages.find(p => p.id === pageId);
+    if (!page) return;
     
-    const pageToDelete = config.pages.find(p => p.id === pageId);
-    if (!pageToDelete) {
-      console.log('❌ Page non trouvée');
-      return;
-    }
-    
-    console.log('📄 Page à supprimer:', pageToDelete);
-    
-    if (pageToDelete.isDefault) {
+    if (page.isDefault) {
       alert('Impossible de supprimer une page par défaut');
       return;
     }
     
-    if (confirm(`Voulez-vous vraiment supprimer la page "${pageToDelete.name}" ?`)) {
-      const updatedPages = config.pages.filter(p => p.id !== pageId);
-      const newConfig = { ...config, pages: updatedPages };
-      setConfig(newConfig);
-      console.log('✅ Page supprimée');
-      alert('Page supprimée avec succès !');
+    if (confirm(`Supprimer la page "${page.name}" ?`)) {
+      const newPages = config.pages.filter(p => p.id !== pageId);
+      const updatedConfig = { ...config, pages: newPages };
+      setConfig(updatedConfig);
+      alert('Page supprimée !');
     }
   };
 
@@ -842,59 +844,65 @@ export default function AdminPage() {
                   </div>
                 )}
 
-                {/* Page Editor Modal */}
+                {/* MODAL SIMPLE POUR PAGES */}
                 {editingPage && (
                   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg max-w-md w-full">
                       <div className="p-6">
                         <h3 className="text-lg font-medium mb-4">
-                          {config?.pages?.find(p => p.id === editingPage.id) ? 'Modifier la page' : 'Ajouter une page'}
+                          {config?.pages?.some(p => p.id === editingPage.id) ? 'Modifier la page' : 'Ajouter une page'}
                         </h3>
                         
                         <div className="space-y-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom de la page</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Nom de la page *
+                            </label>
                             <input
                               type="text"
-                              value={editingPage.name}
+                              value={editingPage.name || ''}
                               onChange={(e) => setEditingPage({...editingPage, name: e.target.value})}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="Ex: À propos"
+                              placeholder="Ex: À propos, Conditions..."
+                              autoFocus
                             />
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Lien (URL)</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              URL de la page *
+                            </label>
                             <input
                               type="text"
-                              value={editingPage.href}
+                              value={editingPage.href || ''}
                               onChange={(e) => setEditingPage({...editingPage, href: e.target.value})}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="Ex: /a-propos ou https://..."
+                              placeholder="Ex: /a-propos ou https://external.com"
                             />
                           </div>
                           
-                          <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-                            <p className="text-sm text-yellow-800">
-                              <strong>Note :</strong> Si vous créez une page externe (URL complète), elle s'ouvrira dans un nouvel onglet. 
-                              Pour une page interne, utilisez le format "/nom-de-page".
+                          <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                            <p className="text-sm text-blue-800">
+                              💡 <strong>Exemples :</strong><br />
+                              • Page interne : <code>/a-propos</code><br />
+                              • Lien externe : <code>https://monsite.com</code><br />
+                              • Email : <code>mailto:contact@monsite.com</code>
                             </p>
                           </div>
                         </div>
                         
-                        <div className="flex justify-end space-x-2 mt-6">
+                        <div className="flex justify-end space-x-3 mt-6">
                           <button
                             onClick={() => setEditingPage(null)}
-                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
                           >
                             Annuler
                           </button>
                           <button
-                            onClick={handleSavePage}
-                            disabled={!editingPage.name.trim() || !editingPage.href.trim()}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            onClick={savePage}
+                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
                           >
-                            💾 Enregistrer
+                            Enregistrer
                           </button>
                         </div>
                       </div>
@@ -1394,62 +1402,63 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                                {/* Pages Management Section */}
+                {/* NOUVEAU SYSTÈME DE PAGES - SIMPLE ET FONCTIONNEL */}
                 <div className="bg-gray-50 rounded-lg p-6">
                   <div className="flex justify-between items-center mb-6">
                     <div>
-                      <h3 className="text-lg font-medium text-gray-900">Gestion des Pages</h3>
-                      <p className="text-sm text-gray-600">Pages configurées: {config?.pages?.length || 0}</p>
+                      <h3 className="text-lg font-medium text-gray-900">📄 Gestion des Pages</h3>
+                      <p className="text-sm text-gray-600">
+                        {config?.pages?.length || 0} page(s) configurée(s)
+                      </p>
                     </div>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => {
-                          alert('Test réussi ! Les boutons fonctionnent.');
-                          console.log('🧪 Test bouton OK');
-                        }}
-                        className="bg-yellow-500 text-white px-3 py-2 rounded-md hover:bg-yellow-600 transition-colors text-sm"
-                      >
-                        🧪 Test
-                      </button>
-                      <button
-                        onClick={handleAddPage}
-                        className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors font-medium shadow-sm"
-                      >
-                        ➕ Ajouter une page
-                      </button>
-                    </div>
+                    <button
+                      onClick={addNewPage}
+                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                    >
+                      + Ajouter une page
+                    </button>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {config.pages && config.pages.map((page) => (
-                      <div key={page.id} className="bg-white p-4 rounded-lg border shadow-sm hover:shadow-md transition-all">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold text-gray-900 truncate">{page.name}</h4>
-                          {page.isDefault && (
-                            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full ml-2 flex-shrink-0">
-                              Défaut
-                            </span>
-                          )}
+                  {/* Liste des pages */}
+                  <div className="space-y-3">
+                    {config?.pages?.map((page) => (
+                      <div key={page.id} className="bg-white p-4 rounded-lg border flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <h4 className="font-medium text-gray-900">{page.name || 'Sans nom'}</h4>
+                            {page.isDefault && (
+                              <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                Défaut
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-500 mt-1">{page.href || 'Sans URL'}</p>
                         </div>
-                        <p className="text-sm text-gray-600 mb-3 truncate">{page.href}</p>
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => handleEditPage(page)}
-                            className="flex-1 bg-blue-500 text-white text-sm py-2 px-3 rounded hover:bg-blue-600 transition-colors font-medium"
+                            onClick={() => editExistingPage(page)}
+                            className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
                           >
-                            ✏️ Modifier
+                            Modifier
                           </button>
                           {!page.isDefault && (
                             <button
-                              onClick={() => handleDeletePage(page.id)}
-                              className="flex-1 bg-red-500 text-white text-sm py-2 px-3 rounded hover:bg-red-600 transition-colors font-medium"
+                              onClick={() => deletePage(page.id)}
+                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
                             >
-                              🗑️ Supprimer
+                              Supprimer
                             </button>
                           )}
                         </div>
                       </div>
                     ))}
+                    
+                    {(!config?.pages || config.pages.length === 0) && (
+                      <div className="text-center py-8 text-gray-500">
+                        <p>Aucune page configurée</p>
+                        <p className="text-sm">Cliquez sur "Ajouter une page" pour commencer</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 

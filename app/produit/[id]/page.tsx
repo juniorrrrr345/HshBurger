@@ -94,11 +94,23 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 </h3>
                 <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
                   <video
-                    src={product.video}
                     controls
+                    preload="metadata"
                     className="w-full h-full object-cover"
                     poster={product.image}
+                    playsInline
+                    onError={(e) => {
+                      console.error('Erreur de lecture vidéo:', e);
+                      e.currentTarget.style.display = 'none';
+                      const errorDiv = document.createElement('div');
+                      errorDiv.className = 'flex items-center justify-center h-full text-gray-500';
+                      errorDiv.innerHTML = '⚠️ Impossible de lire cette vidéo';
+                      e.currentTarget.parentNode?.appendChild(errorDiv);
+                    }}
                   >
+                    <source src={product.video} type="video/mp4" />
+                    <source src={product.video} type="video/webm" />
+                    <source src={product.video} type="video/ogg" />
                     Votre navigateur ne supporte pas la lecture de vidéos.
                   </video>
                 </div>
