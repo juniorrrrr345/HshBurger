@@ -18,10 +18,12 @@ export default function Layout({ children }: LayoutProps) {
   const [pages, setPages] = useState<any[]>([]);
 
   useEffect(() => {
+    console.log('Layout: Component mounted');
     setPages(getActivePages());
   }, [getActivePages]);
 
   useEffect(() => {
+    console.log('Layout: Settings loaded:', settings);
     if (settings) {
       // Appliquer les variables CSS personnalisées
       const root = document.documentElement;
@@ -40,12 +42,34 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [settings]);
 
-  if (!settings) {
+  // Ajout d'un état de chargement pour éviter les erreurs d'hydratation
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simuler un délai de chargement pour éviter les erreurs d'hydratation
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!settings) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement des paramètres...</p>
         </div>
       </div>
     );
@@ -92,7 +116,10 @@ export default function Layout({ children }: LayoutProps) {
                       <Link 
                         href="/produits"
                         className="block text-gray-700 hover:text-primary font-medium mb-3"
-                        onClick={() => setIsProductsOpen(false)}
+                        onClick={() => {
+                          console.log('Navigation vers /produits');
+                          setIsProductsOpen(false);
+                        }}
                       >
                         Tous les produits
                       </Link>
@@ -129,7 +156,32 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Actions */}
             <div className="flex items-center space-x-4">
-              <Link href="/admin" className="btn-primary text-sm">
+              <Link 
+                href="/test" 
+                className="btn-outline text-sm mr-2"
+                onClick={() => console.log('Navigation vers /test')}
+              >
+                Test
+              </Link>
+              <Link 
+                href="/produits-simple" 
+                className="btn-outline text-sm mr-2"
+                onClick={() => console.log('Navigation vers /produits-simple')}
+              >
+                Produits Simple
+              </Link>
+              <Link 
+                href="/admin-simple" 
+                className="btn-outline text-sm mr-2"
+                onClick={() => console.log('Navigation vers /admin-simple')}
+              >
+                Admin Simple
+              </Link>
+              <Link 
+                href="/admin" 
+                className="btn-primary text-sm"
+                onClick={() => console.log('Navigation vers /admin')}
+              >
                 Admin
               </Link>
               
@@ -157,7 +209,10 @@ export default function Layout({ children }: LayoutProps) {
                 <Link 
                   href="/produits" 
                   className="block px-3 py-2 text-gray-700 hover:text-primary transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    console.log('Navigation mobile vers /produits');
+                    setIsMenuOpen(false);
+                  }}
                 >
                   Produits
                 </Link>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import ProductCard from '@/components/ProductCard';
-import LoadingSpinner from '@/components/admin/LoadingSpinner';
+import Diagnostic from '@/components/Diagnostic';
 import { useProducts, useCategories } from '@/hooks/useShop';
 import { Search, Filter, Grid, List } from 'lucide-react';
 import { Product } from '@/types';
@@ -18,8 +18,41 @@ export default function ProduitsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
+  // Ajout d'un état de chargement pour éviter les erreurs d'hydratation
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simuler un délai de chargement pour éviter les erreurs d'hydratation
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Chargement...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   if (productsLoading || categoriesLoading) {
-    return <LoadingSpinner />;
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Chargement des données...</p>
+          </div>
+        </div>
+      </Layout>
+    );
   }
 
   useEffect(() => {
@@ -67,10 +100,9 @@ export default function ProduitsPage() {
     setFilteredProducts(filtered);
   }, [products, searchTerm, selectedCategory, sortBy]);
 
-
-
   return (
     <Layout>
+      <Diagnostic currentPath="/produits" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* En-tête */}
         <div className="mb-8">
@@ -202,19 +234,6 @@ export default function ProduitsPage() {
             >
               Réinitialiser les filtres
             </button>
-          </div>
-        )}
-
-        {/* Pagination (si nécessaire) */}
-        {filteredProducts.length > 12 && (
-          <div className="flex justify-center mt-12">
-            <div className="flex space-x-2">
-              <button className="btn-outline px-3 py-2">Précédent</button>
-              <button className="btn-primary px-3 py-2">1</button>
-              <button className="btn-outline px-3 py-2">2</button>
-              <button className="btn-outline px-3 py-2">3</button>
-              <button className="btn-outline px-3 py-2">Suivant</button>
-            </div>
           </div>
         )}
       </div>
