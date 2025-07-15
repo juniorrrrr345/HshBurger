@@ -1569,7 +1569,20 @@ export default function AdminPage() {
                 <input
                   type="text"
                   value={editingPage.name}
-                  onChange={(e) => setEditingPage({ ...editingPage, name: e.target.value })}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    const newHref = newName.toLowerCase()
+                      .replace(/[^a-z0-9\s-]/g, '')
+                      .replace(/\s+/g, '-')
+                      .replace(/-+/g, '-')
+                      .replace(/^-|-$/g, '');
+                    
+                    setEditingPage({ 
+                      ...editingPage, 
+                      name: newName,
+                      href: newHref
+                    });
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Ex: À propos"
                 />
@@ -1584,10 +1597,10 @@ export default function AdminPage() {
                   value={editingPage.href}
                   onChange={(e) => setEditingPage({ ...editingPage, href: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Ex: /a-propos"
+                  placeholder="Ex: a-propos"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Commencez par / pour une page interne
+                  Saisissez l'URL sans le / (ex: a-propos, notre-histoire, etc.)
                 </p>
               </div>
               

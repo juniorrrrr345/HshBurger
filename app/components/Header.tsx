@@ -82,6 +82,12 @@ export default function Header({ currentPage = '' }: HeaderProps) {
               {navItems.map((item) => {
                 const isExternal = item.href.startsWith('http://') || item.href.startsWith('https://');
                 
+                // Gérer les URLs internes pour les pages dynamiques
+                let href = item.href;
+                if (!isExternal && !href.startsWith('/')) {
+                  href = `/${href}`;
+                }
+                
                 if (isExternal) {
                   return (
                     <a
@@ -102,7 +108,7 @@ export default function Header({ currentPage = '' }: HeaderProps) {
                   return (
                     <Link
                       key={item.name}
-                      href={item.href}
+                      href={href}
                       className={`px-2 sm:px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-all duration-300 transform hover:scale-105 ${
                         currentPage === item.name
                           ? 'bg-black text-white shadow-lg'
