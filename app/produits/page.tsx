@@ -185,8 +185,7 @@ export default function ProduitsPage() {
                       {config.categories.find(cat => cat.name === product.category)?.emoji}
                     </div>
                     {product.farm && (
-                      <div className="absolute bottom-2 left-2 text-white px-2 py-1 rounded text-xs font-semibold filter drop-shadow-md"
-                           style={{ backgroundColor: config.shopInfo.primaryColor }}>
+                      <div className="absolute bottom-2 left-2 text-black px-2 py-1 rounded text-xs font-semibold filter drop-shadow-md bg-white/90 backdrop-blur-sm border border-gray-200">
                         {config.farms.find(farm => farm.name === product.farm)?.emoji} {product.farm}
                       </div>
                     )}
