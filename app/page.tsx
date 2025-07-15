@@ -9,6 +9,8 @@ export default function HomePage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
+  const [selectedFarmCategory, setSelectedFarmCategory] = useState<string>('all');
 
   useEffect(() => {
     setConfig(getConfig());
@@ -25,54 +27,59 @@ export default function HomePage() {
     : config.products.filter(product => product.category === selectedCategory);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div 
+      className="min-h-screen relative"
+      style={{ 
+        backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Overlay pour améliorer la lisibilité */}
+      <div 
+        className="absolute inset-0 bg-black opacity-20"
+        style={{ 
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%)'
+        }}
+      ></div>
+      {/* Couche de fond répétée pour améliorer la qualité */}
+      <div 
+        className="absolute inset-0 opacity-10"
+        style={{ 
+          backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          filter: 'blur(2px) brightness(0.8)'
+        }}
+      ></div>
       <Header currentPage="Accueil" />
 
-      {/* Hero Section */}
-      <section 
-        className="text-white py-20 relative overflow-hidden"
-        style={{ 
-          background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}, ${config.shopInfo.secondaryColor})` 
-        }}
-      >
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 filter drop-shadow-lg">
-            {config.pageContent.homepage.heroTitle}
-          </h2>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto filter drop-shadow-md">
-            {config.pageContent.homepage.heroSubtitle}
-          </p>
-          <Link 
-            href="/produits" 
-            className="inline-block bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg"
-          >
-            {config.pageContent.homepage.heroButtonText}
-          </Link>
-        </div>
-      </section>
-
       {/* Category Filter */}
-      <section className="py-8 bg-white shadow-sm">
+      <section className="py-8 bg-white/95 backdrop-blur-md shadow-lg relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <h2 className="text-2xl font-bold mb-4 md:mb-0" style={{ color: config.shopInfo.secondaryColor }}>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-black mb-4">
               {config.pageContent.homepage.sectionTitle}
             </h2>
-            
+            <p className="text-gray-600 mb-6">
+              Filtrer par catégorie ou découvrir nos produits Farm
+            </p>
+          </div>
+          
+          {/* Filtres avec dropdowns */}
+          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             {/* Category Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
-                style={{ 
-                  backgroundColor: config.shopInfo.primaryColor,
-                  color: config.shopInfo.textColor 
-                }}
+                className="flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800 min-w-[200px]"
               >
-                <span>
+                <span className="text-center">
                   {selectedCategory === 'all' 
-                    ? '🌟 Toutes les catégories' 
+                    ? `🌟 ${config.pageContent.homepage.categoryDropdownTitle}` 
                     : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
                   }
                 </span>
@@ -82,18 +89,18 @@ export default function HomePage() {
               </button>
               
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-10">
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-10">
                   <div className="py-1">
                     <button
                       onClick={() => {
                         setSelectedCategory('all');
                         setIsDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
                         selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
                       }`}
                     >
-                      🌟 Toutes les catégories
+                      🌟 {config.pageContent.homepage.categoryDropdownTitle}
                     </button>
                     {config.categories.map((category) => (
                       <button
@@ -102,7 +109,7 @@ export default function HomePage() {
                           setSelectedCategory(category.name);
                           setIsDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
                           selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
                         }`}
                       >
@@ -113,123 +120,138 @@ export default function HomePage() {
                 </div>
               )}
             </div>
+
+            {/* Farm Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsFarmDropdownOpen(!isFarmDropdownOpen)}
+                className="flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800 min-w-[200px]"
+              >
+                <span className="text-center">
+                  {selectedFarmCategory === 'all' 
+                    ? `🌾 ${config.pageContent.homepage.farmDropdownTitle}` 
+                    : selectedFarmCategory === 'Farm' 
+                      ? '🌾 Produits Farm'
+                      : `🌾 ${selectedFarmCategory}`
+                  }
+                </span>
+                <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isFarmDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-10">
+                  <div className="py-1">
+                    <button
+                      onClick={() => {
+                        setSelectedFarmCategory('all');
+                        setSelectedCategory('all');
+                        setIsFarmDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
+                        selectedFarmCategory === 'all' ? 'bg-gray-100 font-medium' : ''
+                      }`}
+                    >
+                      🌾 Tous les produits
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedFarmCategory('Farm');
+                        setSelectedCategory('Farm');
+                        setIsFarmDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
+                        selectedFarmCategory === 'Farm' ? 'bg-gray-100 font-medium' : ''
+                      }`}
+                    >
+                      🌾 Produits Farm
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Products Grid */}
-      <section className="py-16">
+      <section className="py-16 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.slice(0, 6).map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                <div className="aspect-square relative">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                  {product.popular && (
-                    <div 
-                      className="absolute top-2 right-2 text-white px-3 py-1 rounded-full text-sm font-semibold filter drop-shadow-md"
-                      style={{ backgroundColor: config.shopInfo.primaryColor }}
-                    >
-                      Populaire
-                    </div>
-                  )}
-                  <div className="absolute top-2 left-2 text-2xl filter drop-shadow-md">
-                    {config.categories.find(cat => cat.name === product.category)?.emoji}
-                  </div>
-                </div>
-                
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                    {product.name}
-                  </h3>
-                  <p className="text-gray-600 mb-4">{product.description}</p>
-                  
-                  <div className="mb-4">
-                    <div className="flex flex-wrap gap-2">
-                      {product.variants.map((variant, index) => (
-                        <div key={index} className="flex items-center bg-gray-100 px-3 py-1 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
-                          <span className="text-sm font-medium text-gray-700">{variant.name}</span>
-                          <span className="text-sm font-bold ml-2" style={{ color: config.shopInfo.primaryColor }}>
-                            €{variant.price}
-                          </span>
-                        </div>
-                      ))}
+          <div className="bg-white/95 backdrop-blur-md rounded-lg p-8 shadow-xl border border-white/20">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProducts.slice(0, 6).map((product) => (
+                <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200">
+                  <div className="aspect-square relative">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                    {product.popular && (
+                      <div className="absolute top-2 right-2 bg-black text-white px-3 py-1 rounded-full text-sm font-semibold filter drop-shadow-md">
+                        Populaire
+                      </div>
+                    )}
+                    <div className="absolute top-2 left-2 text-2xl filter drop-shadow-md">
+                      {config.categories.find(cat => cat.name === product.category)?.emoji}
                     </div>
                   </div>
                   
-                  <div className="flex space-x-2">
-                    <Link
-                      href={`/produit/${product.id}`}
-                      className="flex-1 bg-gray-100 text-center py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium"
-                    >
-                      Voir détails
-                    </Link>
-                    <a
-                      href={product.orderLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 text-white text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium filter drop-shadow-md"
-                      style={{ backgroundColor: config.shopInfo.primaryColor }}
-                    >
-                      Commander
-                    </a>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-2 text-black">
+                      {product.name}
+                    </h3>
+                    <p className="text-gray-600 mb-4">{product.description}</p>
+                    
+                    <div className="mb-4">
+                      <div className="flex flex-wrap gap-2">
+                        {product.variants.map((variant, index) => (
+                          <div key={index} className="flex items-center bg-gray-100 px-3 py-1 rounded-full border-2 border-transparent hover:border-black transition-colors">
+                            <span className="text-sm font-medium text-gray-700">{variant.name}</span>
+                            <span className="text-sm font-bold ml-2 text-black">
+                              €{variant.price}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-2">
+                      <Link
+                        href={`/produit/${product.id}`}
+                        className="flex-1 bg-gray-100 text-black text-center py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium"
+                      >
+                        Voir détails
+                      </Link>
+                      <a
+                        href={product.orderLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 bg-black text-white text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium hover:bg-gray-800"
+                      >
+                        Commander
+                      </a>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+            
+            {/* Voir plus de produits */}
+            {filteredProducts.length > 6 && (
+              <div className="text-center mt-8">
+                <Link
+                  href="/produits"
+                  className="inline-block bg-black text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-gray-800"
+                >
+                  Voir tous les produits
+                </Link>
               </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link
-              href="/produits"
-              className="inline-block text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg"
-              style={{ backgroundColor: config.shopInfo.primaryColor }}
-            >
-              Voir tous les produits
-            </Link>
+            )}
           </div>
         </div>
       </section>
-
-      {/* Features */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🌿</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Produits Naturels
-              </h3>
-              <p className="text-gray-600">100% naturel et bio</p>
-            </div>
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🚚</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Livraison Rapide
-              </h3>
-              <p className="text-gray-600">Expédition sous 24h</p>
-            </div>
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🔒</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Paiement Sécurisé
-              </h3>
-              <p className="text-gray-600">Transactions protégées</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 {config.shopInfo.name}. Tous droits réservés.</p>
-        </div>
-      </footer>
     </div>
   );
 }

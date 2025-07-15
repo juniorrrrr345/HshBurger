@@ -37,6 +37,7 @@ export interface SiteConfig {
     secondaryColor: string;
     textColor: string;
     backgroundColor: string;
+    backgroundImage: string;
   };
   contactInfo: {
     orderLink: string;
@@ -53,6 +54,9 @@ export interface SiteConfig {
       heroSubtitle: string;
       heroButtonText: string;
       sectionTitle: string;
+      dropdownTitle: string;
+      farmDropdownTitle: string;
+      categoryDropdownTitle: string;
     };
     contact: {
       title: string;
@@ -62,6 +66,17 @@ export interface SiteConfig {
     socialMedia: {
       title: string;
       subtitle: string;
+    };
+    footer: {
+      copyrightText: string;
+    };
+    products: {
+      filterTitle: string;
+      popularText: string;
+      detailsText: string;
+      orderText: string;
+      pageTitle: string;
+      pageSubtitle: string;
     };
   };
 }
@@ -74,7 +89,8 @@ export const defaultConfig: SiteConfig = {
     primaryColor: "#16a34a",
     secondaryColor: "#000000",
     textColor: "#ffffff",
-    backgroundColor: "#f9fafb"
+    backgroundColor: "#f9fafb",
+    backgroundImage: ""
   },
   contactInfo: {
     orderLink: "https://example.com/order",
@@ -201,6 +217,34 @@ export const defaultConfig: SiteConfig = {
       ],
       orderLink: "https://example.com/order/fleurs-lemon-haze",
       popular: false
+    },
+    {
+      id: 6,
+      name: "CBD Farm Fresh",
+      description: "Produits CBD frais de notre ferme locale.",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
+      category: "Farm",
+      variants: [
+        { name: "Pack 1", price: 29.90, size: "1kg" },
+        { name: "Pack 2", price: 49.90, size: "2kg" },
+        { name: "Pack 3", price: 79.90, size: "3kg" }
+      ],
+      orderLink: "https://example.com/order/farm-fresh",
+      popular: true
+    },
+    {
+      id: 7,
+      name: "Huile Farm Bio",
+      description: "Huile CBD bio cultivée dans notre ferme.",
+      image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+      category: "Farm",
+      variants: [
+        { name: "10%", price: 34.90, size: "10ml" },
+        { name: "15%", price: 44.90, size: "10ml" },
+        { name: "20%", price: 54.90, size: "10ml" }
+      ],
+      orderLink: "https://example.com/order/farm-bio",
+      popular: false
     }
   ],
   pageContent: {
@@ -208,7 +252,10 @@ export const defaultConfig: SiteConfig = {
       heroTitle: "Produits CBD Premium",
       heroSubtitle: "Découvrez notre sélection de produits CBD de qualité supérieure",
       heroButtonText: "Voir nos produits",
-      sectionTitle: "Nos Produits Populaires"
+      sectionTitle: "Nos Produits Populaires",
+      dropdownTitle: "Filtrer par catégorie",
+      farmDropdownTitle: "Appeler Farm",
+      categoryDropdownTitle: "Catégories"
     },
     contact: {
       title: "Contactez-nous",
@@ -218,6 +265,17 @@ export const defaultConfig: SiteConfig = {
     socialMedia: {
       title: "Suivez-nous sur les réseaux sociaux",
       subtitle: "Restez connecté avec nous pour les dernières actualités et offres exclusives"
+    },
+    footer: {
+      copyrightText: "© 2024 CBD Shop Premium. Tous droits réservés."
+    },
+    products: {
+      filterTitle: "Filtrer par catégorie",
+      popularText: "Populaire",
+      detailsText: "Voir détails",
+      orderText: "Commander maintenant",
+      pageTitle: "Nos Produits",
+      pageSubtitle: "Découvrez notre gamme complète de produits CBD"
     }
   }
 };
