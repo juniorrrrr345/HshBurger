@@ -30,16 +30,25 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   const relatedProducts = config.products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 3);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <Header />
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b">
+      <div className="bg-white/95 backdrop-blur-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-4">
               <li>
-                <Link href="/" className="text-gray-500 hover:text-green-600 transition-colors">
+                <Link href="/" className="text-gray-500 hover:text-black transition-colors">
                   Accueil
                 </Link>
               </li>
@@ -47,7 +56,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 <span className="text-gray-500">/</span>
               </li>
               <li>
-                <Link href="/produits" className="text-gray-500 hover:text-green-600 transition-colors">
+                <Link href="/produits" className="text-gray-500 hover:text-black transition-colors">
                   Produits
                 </Link>
               </li>
@@ -55,7 +64,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 <span className="text-gray-500">/</span>
               </li>
               <li>
-                <span className="text-gray-900 font-semibold">{product.name}</span>
+                <span className="text-black font-semibold">{product.name}</span>
               </li>
             </ol>
           </nav>
@@ -64,7 +73,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
       {/* Product Details */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Image */}
           <div className="aspect-square">
             <img
@@ -83,15 +93,12 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   {product.category}
                 </span>
                 {product.popular && (
-                  <span 
-                    className="text-sm font-medium text-white px-3 py-1 rounded-full"
-                    style={{ backgroundColor: config.shopInfo.primaryColor }}
-                  >
+                  <span className="text-sm font-medium text-white px-3 py-1 rounded-full bg-black">
                     Populaire
                   </span>
                 )}
               </div>
-              <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold mb-4 text-black">
                 {product.name}
               </h1>
               <p className="text-gray-600 text-lg mb-6">{product.description}</p>
@@ -107,17 +114,14 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     onClick={() => setSelectedVariant(index)}
                     className={`p-4 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 ${
                       selectedVariant === index 
-                        ? 'border-green-500 bg-green-50 shadow-md' 
+                        ? 'border-black bg-gray-100 shadow-md' 
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
                     <div className="text-center">
                       <div className="font-semibold text-gray-900">{variant.name}</div>
                       <div className="text-sm text-gray-600">{variant.size}</div>
-                      <div 
-                        className="text-lg font-bold mt-1" 
-                        style={{ color: config.shopInfo.primaryColor }}
-                      >
+                      <div className="text-lg font-bold mt-1 text-black">
                         €{variant.price}
                       </div>
                     </div>
@@ -129,7 +133,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             {/* Price Display */}
             <div className="mb-6">
               <div className="flex items-center space-x-4">
-                <span className="text-4xl font-bold" style={{ color: config.shopInfo.primaryColor }}>
+                <span className="text-4xl font-bold text-black">
                   €{product.variants[selectedVariant].price}
                 </span>
                 <span className="text-gray-600">
@@ -144,14 +148,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 href={product.orderLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 text-white text-center py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg"
-                style={{ backgroundColor: config.shopInfo.primaryColor }}
+                className="flex-1 bg-black text-white text-center py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:bg-gray-800"
               >
                 Commander maintenant
               </a>
               <Link
                 href="/produits"
-                className="flex-1 bg-gray-100 text-center py-4 px-6 rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
+                className="flex-1 bg-gray-100 text-black text-center py-4 px-6 rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
               >
                 Voir d'autres produits
               </Link>
@@ -162,19 +165,19 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <h3 className="text-lg font-semibold mb-4 text-gray-900">Caractéristiques :</h3>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
+                  <span className="text-black mr-2">✓</span>
                   Produit 100% naturel
                 </li>
                 <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
+                  <span className="text-black mr-2">✓</span>
                   Contrôlé et certifié
                 </li>
                 <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
+                  <span className="text-black mr-2">✓</span>
                   Livraison rapide et discrète
                 </li>
                 <li className="flex items-center">
-                  <span className="text-green-500 mr-2">✓</span>
+                  <span className="text-black mr-2">✓</span>
                   Paiement sécurisé
                 </li>
               </ul>
@@ -185,7 +188,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <div className="mt-20">
-            <h2 className="text-2xl font-bold mb-8 text-center" style={{ color: config.shopInfo.secondaryColor }}>
+            <h2 className="text-2xl font-bold mb-8 text-center text-black">
               Autres produits de la catégorie {category?.emoji} {product.category}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -193,7 +196,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 <Link
                   key={relatedProduct.id}
                   href={`/produit/${relatedProduct.id}`}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200"
                 >
                   <div className="aspect-square relative">
                     <img
@@ -209,7 +212,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                     <h3 className="font-semibold text-gray-900 mb-2">{relatedProduct.name}</h3>
                     <p className="text-gray-600 text-sm mb-3">{relatedProduct.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold" style={{ color: config.shopInfo.primaryColor }}>
+                      <span className="text-lg font-bold text-black">
                         À partir de €{Math.min(...relatedProduct.variants.map(v => v.price))}
                       </span>
                       <span className="text-sm text-gray-500">
@@ -224,12 +227,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         )}
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 {config.shopInfo.name}. Tous droits réservés.</p>
-        </div>
-      </footer>
+
     </div>
   );
 }
