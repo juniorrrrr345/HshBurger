@@ -51,8 +51,8 @@ export default function ProduitsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-4 md:mb-0">
-              <h2 className="text-2xl font-bold" style={{ color: config.shopInfo.secondaryColor }}>
-                Filtrer par catégorie
+              <h2 className="text-2xl font-bold text-black">
+                {config.pageContent.products?.filterTitle || "Filtrer par catégorie"}
               </h2>
               <p className="text-gray-600 mt-1">
                 {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''} 
@@ -64,11 +64,7 @@ export default function ProduitsPage() {
             <div className="relative">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
-                style={{ 
-                  backgroundColor: config.shopInfo.primaryColor,
-                  color: config.shopInfo.textColor 
-                }}
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800"
               >
                 <span>
                   {selectedCategory === 'all' 
@@ -82,14 +78,14 @@ export default function ProduitsPage() {
               </button>
               
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-10">
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-10">
                   <div className="py-1">
                     <button
                       onClick={() => {
                         setSelectedCategory('all');
                         setIsDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                      className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
                         selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
                       }`}
                     >
@@ -102,7 +98,7 @@ export default function ProduitsPage() {
                           setSelectedCategory(category.name);
                           setIsDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
                           selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
                         }`}
                       >
@@ -138,9 +134,9 @@ export default function ProduitsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {filteredProducts.map((product) => (
-                <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200">
                   <div className="aspect-square relative">
                     <img
                       src={product.image}
@@ -148,11 +144,8 @@ export default function ProduitsPage() {
                       className="w-full h-full object-cover"
                     />
                     {product.popular && (
-                      <div 
-                        className="absolute top-2 right-2 text-white px-3 py-1 rounded-full text-sm font-semibold filter drop-shadow-md"
-                        style={{ backgroundColor: config.shopInfo.primaryColor }}
-                      >
-                        Populaire
+                      <div className="absolute top-2 right-2 bg-black text-white px-3 py-1 rounded-full text-sm font-semibold filter drop-shadow-md">
+                        {config.pageContent.products?.popularText || "Populaire"}
                       </div>
                     )}
                     <div className="absolute top-2 left-2 text-2xl filter drop-shadow-md">
@@ -161,7 +154,7 @@ export default function ProduitsPage() {
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
+                    <h3 className="text-xl font-bold mb-2 text-black">
                       {product.name}
                     </h3>
                     <p className="text-gray-600 mb-4">{product.description}</p>
@@ -169,9 +162,9 @@ export default function ProduitsPage() {
                     <div className="mb-4">
                       <div className="flex flex-wrap gap-2">
                         {product.variants.map((variant, index) => (
-                          <div key={index} className="flex items-center bg-gray-100 px-3 py-1 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
+                          <div key={index} className="flex items-center bg-gray-100 px-3 py-1 rounded-full border-2 border-transparent hover:border-black transition-colors">
                             <span className="text-sm font-medium text-gray-700">{variant.name}</span>
-                            <span className="text-sm font-bold ml-2" style={{ color: config.shopInfo.primaryColor }}>
+                            <span className="text-sm font-bold ml-2 text-black">
                               €{variant.price}
                             </span>
                           </div>
@@ -182,18 +175,17 @@ export default function ProduitsPage() {
                     <div className="flex space-x-2">
                       <Link
                         href={`/produit/${product.id}`}
-                        className="flex-1 bg-gray-100 text-center py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium"
+                        className="flex-1 bg-gray-100 text-black text-center py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium"
                       >
-                        Voir détails
+                        {config.pageContent.products?.detailsText || "Voir détails"}
                       </Link>
                       <a
                         href={product.orderLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 text-white text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium filter drop-shadow-md"
-                        style={{ backgroundColor: config.shopInfo.primaryColor }}
+                        className="flex-1 bg-black text-white text-center py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium hover:bg-gray-800"
                       >
-                        Commander
+                        {config.pageContent.products?.orderText || "Commander"}
                       </a>
                     </div>
                   </div>
