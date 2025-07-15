@@ -31,25 +31,21 @@ export default function Header({ currentPage = '' }: HeaderProps) {
     <header className="shadow-lg relative bg-white/95 backdrop-blur-md border-b border-gray-200">
       {/* Logo et nom de la boutique en haut */}
       <div className="text-center py-4 border-b-2 relative bg-white/90 backdrop-blur-sm">
-        {/* Logo en haut à gauche */}
-        <div className="absolute top-2 left-4">
-          <Link href="/" className="inline-flex items-center space-x-2">
-            {config.shopInfo.logoUrl ? (
-              <img src={config.shopInfo.logoUrl} alt="Logo" className="h-10 w-10 object-contain rounded bg-white shadow" />
-            ) : (
-              <span className="text-3xl filter drop-shadow-lg hover:scale-110 transition-transform">{config.shopInfo.logo}</span>
-            )}
-          </Link>
-        </div>
-
-        <Link href="/" className="inline-flex items-center space-x-2">
-          <h1 className="text-3xl md:text-4xl font-bold text-black hover:scale-105 transition-transform">
-            {config.shopInfo.name}
-          </h1>
+        <Link href="/" className="inline-flex items-center justify-center space-x-3">
+          {config.shopInfo.logoUrl ? (
+            <img src={config.shopInfo.logoUrl} alt="Logo" className="h-10 w-10 object-contain rounded bg-white shadow" />
+          ) : (
+            <span className="text-3xl filter drop-shadow-lg hover:scale-110 transition-transform">{config.shopInfo.logo}</span>
+          )}
+          <div className="text-center">
+            <h1 className="text-3xl md:text-4xl font-bold text-black hover:scale-105 transition-transform">
+              {config.shopInfo.name}
+            </h1>
+            <p className="text-sm md:text-base mt-2 text-gray-600 italic">
+              {config.shopInfo.description}
+            </p>
+          </div>
         </Link>
-        <p className="text-sm md:text-base mt-2 text-gray-600 italic">
-          {config.shopInfo.description}
-        </p>
       </div>
 
       {/* Navigation */}
