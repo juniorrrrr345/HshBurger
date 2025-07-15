@@ -54,9 +54,10 @@ export interface SiteConfig {
       heroSubtitle: string;
       heroButtonText: string;
       sectionTitle: string;
-      dropdownTitle: string;
-      farmDropdownTitle: string;
-      categoryDropdownTitle: string;
+      categoriesLabel: string;
+      farmLabel: string;
+      allCategoriesLabel: string;
+      farmProductsLabel: string;
     };
     contact: {
       title: string;
@@ -86,8 +87,8 @@ export const defaultConfig: SiteConfig = {
     name: "CBD Shop Premium",
     description: "Votre boutique CBD de confiance",
     logo: "🌿",
-    primaryColor: "#16a34a",
-    secondaryColor: "#000000",
+    primaryColor: "#22c55e",
+    secondaryColor: "#16a34a",
     textColor: "#ffffff",
     backgroundColor: "#f9fafb",
     backgroundImage: ""
@@ -142,9 +143,9 @@ export const defaultConfig: SiteConfig = {
     },
     {
       id: 4,
-      name: "Farm",
+      name: "Boutique",
       emoji: "🌾",
-      description: "Produits de la ferme CBD"
+      description: "Produits exclusifs CBD"
     }
   ],
   products: [
@@ -253,9 +254,16 @@ export const defaultConfig: SiteConfig = {
       heroSubtitle: "Découvrez notre sélection de produits CBD de qualité supérieure",
       heroButtonText: "Voir nos produits",
       sectionTitle: "Nos Produits Populaires",
+<<<<<<< HEAD
       dropdownTitle: "Filtrer par catégorie",
       farmDropdownTitle: "Appeler Farm",
       categoryDropdownTitle: "Catégories"
+=======
+      categoriesLabel: "Types de produits",
+      farmLabel: "Boutique",
+      allCategoriesLabel: "Tous nos produits",
+      farmProductsLabel: "Produits exclusifs"
+>>>>>>> cursor/am-liorer-affichage-et-renommer-cat-gories-fermes-68e8
     },
     contact: {
       title: "Contactez-nous",

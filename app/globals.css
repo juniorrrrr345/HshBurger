@@ -2,6 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Amélioration de l'affichage des images */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimisation pour les images de produits */
+.product-image {
+  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Amélioration de la qualité d'affichage */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Styles pour le line-clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Amélioration de l'affichage mobile */
+@media (max-width: 768px) {
+  .mobile-optimized {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  /* Correction des problèmes de chevauchement */
+  .dropdown-container {
+    position: relative;
+    z-index: 50;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Amélioration de l'affichage du texte */
+  .text-truncate-mobile {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Correction de l'espacement */
+  .mobile-spacing {
+    margin-bottom: 1rem;
+  }
+  
+  /* Amélioration des boutons sur mobile */
+  .mobile-button {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* Styles pour les placeholders d'images */
+.image-placeholder {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: #9ca3af;
+  font-size: 2rem;
+}
+
+/* Amélioration de la netteté des images */
+img[src*="unsplash"] {
+  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Optimisation pour les écrans haute résolution */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Correction spécifique pour les problèmes d'affichage */
+.dropdown-fix {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Amélioration de la lisibilité du texte */
+.text-improved {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+/* Correction pour les éléments qui se chevauchent */
+.overlap-fix {
+  position: relative;
+  z-index: 10;
+}
+
+/* Amélioration de l'affichage des images sur mobile */
+@media (max-width: 640px) {
+  .mobile-image-container {
+    aspect-ratio: 1;
+    background-color: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mobile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
 :root {
   --primary-color: #22c55e;
   --secondary-color: #16a34a;
