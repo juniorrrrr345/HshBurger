@@ -39,6 +39,7 @@ export default function HomePage() {
       backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
       backgroundAttachment: 'fixed'
     }}>
       <Header currentPage="Accueil" />
