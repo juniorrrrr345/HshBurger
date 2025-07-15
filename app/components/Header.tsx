@@ -28,25 +28,9 @@ export default function Header({ currentPage = '' }: HeaderProps) {
   ];
 
   return (
-    <header 
-      className="shadow-lg relative"
-      style={{ 
-        backgroundColor: config.shopInfo.backgroundColor,
-        backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
-      }}
-    >
+    <header className="shadow-lg relative bg-white/95 backdrop-blur-md border-b border-gray-200">
       {/* Logo et nom de la boutique en haut */}
-      <div 
-        className="text-center py-4 border-b-2 relative"
-        style={{ 
-          borderColor: config.shopInfo.primaryColor,
-          background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}20, ${config.shopInfo.secondaryColor}20)`
-        }}
-      >
+      <div className="text-center py-4 border-b-2 relative bg-white/90 backdrop-blur-sm">
         {/* Logo en haut à gauche */}
         <div className="absolute top-2 left-4">
           <Link href="/" className="inline-flex items-center space-x-2">
@@ -57,26 +41,17 @@ export default function Header({ currentPage = '' }: HeaderProps) {
         </div>
 
         <Link href="/" className="inline-flex items-center space-x-2">
-          <h1 
-            className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent filter drop-shadow-lg hover:scale-105 transition-transform"
-            style={{ 
-              textShadow: `2px 2px 4px ${config.shopInfo.primaryColor}50`,
-              fontFamily: 'system-ui, -apple-system, sans-serif'
-            }}
-          >
+          <h1 className="text-3xl md:text-4xl font-bold text-black filter drop-shadow-lg hover:scale-105 transition-transform">
             {config.shopInfo.name}
           </h1>
         </Link>
-        <p 
-          className="text-sm md:text-base mt-2 opacity-80 italic"
-          style={{ color: config.shopInfo.secondaryColor }}
-        >
+        <p className="text-sm md:text-base mt-2 text-gray-600 italic">
           {config.shopInfo.description}
         </p>
       </div>
 
       {/* Navigation */}
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white/95 backdrop-blur-sm shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             
@@ -88,26 +63,9 @@ export default function Header({ currentPage = '' }: HeaderProps) {
                   href={item.href}
                   className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
                     currentPage === item.name
-                      ? 'text-white shadow-lg filter drop-shadow-md'
-                      : 'text-gray-700 hover:text-white hover:shadow-md'
+                      ? 'bg-black text-white shadow-lg'
+                      : 'text-black hover:bg-black hover:text-white'
                   }`}
-                  style={{
-                    backgroundColor: currentPage === item.name ? config.shopInfo.primaryColor : 'transparent',
-                    borderColor: config.shopInfo.primaryColor,
-                    border: '2px solid transparent'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (currentPage !== item.name) {
-                      e.currentTarget.style.backgroundColor = config.shopInfo.primaryColor;
-                      e.currentTarget.style.borderColor = config.shopInfo.secondaryColor;
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (currentPage !== item.name) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.borderColor = 'transparent';
-                    }
-                  }}
                 >
                   {item.name}
                 </Link>
