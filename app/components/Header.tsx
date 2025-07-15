@@ -33,9 +33,14 @@ export default function Header({ currentPage = '' }: HeaderProps) {
   };
 
   return (
-    <header className="shadow-lg relative bg-white/95 backdrop-blur-md border-b border-gray-200">
+    <header className="shadow-lg relative backdrop-blur-md border-b border-gray-200" style={{
+      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }}>
       {/* Logo et nom de la boutique en haut */}
-      <div className="text-center py-3 border-b-2 relative bg-white/90 backdrop-blur-sm">
+      <div className="text-center py-3 border-b-2 relative backdrop-blur-sm bg-white/80">
         <Link href="/" className="inline-flex items-center justify-center space-x-4 group">
           {config.shopInfo.logoUrl && !logoError ? (
             <div className="relative">
@@ -68,7 +73,7 @@ export default function Header({ currentPage = '' }: HeaderProps) {
       </div>
 
       {/* Navigation - Plus discrète */}
-      <nav className="bg-white/95 backdrop-blur-sm shadow-sm">
+      <nav className="backdrop-blur-sm shadow-sm bg-white/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-12">
             
@@ -132,7 +137,7 @@ export default function Header({ currentPage = '' }: HeaderProps) {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 border-t">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -154,7 +159,7 @@ export default function Header({ currentPage = '' }: HeaderProps) {
         {/* Desktop menu */}
         {isMenuOpen && (
           <div className="hidden md:block">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 border-t">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
