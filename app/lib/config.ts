@@ -161,6 +161,12 @@ export const defaultConfig: SiteConfig = {
       name: "Boutique",
       emoji: "🌾",
       description: "Produits exclusifs CBD"
+    },
+    {
+      id: 5,
+      name: "Farm",
+      emoji: "🏡",
+      description: "Produits CBD de nos fermes partenaires"
     }
   ],
   farms: [
