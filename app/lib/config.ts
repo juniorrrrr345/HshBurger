@@ -130,9 +130,9 @@ export const defaultConfig: SiteConfig = {
     },
     {
       id: 4,
-      name: "Farm",
+      name: "Boutique",
       emoji: "🌾",
-      description: "Produits de la ferme CBD"
+      description: "Produits exclusifs CBD"
     }
   ],
   products: [
@@ -213,10 +213,10 @@ export const defaultConfig: SiteConfig = {
       heroSubtitle: "Découvrez notre sélection de produits CBD de qualité supérieure",
       heroButtonText: "Voir nos produits",
       sectionTitle: "Nos Produits Populaires",
-      categoriesLabel: "Catégories",
-      farmLabel: "Farm",
-      allCategoriesLabel: "Toutes les catégories",
-      farmProductsLabel: "Produits de la ferme"
+      categoriesLabel: "Types de produits",
+      farmLabel: "Boutique",
+      allCategoriesLabel: "Tous nos produits",
+      farmProductsLabel: "Produits exclusifs"
     },
     contact: {
       title: "Contactez-nous",
