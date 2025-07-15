@@ -140,7 +140,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {filteredProducts.slice(0, 8).map((product) => (
-              <div key={product.id} className="bg-white/95 backdrop-blur-sm rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              <div key={product.id} className="bg-white/70 backdrop-blur-sm rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                 <div className="aspect-square relative bg-gray-100">
                   <img
                     src={product.image}
@@ -170,15 +170,15 @@ export default function HomePage() {
                 </div>
                 
                 <div className="p-4">
-                  <h3 className="text-lg font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
+                  <h3 className="text-lg font-bold mb-2 text-black">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 mb-3 text-sm line-clamp-2">{product.description}</p>
+                  <p className="text-gray-700 mb-3 text-sm line-clamp-2">{product.description}</p>
                   
                   <div className="mb-3">
                     <div className="flex flex-wrap gap-1">
                       {product.variants.slice(0, 2).map((variant, index) => (
-                        <div key={index} className="flex items-center bg-gray-100 px-2 py-1 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
+                        <div key={index} className="flex items-center bg-white/80 px-2 py-1 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
                           <span className="text-xs font-medium text-gray-700">{variant.name}</span>
                           <span className="text-xs font-bold ml-1" style={{ color: config.shopInfo.primaryColor }}>
                             €{variant.price}
@@ -186,7 +186,7 @@ export default function HomePage() {
                         </div>
                       ))}
                       {product.variants.length > 2 && (
-                        <div className="flex items-center bg-gray-100 px-2 py-1 rounded-full">
+                        <div className="flex items-center bg-white/80 px-2 py-1 rounded-full">
                           <span className="text-xs text-gray-500">+{product.variants.length - 2} autres</span>
                         </div>
                       )}
@@ -196,7 +196,7 @@ export default function HomePage() {
                   <div className="flex space-x-2">
                     <Link
                       href={`/produit/${product.id}`}
-                      className="flex-1 bg-gray-100 text-center py-2 px-3 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium text-sm"
+                      className="flex-1 bg-white/80 text-center py-2 px-3 rounded-lg hover:bg-white transition-all duration-300 transform hover:scale-105 font-medium text-sm text-black"
                     >
                       Détails
                     </Link>
