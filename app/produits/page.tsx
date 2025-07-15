@@ -44,9 +44,9 @@ export default function ProduitsPage() {
     <div className="min-h-screen" style={{ 
       backgroundColor: config.shopInfo.backgroundColor,
       backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
-      backgroundSize: 'contain',
+      backgroundSize: '200px 200px',
       backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
+      backgroundRepeat: 'repeat',
       backgroundAttachment: 'fixed'
     }}>
       <Header currentPage="Produits" />
