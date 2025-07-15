@@ -226,79 +226,68 @@ export default function AdminPage() {
     });
   };
 
-  // Page management
-  const addPage = () => {
-    if (!config) {
-      alert('Configuration non trouvée');
-      return;
-    }
-    
-    // S'assurer que pages existe
-    if (!config.pages) {
-      config.pages = [];
-    }
-    
+  // Page management - Version simplifiée qui fonctionne
+  const handleAddPage = () => {
     const newPage: Page = {
-      id: getNextId(config.pages || []),
+      id: Date.now(), // ID unique basé sur timestamp
       name: '',
       href: '',
       isDefault: false
     };
-    
     setEditingPage(newPage);
   };
 
-  const savePage = () => {
-    if (!config || !editingPage) {
-      alert('Données manquantes pour sauvegarder');
-      return;
-    }
+  const handleSavePage = () => {
+    if (!editingPage || !config) return;
     
     if (!editingPage.name.trim() || !editingPage.href.trim()) {
-      alert('Veuillez remplir tous les champs');
+      alert('Veuillez remplir le nom et l\'URL de la page');
       return;
     }
     
-    // S'assurer que pages existe
-    if (!config.pages) {
-      config.pages = [];
-    }
+    const currentPages = config.pages || [];
+    let updatedPages;
     
-    const existingIndex = config.pages.findIndex(p => p.id === editingPage.id);
-    let newPages;
+    // Vérifier si c'est une modification ou un ajout
+    const existingPageIndex = currentPages.findIndex(p => p.id === editingPage.id);
     
-    if (existingIndex >= 0) {
-      // Modifier une page existante
-      newPages = [...config.pages];
-      newPages[existingIndex] = editingPage;
+    if (existingPageIndex >= 0) {
+      // Modification d'une page existante
+      updatedPages = [...currentPages];
+      updatedPages[existingPageIndex] = { ...editingPage };
     } else {
-      // Ajouter une nouvelle page
-      newPages = [...config.pages, editingPage];
+      // Ajout d'une nouvelle page
+      updatedPages = [...currentPages, { ...editingPage }];
     }
     
-    setConfig({ ...config, pages: newPages });
+    // Mettre à jour la configuration
+    const newConfig = { ...config, pages: updatedPages };
+    setConfig(newConfig);
     setEditingPage(null);
+    
+    alert('Page sauvegardée avec succès !');
   };
 
-  const deletePage = (id: number) => {
-    if (!config || !config.pages) {
-      alert('Configuration non trouvée');
-      return;
-    }
+  const handleEditPage = (page: Page) => {
+    setEditingPage({ ...page });
+  };
+
+  const handleDeletePage = (pageId: number) => {
+    if (!config || !config.pages) return;
     
-    const pageToDelete = config.pages.find(p => p.id === id);
+    const pageToDelete = config.pages.find(p => p.id === pageId);
+    if (!pageToDelete) return;
     
-    if (pageToDelete?.isDefault) {
+    if (pageToDelete.isDefault) {
       alert('Impossible de supprimer une page par défaut');
       return;
     }
     
-    if (confirm(`Êtes-vous sûr de vouloir supprimer la page "${pageToDelete?.name}" ?`)) {
-      const newPages = config.pages.filter(p => p.id !== id);
-      setConfig({
-        ...config,
-        pages: newPages
-      });
+    if (confirm(`Voulez-vous vraiment supprimer la page "${pageToDelete.name}" ?`)) {
+      const updatedPages = config.pages.filter(p => p.id !== pageId);
+      const newConfig = { ...config, pages: updatedPages };
+      setConfig(newConfig);
+      alert('Page supprimée avec succès !');
     }
   };
 
@@ -885,11 +874,11 @@ export default function AdminPage() {
                             Annuler
                           </button>
                           <button
-                            onClick={savePage}
+                            onClick={handleSavePage}
                             disabled={!editingPage.name.trim() || !editingPage.href.trim()}
                             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                           >
-                            Enregistrer
+                            💾 Enregistrer
                           </button>
                         </div>
                       </div>
@@ -1391,15 +1380,31 @@ export default function AdminPage() {
 
                 {/* Navigation Management Section */}
                 <div className="bg-gray-50 rounded-lg p-6">
-                  <div className="flex justify-between items-center mb-4">
-                                         <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
-                     <button
-                       onClick={addPage}
-                       className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                     >
-                       Ajouter une page
-                     </button>
-                  </div>
+                                      <div className="flex justify-between items-center mb-4">
+                      <div>
+                        <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
+                        <p className="text-sm text-gray-600">
+                          Pages actuelles: {config?.pages?.length || 0}
+                        </p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => {
+                            alert('Test réussi ! Les boutons fonctionnent.');
+                            console.log('Config pages:', config?.pages);
+                          }}
+                          className="bg-yellow-500 text-white px-3 py-2 rounded-md hover:bg-yellow-600 transition-colors text-sm"
+                        >
+                          🧪 Test
+                        </button>
+                        <button
+                          onClick={handleAddPage}
+                          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                        >
+                          ➕ Ajouter une page
+                        </button>
+                      </div>
+                   </div>
                   
                   <div className="space-y-4">
                     {config.pages && config.pages.length > 0 ? config.pages.map((page) => (
@@ -1415,17 +1420,17 @@ export default function AdminPage() {
                         </div>
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => setEditingPage(page)}
-                            className="text-blue-600 hover:text-blue-800 text-sm"
+                            onClick={() => handleEditPage(page)}
+                            className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors"
                           >
-                            Modifier
+                            ✏️ Modifier
                           </button>
                           {!page.isDefault && (
                             <button
-                              onClick={() => deletePage(page.id)}
-                              className="text-red-600 hover:text-red-800 text-sm"
+                              onClick={() => handleDeletePage(page.id)}
+                              className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors"
                             >
-                              Supprimer
+                              🗑️ Supprimer
                             </button>
                           )}
                         </div>
