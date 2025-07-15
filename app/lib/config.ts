@@ -268,6 +268,14 @@ export const defaultConfig: SiteConfig = {
     },
     footer: {
       copyrightText: "© 2024 CBD Shop Premium. Tous droits réservés."
+    },
+    products: {
+      filterTitle: "Filtrer par catégorie",
+      popularText: "Populaire",
+      detailsText: "Voir détails",
+      orderText: "Commander maintenant",
+      pageTitle: "Nos Produits",
+      pageSubtitle: "Découvrez notre gamme complète de produits CBD"
     }
   }
 };
