@@ -8,17 +8,8 @@ import ProductCard from '@/components/ProductCard';
 import { useProducts } from '@/hooks/useShop';
 import { Product } from '@/types';
 import { 
-  ShoppingCart, 
-  Heart, 
-  Share2, 
-  Star, 
-  Minus, 
-  Plus, 
   ArrowLeft,
-  Check,
-  Truck,
-  Shield,
-  RefreshCw
+  ExternalLink
 } from 'lucide-react';
 
 export default function ProductDetailPage() {
@@ -28,7 +19,6 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedPriceIndex, setSelectedPriceIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -186,33 +176,20 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Quantité */}
+            {/* Prix sélectionné */}
             <div className="mb-6">
-              <h3 className="form-label">Quantité :</h3>
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center border border-gray-300 rounded-lg">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-2 hover:bg-gray-100 transition-colors"
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="px-4 py-2 min-w-16 text-center">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="p-2 hover:bg-gray-100 transition-colors"
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
-                <div className="text-xl font-bold text-primary">
-                  {totalPrice.toFixed(2)} €
-                </div>
+              <div className="text-2xl font-bold text-primary">
+                {product.prices[selectedPriceIndex].price.toFixed(2)} €
+                {product.prices[selectedPriceIndex].originalPrice && (
+                  <span className="ml-2 text-lg text-gray-500 line-through">
+                    {product.prices[selectedPriceIndex].originalPrice.toFixed(2)} €
+                  </span>
+                )}
               </div>
             </div>
 
-            {/* Boutons d'action */}
-            <div className="mb-6 space-y-3">
+            {/* Bouton Commander */}
+            <div className="mb-6">
               {product.inStock ? (
                 <>
                   {product.orderLink ? (
@@ -222,39 +199,17 @@ export default function ProductDetailPage() {
                       rel="noopener noreferrer"
                       className="btn-primary w-full flex items-center justify-center"
                     >
-                      <ShoppingCart size={20} className="mr-2" />
-                      Commander maintenant
+                      <ExternalLink size={20} className="mr-2" />
+                      Commander
                     </a>
                   ) : (
-                    <button className="btn-primary w-full flex items-center justify-center">
-                      <ShoppingCart size={20} className="mr-2" />
-                      Ajouter au panier
-                    </button>
+                    <div className="text-center p-4 bg-gray-100 rounded-lg">
+                      <p className="text-gray-600">Lien de commande non configuré</p>
+                      <p className="text-sm text-gray-500">
+                        Configurez le lien dans le panel admin
+                      </p>
+                    </div>
                   )}
-                  <div className="flex space-x-3">
-                    <button className="btn-outline flex-1 flex items-center justify-center">
-                      <Heart size={20} className="mr-2" />
-                      Favoris
-                    </button>
-                    <button 
-                      className="btn-outline flex-1 flex items-center justify-center"
-                      onClick={() => {
-                        if (navigator.share) {
-                          navigator.share({
-                            title: product.name,
-                            text: product.description,
-                            url: window.location.href
-                          });
-                        } else {
-                          navigator.clipboard.writeText(window.location.href);
-                          alert('Lien copié dans le presse-papiers !');
-                        }
-                      }}
-                    >
-                      <Share2 size={20} className="mr-2" />
-                      Partager
-                    </button>
-                  </div>
                 </>
               ) : (
                 <button className="btn-outline w-full cursor-not-allowed opacity-50" disabled>
@@ -263,27 +218,7 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Informations supplémentaires */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <div className="space-y-3">
-                <div className="flex items-center text-sm text-gray-600">
-                  <Check size={16} className="mr-2 text-green-600" />
-                  <span>Produit testé en laboratoire</span>
-                </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <Truck size={16} className="mr-2 text-green-600" />
-                  <span>Livraison gratuite dès 50€</span>
-                </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <Shield size={16} className="mr-2 text-green-600" />
-                  <span>Paiement sécurisé</span>
-                </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <RefreshCw size={16} className="mr-2 text-green-600" />
-                  <span>Retour sous 14 jours</span>
-                </div>
-              </div>
-            </div>
+
 
             {/* Statut stock */}
             <div className="mb-6">

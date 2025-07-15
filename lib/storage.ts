@@ -133,7 +133,7 @@ class LocalStorage {
         category: '1',
         inStock: true,
         featured: true,
-        orderLink: '',
+        orderLink: 'https://example.com/commander-huile-cbd-10',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       },
@@ -151,7 +151,7 @@ class LocalStorage {
         category: '2',
         inStock: true,
         featured: true,
-        orderLink: '',
+        orderLink: 'https://example.com/commander-fleurs-amnesia',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       },
@@ -168,7 +168,7 @@ class LocalStorage {
         category: '3',
         inStock: true,
         featured: true,
-        orderLink: '',
+        orderLink: 'https://example.com/commander-resine-hash',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       },
@@ -185,7 +185,7 @@ class LocalStorage {
         category: '1',
         inStock: true,
         featured: false,
-        orderLink: '',
+        orderLink: 'https://example.com/commander-huile-cbd-15',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       },
@@ -202,7 +202,7 @@ class LocalStorage {
         category: '2',
         inStock: true,
         featured: false,
-        orderLink: '',
+        orderLink: 'https://example.com/commander-lemon-haze',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }
