@@ -8,7 +8,9 @@ import Header from '../components/Header';
 export default function ProduitsPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedFarm, setSelectedFarm] = useState<string>('all');
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -20,9 +22,17 @@ export default function ProduitsPage() {
     </div>;
   }
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? config.products 
-    : config.products.filter(product => product.category === selectedCategory);
+  // Filtrer les produits selon la catégorie et la ferme sélectionnées
+  let filteredProducts = config.products;
+  
+  if (selectedCategory !== 'all') {
+    filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
+    
+    // Si c'est la catégorie Farm et qu'une ferme spécifique est sélectionnée
+    if (selectedCategory === 'Farm' && selectedFarm !== 'all') {
+      filteredProducts = filteredProducts.filter(product => product.farm === selectedFarm);
+    }
+  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: config.shopInfo.backgroundColor }}>
@@ -46,10 +56,10 @@ export default function ProduitsPage() {
         </div>
       </section>
 
-      {/* Category Filter */}
+      {/* Category and Farm Filter */}
       <section className="py-8 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-6">
             <div className="mb-4 md:mb-0">
               <h2 className="text-2xl font-bold" style={{ color: config.shopInfo.secondaryColor }}>
                 Filtrer par catégorie
@@ -57,13 +67,17 @@ export default function ProduitsPage() {
               <p className="text-gray-600 mt-1">
                 {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''} 
                 {selectedCategory !== 'all' && ` dans ${selectedCategory}`}
+                {selectedCategory === 'Farm' && selectedFarm !== 'all' && ` - ${selectedFarm}`}
               </p>
             </div>
             
             {/* Category Dropdown */}
             <div className="relative">
               <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onClick={() => {
+                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
+                  setIsFarmDropdownOpen(false);
+                }}
                 className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
                 style={{ 
                   backgroundColor: config.shopInfo.primaryColor,
@@ -76,18 +90,19 @@ export default function ProduitsPage() {
                     : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
                   }
                 </span>
-                <svg className={`w-4 h-4 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-4 h-4 transition-transform duration-300 ${isCategoryDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-10">
+              {isCategoryDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-20">
                   <div className="py-1">
                     <button
                       onClick={() => {
                         setSelectedCategory('all');
-                        setIsDropdownOpen(false);
+                        setSelectedFarm('all');
+                        setIsCategoryDropdownOpen(false);
                       }}
                       className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
                         selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
@@ -100,7 +115,8 @@ export default function ProduitsPage() {
                         key={category.id}
                         onClick={() => {
                           setSelectedCategory(category.name);
-                          setIsDropdownOpen(false);
+                          setSelectedFarm('all');
+                          setIsCategoryDropdownOpen(false);
                         }}
                         className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
                           selectedCategory === category.name ? 'bg-gray-100 font-medium' : ''
@@ -114,6 +130,67 @@ export default function ProduitsPage() {
               )}
             </div>
           </div>
+
+          {/* Farm Filter (only show when Farm category is selected) */}
+          {selectedCategory === 'Farm' && (
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setIsFarmDropdownOpen(!isFarmDropdownOpen);
+                    setIsCategoryDropdownOpen(false);
+                  }}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
+                  style={{ 
+                    backgroundColor: config.shopInfo.secondaryColor,
+                    color: config.shopInfo.textColor 
+                  }}
+                >
+                  <span>
+                    {selectedFarm === 'all' 
+                      ? '🌾 Toutes les fermes' 
+                      : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`
+                    }
+                  </span>
+                  <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                {isFarmDropdownOpen && (
+                  <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-10">
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          setSelectedFarm('all');
+                          setIsFarmDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                          selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''
+                        }`}
+                      >
+                        🌾 Toutes les fermes
+                      </button>
+                      {config.farms.map((farm) => (
+                        <button
+                          key={farm.id}
+                          onClick={() => {
+                            setSelectedFarm(farm.name);
+                            setIsFarmDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                            selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''
+                          }`}
+                        >
+                          {farm.emoji} {farm.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -130,7 +207,10 @@ export default function ProduitsPage() {
                 Essayez de sélectionner une autre catégorie ou ajoutez des produits depuis le panel admin.
               </p>
               <button
-                onClick={() => setSelectedCategory('all')}
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setSelectedFarm('all');
+                }}
                 className="inline-block text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 filter drop-shadow-md"
                 style={{ backgroundColor: config.shopInfo.primaryColor }}
               >
@@ -158,6 +238,12 @@ export default function ProduitsPage() {
                     <div className="absolute top-2 left-2 text-2xl filter drop-shadow-md">
                       {config.categories.find(cat => cat.name === product.category)?.emoji}
                     </div>
+                    {product.farm && (
+                      <div className="absolute bottom-2 left-2 text-white px-2 py-1 rounded text-xs font-semibold filter drop-shadow-md"
+                           style={{ backgroundColor: config.shopInfo.secondaryColor }}>
+                        {config.farms.find(farm => farm.name === product.farm)?.emoji} {product.farm}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="p-6">

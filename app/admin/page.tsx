@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { SiteConfig, getConfig, saveConfig, getNextId, Product, Category, SocialMediaLink } from '../lib/config';
+import { SiteConfig, getConfig, saveConfig, getNextId, Product, Category, SocialMediaLink, Farm } from '../lib/config';
 
 export default function AdminPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -12,6 +12,7 @@ export default function AdminPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingSocial, setEditingSocial] = useState<SocialMediaLink | null>(null);
+  const [editingFarm, setEditingFarm] = useState<Farm | null>(null);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -174,6 +175,43 @@ export default function AdminPage() {
     });
   };
 
+  // Farm management
+  const addFarm = () => {
+    if (!config) return;
+    const newFarm: Farm = {
+      id: getNextId(config.farms),
+      name: '',
+      emoji: '',
+      description: ''
+    };
+    setEditingFarm(newFarm);
+  };
+
+  const saveFarm = () => {
+    if (!config || !editingFarm) return;
+    
+    const existingIndex = config.farms.findIndex(f => f.id === editingFarm.id);
+    let newFarms;
+    
+    if (existingIndex >= 0) {
+      newFarms = [...config.farms];
+      newFarms[existingIndex] = editingFarm;
+    } else {
+      newFarms = [...config.farms, editingFarm];
+    }
+    
+    setConfig({ ...config, farms: newFarms });
+    setEditingFarm(null);
+  };
+
+  const deleteFarm = (id: number) => {
+    if (!config) return;
+    setConfig({
+      ...config,
+      farms: config.farms.filter(f => f.id !== id)
+    });
+  };
+
   if (!config) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-center">
@@ -225,6 +263,7 @@ export default function AdminPage() {
               {[
                 { id: 'products', name: 'Produits' },
                 { id: 'categories', name: 'Catégories' },
+                { id: 'farms', name: 'Fermes' },
                 { id: 'social', name: 'Réseaux Sociaux' },
                 { id: 'shop', name: 'Boutique' },
                 { id: 'pages', name: 'Pages' },
@@ -553,6 +592,112 @@ export default function AdminPage() {
                           </button>
                           <button
                             onClick={saveCategory}
+                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                          >
+                            Enregistrer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Farms Tab */}
+            {activeTab === 'farms' && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium text-gray-900">Gestion des Fermes</h3>
+                  <button
+                    onClick={addFarm}
+                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                  >
+                    + Ajouter une ferme
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {config.farms.map((farm) => (
+                    <div key={farm.id} className="bg-gray-50 rounded-lg p-4 space-y-2">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-2xl">{farm.emoji}</span>
+                            <h4 className="font-semibold text-gray-900">{farm.name}</h4>
+                          </div>
+                          <p className="text-sm text-gray-500">{farm.description}</p>
+                        </div>
+                        <div className="flex flex-col space-y-1">
+                          <button
+                            onClick={() => setEditingFarm(farm)}
+                            className="text-blue-600 hover:text-blue-800 text-sm"
+                          >
+                            Modifier
+                          </button>
+                          <button
+                            onClick={() => deleteFarm(farm.id)}
+                            className="text-red-600 hover:text-red-800 text-sm"
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Farm Editor Modal */}
+                {editingFarm && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg max-w-md w-full">
+                      <div className="p-6">
+                        <h3 className="text-lg font-medium mb-4">
+                          {editingFarm.id ? 'Modifier la ferme' : 'Ajouter une ferme'}
+                        </h3>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                            <input
+                              type="text"
+                              value={editingFarm.name}
+                              onChange={(e) => setEditingFarm({...editingFarm, name: e.target.value})}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Emoji</label>
+                            <input
+                              type="text"
+                              value={editingFarm.emoji}
+                              onChange={(e) => setEditingFarm({...editingFarm, emoji: e.target.value})}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                              placeholder="🏔️"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea
+                              value={editingFarm.description}
+                              onChange={(e) => setEditingFarm({...editingFarm, description: e.target.value})}
+                              rows={3}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-end space-x-2 mt-6">
+                          <button
+                            onClick={() => setEditingFarm(null)}
+                            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                          >
+                            Annuler
+                          </button>
+                          <button
+                            onClick={saveFarm}
                             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                           >
                             Enregistrer
