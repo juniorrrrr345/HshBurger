@@ -25,7 +25,16 @@ export default function ProduitsPage() {
     : config.products.filter(product => product.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <Header currentPage="Produits" />
 
       {/* Page Header */}
@@ -47,7 +56,7 @@ export default function ProduitsPage() {
       </section>
 
       {/* Category Filter */}
-      <section className="py-8 bg-white shadow-sm">
+      <section className="py-8 bg-white/95 backdrop-blur-sm shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-4 md:mb-0">
@@ -116,6 +125,7 @@ export default function ProduitsPage() {
       {/* Products Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-lg">
           {filteredProducts.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">📦</div>
@@ -194,14 +204,8 @@ export default function ProduitsPage() {
             </div>
           )}
         </div>
+      </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 {config.shopInfo.name}. Tous droits réservés.</p>
-        </div>
-      </footer>
     </div>
   );
 }

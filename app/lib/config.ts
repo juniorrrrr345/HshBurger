@@ -69,6 +69,14 @@ export interface SiteConfig {
     footer: {
       copyrightText: string;
     };
+    products: {
+      filterTitle: string;
+      popularText: string;
+      detailsText: string;
+      orderText: string;
+      pageTitle: string;
+      pageSubtitle: string;
+    };
   };
 }
 

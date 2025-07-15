@@ -26,13 +26,22 @@ export default function HomePage() {
     : config.products.filter(product => product.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div 
+      className="min-h-screen"
+      style={{ 
+        backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <Header currentPage="Accueil" />
 
 
 
       {/* Category Filter */}
-      <section className="py-8 bg-white shadow-sm">
+      <section className="py-8 bg-white/95 backdrop-blur-sm shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <h2 className="text-2xl font-bold text-black">
@@ -141,6 +150,7 @@ export default function HomePage() {
       {/* Products Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.slice(0, 6).map((product) => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200">
@@ -209,6 +219,7 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+      </div>
       </section>
 
 
