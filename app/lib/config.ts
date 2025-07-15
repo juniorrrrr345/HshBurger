@@ -3,6 +3,8 @@ export interface Product {
   name: string;
   description: string;
   image: string;
+  images: string[]; // Images multiples
+  video: string; // URL de la vidéo
   category: string;
   variants: {
     name: string;
@@ -203,6 +205,11 @@ export const defaultConfig: SiteConfig = {
       name: "Huile CBD",
       description: "Huile de CBD premium, extraction CO2 supercritique.",
       image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop"
+      ],
+      video: "",
       category: "Huiles",
       variants: [
         { name: "10%", price: 29.90, size: "10ml" },
@@ -217,6 +224,11 @@ export const defaultConfig: SiteConfig = {
       name: "Fleurs CBD Amnesia",
       description: "Fleurs de CBD Amnesia séchées, arôme fruité.",
       image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop"
+      ],
+      video: "",
       category: "Fleurs",
       variants: [
         { name: "1g", price: 8.90, size: "1g" },
@@ -231,6 +243,11 @@ export const defaultConfig: SiteConfig = {
       name: "Résine CBD Hash",
       description: "Résine CBD Hash artisanale, texture fondante.",
       image: "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop"
+      ],
+      video: "",
       category: "Résines",
       variants: [
         { name: "1g", price: 12.90, size: "1g" },
@@ -245,6 +262,11 @@ export const defaultConfig: SiteConfig = {
       name: "Huile CBD Full Spectrum",
       description: "Huile de CBD Full Spectrum, effet d'entourage.",
       image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop"
+      ],
+      video: "",
       category: "Huiles",
       variants: [
         { name: "5%", price: 19.90, size: "10ml" },
@@ -259,6 +281,11 @@ export const defaultConfig: SiteConfig = {
       name: "Fleurs CBD Lemon Haze",
       description: "Fleurs CBD Lemon Haze au parfum citronné.",
       image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop"
+      ],
+      video: "",
       category: "Fleurs",
       variants: [
         { name: "1g", price: 9.90, size: "1g" },
@@ -273,6 +300,11 @@ export const defaultConfig: SiteConfig = {
       name: "Fleurs CBD Mountain Premium",
       description: "Fleurs CBD cultivées à la ferme Mountain, qualité exceptionnelle.",
       image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop"
+      ],
+      video: "",
       category: "Farm",
       farm: "Mountain",
       variants: [
@@ -288,6 +320,11 @@ export const defaultConfig: SiteConfig = {
       name: "Huile CBD Valley Artisanale",
       description: "Huile CBD artisanale de la ferme Valley, méthode traditionnelle.",
       image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop"
+      ],
+      video: "",
       category: "Farm",
       farm: "Valley",
       variants: [
@@ -303,6 +340,11 @@ export const defaultConfig: SiteConfig = {
       name: "Résine CBD Forest",
       description: "Résine CBD de la ferme Forest, goût naturel.",
       image: "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop",
+      images: [
+        "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop"
+      ],
+      video: "",
       category: "Farm",
       farm: "Forest",
       variants: [

@@ -15,6 +15,13 @@ export default function ProduitsPage() {
   const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
   const [page, setPage] = useState(1);
   const PRODUCTS_PER_PAGE = 2;
+  
+  // États pour les images multiples et vidéos
+  const [selectedProductImages, setSelectedProductImages] = useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [currentVideo, setCurrentVideo] = useState('');
 
   useEffect(() => {
     setConfig(getConfig());

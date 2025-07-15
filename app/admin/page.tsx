@@ -67,6 +67,8 @@ export default function AdminPage() {
       name: '',
       description: '',
       image: '',
+      images: [],
+      video: '',
       category: config.categories[0]?.name || '',
       variants: [{ name: '', price: 0, size: '' }],
       orderLink: '',
@@ -380,6 +382,30 @@ export default function AdminPage() {
                               onChange={(e) => setEditingProduct({...editingProduct, image: e.target.value})}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                             />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Images multiples (URLs séparées par des virgules)</label>
+                            <textarea
+                              value={editingProduct.images?.join(', ') || ''}
+                              onChange={(e) => setEditingProduct({...editingProduct, images: e.target.value.split(',').map(url => url.trim()).filter(url => url)})}
+                              rows={3}
+                              placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Séparez les URLs par des virgules</p>
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Vidéo URL (optionnel)</label>
+                            <input
+                              type="url"
+                              value={editingProduct.video || ''}
+                              onChange={(e) => setEditingProduct({...editingProduct, video: e.target.value})}
+                              placeholder="https://example.com/video.mp4"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">URL directe vers un fichier vidéo (MP4, WebM, etc.)</p>
                           </div>
                           
                           <div>
