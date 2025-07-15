@@ -272,20 +272,12 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {config.products.map((product) => (
                     <div key={product.id} className="bg-white/80 backdrop-blur-sm rounded-lg p-4 space-y-2 border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex flex-col sm:flex-row justify-between items-start space-y-2 sm:space-y-0">
+                      <div className="flex justify-between items-center">
                         <div className="flex-1 min-w-0">
                           <h4 className="font-semibold text-black truncate">{product.name}</h4>
                           <p className="text-sm text-gray-600">{product.category}</p>
-                          <p className="text-sm text-gray-500 truncate">{product.description}</p>
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {product.variants.map((variant, index) => (
-                              <span key={index} className="text-xs bg-black/10 text-black px-2 py-1 rounded">
-                                {variant.name}: €{variant.price}
-                              </span>
-                            ))}
-                          </div>
                         </div>
-                        <div className="flex flex-row sm:flex-col space-x-2 sm:space-x-0 sm:space-y-1 w-full sm:w-auto">
+                        <div className="flex space-x-2">
                           <button
                             onClick={() => setEditingProduct(product)}
                             className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
@@ -475,15 +467,14 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {config.categories.map((category) => (
                     <div key={category.id} className="bg-white/80 backdrop-blur-sm rounded-lg p-4 space-y-2 border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex flex-col sm:flex-row justify-between items-start space-y-2 sm:space-y-0">
+                      <div className="flex justify-between items-center">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
                             <span className="text-2xl">{category.emoji}</span>
                             <h4 className="font-semibold text-black truncate">{category.name}</h4>
                           </div>
-                          <p className="text-sm text-gray-500">{category.description}</p>
                         </div>
-                        <div className="flex flex-row sm:flex-col space-x-2 sm:space-x-0 sm:space-y-1 w-full sm:w-auto">
+                        <div className="flex space-x-2">
                           <button
                             onClick={() => setEditingCategory(category)}
                             className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
@@ -578,31 +569,26 @@ export default function AdminPage() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {config.socialMediaLinks.map((social) => (
-                    <div key={social.id} className="bg-gray-50 rounded-lg p-4 space-y-2">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
+                    <div key={social.id} className="bg-white/80 backdrop-blur-sm rounded-lg p-4 space-y-2 border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-center">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
                             <span className="text-2xl">{social.emoji}</span>
-                            <h4 className="font-semibold text-gray-900">{social.name}</h4>
+                            <h4 className="font-semibold text-black truncate">{social.name}</h4>
                           </div>
-                          <p className="text-sm text-gray-500 truncate">{social.url}</p>
-                          <div 
-                            className="w-4 h-4 rounded-full inline-block mt-1"
-                            style={{ backgroundColor: social.color }}
-                          ></div>
                         </div>
-                        <div className="flex flex-col space-y-1">
+                        <div className="flex space-x-2">
                           <button
                             onClick={() => setEditingSocial(social)}
-                            className="text-blue-600 hover:text-blue-800 text-sm"
+                            className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 rounded hover:bg-blue-50"
                           >
                             Modifier
                           </button>
                           <button
                             onClick={() => deleteSocialMedia(social.id)}
-                            className="text-red-600 hover:text-red-800 text-sm"
+                            className="text-red-600 hover:text-red-800 text-sm px-2 py-1 rounded hover:bg-red-50"
                           >
                             Supprimer
                           </button>

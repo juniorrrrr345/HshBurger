@@ -209,6 +209,21 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer 
+        className="py-8 text-center"
+        style={{ 
+          background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}, ${config.shopInfo.secondaryColor})`,
+          color: config.shopInfo.textColor
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-white/90">
+            {config.pageContent.footer.copyrightText}
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
