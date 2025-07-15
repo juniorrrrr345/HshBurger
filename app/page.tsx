@@ -195,41 +195,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🌿</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Produits Naturels
-              </h3>
-              <p className="text-gray-600">100% naturel et bio</p>
-            </div>
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🚚</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Livraison Rapide
-              </h3>
-              <p className="text-gray-600">Expédition sous 24h</p>
-            </div>
-            <div className="text-center group">
-              <div className="text-6xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">🔒</div>
-              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                Paiement Sécurisé
-              </h3>
-              <p className="text-gray-600">Transactions protégées</p>
-            </div>
+      {/* Logo Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-8xl mb-6 filter drop-shadow-lg">
+            {config.shopInfo.logo}
           </div>
+          <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent">
+            {config.shopInfo.name}
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            {config.shopInfo.description}
+          </p>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-gray-400">&copy; 2024 {config.shopInfo.name}. Tous droits réservés.</p>
-        </div>
-      </footer>
     </div>
   );
 }
