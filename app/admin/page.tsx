@@ -1477,16 +1477,19 @@ export default function AdminPage() {
                         <p className="text-sm text-gray-500 mb-2">{page.href || 'Sans URL'}</p>
                         
                         {/* Aperçu du contenu */}
-                        {page.content && Object.keys(page.content).some(key => page.content![key as keyof typeof page.content]) && (
-                          <div className="bg-gray-50 p-2 rounded text-xs text-gray-600">
-                            <span className="font-medium">Contenu :</span>
-                            <div className="mt-1 space-y-1">
-                              {page.content.title && <div>📝 {page.content.title}</div>}
-                              {page.content.subtitle && <div>📄 {page.content.subtitle}</div>}
-                              {page.content.description && <div>📋 {page.content.description.substring(0, 50)}...</div>}
+                        {(() => {
+                          const content = page.content;
+                          return content && Object.keys(content).some(key => content[key as keyof typeof content]) ? (
+                            <div className="bg-gray-50 p-2 rounded text-xs text-gray-600">
+                              <span className="font-medium">Contenu :</span>
+                              <div className="mt-1 space-y-1">
+                                {content.title && <div>📝 {content.title}</div>}
+                                {content.subtitle && <div>📄 {content.subtitle}</div>}
+                                {content.description && <div>📋 {content.description.substring(0, 50)}...</div>}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          ) : null;
+                        })()}
                       </div>
                     ))}
                     
@@ -1556,20 +1559,23 @@ export default function AdminPage() {
                           <h4 className="font-medium text-gray-900 mb-4">Contenu de la page</h4>
                           
                           {/* Aperçu du contenu existant */}
-                          {editingPage.content && Object.keys(editingPage.content).some(key => editingPage.content[key as keyof typeof editingPage.content]) && (
-                            <div className="mb-4 p-3 bg-blue-50 rounded-md">
-                              <h5 className="text-sm font-medium text-blue-900 mb-2">📝 Contenu actuel :</h5>
-                              <div className="text-xs text-blue-800 space-y-1">
-                                {editingPage.content.title && <p><strong>Titre :</strong> {editingPage.content.title}</p>}
-                                {editingPage.content.subtitle && <p><strong>Sous-titre :</strong> {editingPage.content.subtitle}</p>}
-                                {editingPage.content.description && <p><strong>Description :</strong> {editingPage.content.description}</p>}
-                                {editingPage.content.heroTitle && <p><strong>Titre héros :</strong> {editingPage.content.heroTitle}</p>}
-                                {editingPage.content.heroSubtitle && <p><strong>Sous-titre héros :</strong> {editingPage.content.heroSubtitle}</p>}
-                                {editingPage.content.heroButtonText && <p><strong>Bouton :</strong> {editingPage.content.heroButtonText}</p>}
-                                {editingPage.content.sectionTitle && <p><strong>Titre section :</strong> {editingPage.content.sectionTitle}</p>}
+                          {(() => {
+                            const content = editingPage.content;
+                            return content && Object.keys(content).some(key => content[key as keyof typeof content]) ? (
+                              <div className="mb-4 p-3 bg-blue-50 rounded-md">
+                                <h5 className="text-sm font-medium text-blue-900 mb-2">📝 Contenu actuel :</h5>
+                                <div className="text-xs text-blue-800 space-y-1">
+                                  {content.title && <p><strong>Titre :</strong> {content.title}</p>}
+                                  {content.subtitle && <p><strong>Sous-titre :</strong> {content.subtitle}</p>}
+                                  {content.description && <p><strong>Description :</strong> {content.description}</p>}
+                                  {content.heroTitle && <p><strong>Titre héros :</strong> {content.heroTitle}</p>}
+                                  {content.heroSubtitle && <p><strong>Sous-titre héros :</strong> {content.heroSubtitle}</p>}
+                                  {content.heroButtonText && <p><strong>Bouton :</strong> {content.heroButtonText}</p>}
+                                  {content.sectionTitle && <p><strong>Titre section :</strong> {content.sectionTitle}</p>}
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            ) : null;
+                          })()}
                           
                           <div className="space-y-4">
                             <div>
