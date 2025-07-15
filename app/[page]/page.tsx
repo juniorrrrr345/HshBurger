@@ -60,135 +60,139 @@ export default function DynamicPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen" style={{ 
-      backgroundColor: config.shopInfo.backgroundColor,
-      backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
-      backgroundSize: '200px 200px',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'repeat',
-      backgroundAttachment: 'fixed'
-    }}>
+    <div 
+      className="min-h-screen relative"
+      style={{ 
+        backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Overlay pour améliorer la lisibilité */}
+      <div 
+        className="absolute inset-0 bg-black opacity-30"
+        style={{ 
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%)'
+        }}
+      ></div>
       <Header currentPage={currentPage.name} />
 
-      {/* Contenu de la page */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {currentPage.content?.title || currentPage.name}
-            </h1>
-            {currentPage.content?.subtitle && (
-              <p className="text-xl text-gray-600 mb-4">
-                {currentPage.content.subtitle}
-              </p>
-            )}
-            <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-blue-500 mx-auto rounded-full"></div>
-          </div>
-          
-          {/* Contenu personnalisé de la page */}
-          {currentPage.content?.description && (
-            <div className="max-w-3xl mx-auto mb-8">
-              <div className="prose prose-lg mx-auto text-center">
-                <p className="text-gray-700 leading-relaxed">
-                  {currentPage.content.description}
-                </p>
-              </div>
-            </div>
+      {/* Page Header */}
+      <section 
+        className="text-white py-16 relative overflow-hidden"
+        style={{ 
+          background: `linear-gradient(135deg, #000000, #333333)` 
+        }}
+      >
+        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 filter drop-shadow-lg text-white">
+            {currentPage.content?.title || currentPage.name}
+          </h1>
+          {currentPage.content?.subtitle && (
+            <p className="text-xl max-w-2xl mx-auto filter drop-shadow-md text-white">
+              {currentPage.content.subtitle}
+            </p>
           )}
-          
-          {/* Sections personnalisées */}
-          {currentPage.content?.sections && currentPage.content.sections.length > 0 ? (
-            <div className="space-y-8">
-              {currentPage.content.sections.map((section, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-                    {section.title}
-                  </h3>
-                  
-                  {section.type === 'text' && (
-                    <div className="prose prose-lg mx-auto">
-                      <div dangerouslySetInnerHTML={{ __html: section.content }} />
-                    </div>
-                  )}
-                  
-                  {section.type === 'image' && (
-                    <div className="text-center">
-                      <img 
-                        src={section.content} 
-                        alt={section.title}
-                        className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  )}
-                  
-                  {section.type === 'video' && (
-                    <div className="text-center">
-                      <video 
-                        controls 
-                        className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
-                        src={section.content}
-                      >
-                        Votre navigateur ne supporte pas la lecture de vidéos.
-                      </video>
-                    </div>
-                  )}
-                  
-                  {section.type === 'social' && (
-                    <div className="text-center">
-                      <div className="inline-block bg-white rounded-lg p-4 shadow-lg">
+        </div>
+      </section>
+
+      {/* Contenu principal */}
+      <section className="py-16 relative z-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white/95 backdrop-blur-md rounded-lg p-8 shadow-xl border border-white/20">
+            
+            {/* Description principale */}
+            {currentPage.content?.description && (
+              <div className="text-center mb-12">
+                <div className="prose prose-lg mx-auto">
+                  <p className="text-gray-700 leading-relaxed text-lg">
+                    {currentPage.content.description}
+                  </p>
+                </div>
+              </div>
+            )}
+            
+            {/* Sections personnalisées */}
+            {currentPage.content?.sections && currentPage.content.sections.length > 0 ? (
+              <div className="space-y-12">
+                {currentPage.content.sections.map((section, index) => (
+                  <div key={index} className="bg-white rounded-lg shadow-md p-8 border border-gray-200">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                      {section.title}
+                    </h3>
+                    
+                    {section.type === 'text' && (
+                      <div className="prose prose-lg mx-auto">
                         <div dangerouslySetInnerHTML={{ __html: section.content }} />
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            /* Contenu par défaut si aucune section n'est définie */
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                  📄 Page créée via l'administration
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Cette page a été configurée dans le panel d'administration et est maintenant accessible publiquement.
+                    )}
+                    
+                    {section.type === 'image' && (
+                      <div className="text-center">
+                        <img 
+                          src={section.content} 
+                          alt={section.title}
+                          className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
+                    
+                    {section.type === 'video' && (
+                      <div className="text-center">
+                        <video 
+                          controls 
+                          className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
+                          src={section.content}
+                        >
+                          Votre navigateur ne supporte pas la lecture de vidéos.
+                        </video>
+                      </div>
+                    )}
+                    
+                    {section.type === 'social' && (
+                      <div className="text-center">
+                        <div className="inline-block bg-gray-50 rounded-lg p-6 shadow-lg">
+                          <div dangerouslySetInnerHTML={{ __html: section.content }} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* Contenu par défaut si aucune section n'est définie */
+              <div className="text-center py-16">
+                <div className="text-6xl mb-6 filter drop-shadow-lg">📄</div>
+                <h3 className="text-2xl font-bold mb-4 text-gray-600">
+                  {currentPage.name}
+                </h3>
+                <p className="text-gray-500 mb-8 text-lg">
+                  Cette page a été créée via le panel d'administration. 
+                  Vous pouvez personnaliser son contenu en cliquant sur le bouton "Contenu" dans l'administration.
                 </p>
-                <div className="bg-white rounded-md p-4 border">
+                <div className="bg-gray-50 rounded-lg p-4 mb-8">
                   <p className="text-sm text-gray-500 mb-2">URL de la page :</p>
-                  <code className="bg-gray-100 px-3 py-1 rounded text-sm font-mono">
+                  <code className="bg-white px-3 py-1 rounded text-sm font-mono border">
                     {currentPage.href}
                   </code>
                 </div>
+                <Link
+                  href="/admin"
+                  className="inline-block bg-black text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-gray-800"
+                >
+                  Personnaliser cette page
+                </Link>
               </div>
-            </div>
-          )}
-          
-          <div className="flex justify-center space-x-4 mt-8">
-            <a 
-              href="/" 
-              className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              Retour à l'accueil
-            </a>
-            <a 
-              href="/admin" 
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Administration
-            </a>
+            )}
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

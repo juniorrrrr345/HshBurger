@@ -1655,6 +1655,273 @@ export default function AdminPage() {
           </div>
         </div>
       )}
+
+      {/* Modal d'édition du contenu des pages */}
+      {editingPageContent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-medium text-gray-900">
+                Éditer le contenu : {editingPageContent.name}
+              </h3>
+              <button
+                onClick={cancelPageContentEdit}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Informations de base */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Titre de la page
+                  </label>
+                  <input
+                    type="text"
+                    value={editingPageContent.content?.title || ''}
+                    onChange={(e) => setEditingPageContent({
+                      ...editingPageContent,
+                      content: {
+                        ...editingPageContent.content,
+                        title: e.target.value
+                      }
+                    })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Titre personnalisé (optionnel)"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Sous-titre
+                  </label>
+                  <input
+                    type="text"
+                    value={editingPageContent.content?.subtitle || ''}
+                    onChange={(e) => setEditingPageContent({
+                      ...editingPageContent,
+                      content: {
+                        ...editingPageContent.content,
+                        subtitle: e.target.value
+                      }
+                    })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Sous-titre (optionnel)"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description principale
+                </label>
+                <textarea
+                  value={editingPageContent.content?.description || ''}
+                  onChange={(e) => setEditingPageContent({
+                    ...editingPageContent,
+                    content: {
+                      ...editingPageContent.content,
+                      description: e.target.value
+                    }
+                  })}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Description de la page..."
+                />
+              </div>
+              
+              {/* Sections personnalisées */}
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="text-lg font-medium text-gray-900">Sections personnalisées</h4>
+                  <button
+                    onClick={() => setEditingPageContent({
+                      ...editingPageContent,
+                      content: {
+                        ...editingPageContent.content,
+                        sections: [
+                          ...(editingPageContent.content?.sections || []),
+                          { title: '', content: '', type: 'text' as const }
+                        ]
+                      }
+                    })}
+                    className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                  >
+                    + Ajouter une section
+                  </button>
+                </div>
+                
+                <div className="space-y-4">
+                  {editingPageContent.content?.sections?.map((section, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Titre de la section
+                          </label>
+                          <input
+                            type="text"
+                            value={section.title}
+                            onChange={(e) => {
+                              const newSections = [...(editingPageContent.content?.sections || [])];
+                              newSections[index].title = e.target.value;
+                              setEditingPageContent({
+                                ...editingPageContent,
+                                content: {
+                                  ...editingPageContent.content,
+                                  sections: newSections
+                                }
+                              });
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Titre de la section"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Type de contenu
+                          </label>
+                          <select
+                            value={section.type}
+                            onChange={(e) => {
+                              const newSections = [...(editingPageContent.content?.sections || [])];
+                              newSections[index].type = e.target.value as 'text' | 'image' | 'video' | 'social';
+                              setEditingPageContent({
+                                ...editingPageContent,
+                                content: {
+                                  ...editingPageContent.content,
+                                  sections: newSections
+                                }
+                              });
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                          >
+                            <option value="text">Texte</option>
+                            <option value="image">Image</option>
+                            <option value="video">Vidéo</option>
+                            <option value="social">Réseaux sociaux</option>
+                          </select>
+                        </div>
+                        
+                        <div className="flex items-end">
+                          <button
+                            onClick={() => {
+                              const newSections = editingPageContent.content?.sections?.filter((_, i) => i !== index) || [];
+                              setEditingPageContent({
+                                ...editingPageContent,
+                                content: {
+                                  ...editingPageContent.content,
+                                  sections: newSections
+                                }
+                              });
+                            }}
+                            className="px-3 py-2 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Contenu
+                        </label>
+                        {section.type === 'text' && (
+                          <textarea
+                            value={section.content}
+                            onChange={(e) => {
+                              const newSections = [...(editingPageContent.content?.sections || [])];
+                              newSections[index].content = e.target.value;
+                              setEditingPageContent({
+                                ...editingPageContent,
+                                content: {
+                                  ...editingPageContent.content,
+                                  sections: newSections
+                                }
+                              });
+                            }}
+                            rows={6}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Contenu de la section (HTML autorisé)..."
+                          />
+                        )}
+                        
+                        {(section.type === 'image' || section.type === 'video') && (
+                          <input
+                            type="url"
+                            value={section.content}
+                            onChange={(e) => {
+                              const newSections = [...(editingPageContent.content?.sections || [])];
+                              newSections[index].content = e.target.value;
+                              setEditingPageContent({
+                                ...editingPageContent,
+                                content: {
+                                  ...editingPageContent.content,
+                                  sections: newSections
+                                }
+                              });
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder={`URL de ${section.type === 'image' ? 'l\'image' : 'la vidéo'}`}
+                          />
+                        )}
+                        
+                        {section.type === 'social' && (
+                          <textarea
+                            value={section.content}
+                            onChange={(e) => {
+                              const newSections = [...(editingPageContent.content?.sections || [])];
+                              newSections[index].content = e.target.value;
+                              setEditingPageContent({
+                                ...editingPageContent,
+                                content: {
+                                  ...editingPageContent.content,
+                                  sections: newSections
+                                }
+                              });
+                            }}
+                            rows={4}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Code HTML pour les réseaux sociaux (ex: boutons de partage, widgets...)"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {(!editingPageContent.content?.sections || editingPageContent.content.sections.length === 0) && (
+                    <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-300 rounded-lg">
+                      <p>Aucune section personnalisée</p>
+                      <p className="text-sm">Cliquez sur "Ajouter une section" pour commencer</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3 mt-6 pt-4 border-t">
+              <button
+                onClick={cancelPageContentEdit}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={savePageContent}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                Sauvegarder le contenu
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
