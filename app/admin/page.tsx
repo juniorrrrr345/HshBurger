@@ -301,14 +301,16 @@ export default function AdminPage() {
       newPages = [...currentPages, { ...editingPage }];
     }
     
-    // Sauvegarder
+    // Sauvegarder dans l'état local ET dans le localStorage
     const updatedConfig = { ...config, pages: newPages };
     setConfig(updatedConfig);
+    saveConfig(updatedConfig); // Sauvegarder immédiatement
     setEditingPage(null);
     
     // Message de succès
     const action = isExisting ? 'modifiée' : 'ajoutée';
-    alert(`Page ${action} avec succès !`);
+    setMessage(`Page ${action} avec succès !`);
+    setTimeout(() => setMessage(''), 3000);
   };
 
   const deletePage = (pageId: number) => {
@@ -326,7 +328,9 @@ export default function AdminPage() {
       const newPages = config.pages.filter(p => p.id !== pageId);
       const updatedConfig = { ...config, pages: newPages };
       setConfig(updatedConfig);
-      alert('Page supprimée !');
+      saveConfig(updatedConfig); // Sauvegarder immédiatement
+      setMessage('Page supprimée avec succès !');
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 
@@ -1443,8 +1447,8 @@ export default function AdminPage() {
                   {/* Liste des pages */}
                   <div className="space-y-3">
                     {config?.pages?.map((page) => (
-                      <div key={page.id} className="bg-white p-4 rounded-lg border flex items-center justify-between">
-                        <div className="flex-1">
+                      <div key={page.id} className="bg-white p-4 rounded-lg border">
+                        <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center space-x-2">
                             <h4 className="font-medium text-gray-900">{page.name || 'Sans nom'}</h4>
                             {page.isDefault && (
@@ -1453,24 +1457,36 @@ export default function AdminPage() {
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-gray-500 mt-1">{page.href || 'Sans URL'}</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => editExistingPage(page)}
-                            className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                          >
-                            Modifier
-                          </button>
-                          {!page.isDefault && (
+                          <div className="flex space-x-2">
                             <button
-                              onClick={() => deletePage(page.id)}
-                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                              onClick={() => editExistingPage(page)}
+                              className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
                             >
-                              Supprimer
+                              Modifier
                             </button>
-                          )}
+                            {!page.isDefault && (
+                              <button
+                                onClick={() => deletePage(page.id)}
+                                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                              >
+                                Supprimer
+                              </button>
+                            )}
+                          </div>
                         </div>
+                        <p className="text-sm text-gray-500 mb-2">{page.href || 'Sans URL'}</p>
+                        
+                        {/* Aperçu du contenu */}
+                        {page.content && Object.keys(page.content).some(key => page.content![key as keyof typeof page.content]) && (
+                          <div className="bg-gray-50 p-2 rounded text-xs text-gray-600">
+                            <span className="font-medium">Contenu :</span>
+                            <div className="mt-1 space-y-1">
+                              {page.content.title && <div>📝 {page.content.title}</div>}
+                              {page.content.subtitle && <div>📄 {page.content.subtitle}</div>}
+                              {page.content.description && <div>📋 {page.content.description.substring(0, 50)}...</div>}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                     
@@ -1538,6 +1554,23 @@ export default function AdminPage() {
                         {/* Contenu de la page */}
                         <div className="bg-gray-50 p-4 rounded-lg">
                           <h4 className="font-medium text-gray-900 mb-4">Contenu de la page</h4>
+                          
+                          {/* Aperçu du contenu existant */}
+                          {editingPage.content && Object.keys(editingPage.content).some(key => editingPage.content[key as keyof typeof editingPage.content]) && (
+                            <div className="mb-4 p-3 bg-blue-50 rounded-md">
+                              <h5 className="text-sm font-medium text-blue-900 mb-2">📝 Contenu actuel :</h5>
+                              <div className="text-xs text-blue-800 space-y-1">
+                                {editingPage.content.title && <p><strong>Titre :</strong> {editingPage.content.title}</p>}
+                                {editingPage.content.subtitle && <p><strong>Sous-titre :</strong> {editingPage.content.subtitle}</p>}
+                                {editingPage.content.description && <p><strong>Description :</strong> {editingPage.content.description}</p>}
+                                {editingPage.content.heroTitle && <p><strong>Titre héros :</strong> {editingPage.content.heroTitle}</p>}
+                                {editingPage.content.heroSubtitle && <p><strong>Sous-titre héros :</strong> {editingPage.content.heroSubtitle}</p>}
+                                {editingPage.content.heroButtonText && <p><strong>Bouton :</strong> {editingPage.content.heroButtonText}</p>}
+                                {editingPage.content.sectionTitle && <p><strong>Titre section :</strong> {editingPage.content.sectionTitle}</p>}
+                              </div>
+                            </div>
+                          )}
+                          
                           <div className="space-y-4">
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-2">
