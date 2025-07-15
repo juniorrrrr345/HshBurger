@@ -70,7 +70,6 @@ export default function HomePage() {
                 <button
                   onClick={() => {
                     setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-                    setIsFarmDropdownOpen(false);
                   }}
                   className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
                 >
@@ -91,7 +90,6 @@ export default function HomePage() {
                       <button
                         onClick={() => {
                           setSelectedCategory('all');
-                          setSelectedFarm('all');
                           setIsCategoryDropdownOpen(false);
                         }}
                         className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
@@ -105,7 +103,6 @@ export default function HomePage() {
                           key={category.id}
                           onClick={() => {
                             setSelectedCategory(category.name);
-                            setSelectedFarm('all');
                             setIsCategoryDropdownOpen(false);
                           }}
                           className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
@@ -121,61 +118,7 @@ export default function HomePage() {
                 )}
               </div>
 
-              {/* Farm Dropdown (only show when Farm category is selected) */}
-              {selectedCategory === 'Farm' && (
-                <div className="relative w-full md:w-auto">
-                  <button
-                    onClick={() => {
-                      setIsFarmDropdownOpen(!isFarmDropdownOpen);
-                      setIsCategoryDropdownOpen(false);
-                    }}
-                    className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
-                  >
-                    <span className="text-sm md:text-base">
-                      {selectedFarm === 'all' 
-                        ? `🏡 Toutes les fermes` 
-                        : `${config.farms.find(farm => farm.name === selectedFarm)?.emoji} ${selectedFarm}`
-                      }
-                    </span>
-                    <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  
-                  {isFarmDropdownOpen && (
-                    <div className="absolute left-0 md:left-0 mt-2 w-full md:w-64 bg-white rounded-lg shadow-xl border z-50 max-h-60 overflow-y-auto">
-                      <div className="py-1">
-                        <button
-                          onClick={() => {
-                            setSelectedFarm('all');
-                            setIsFarmDropdownOpen(false);
-                          }}
-                          className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                            selectedFarm === 'all' ? 'bg-gray-100 font-medium' : ''
-                          }`}
-                        >
-                          🏡 Toutes les fermes
-                        </button>
-                        {config.farms.map((farm) => (
-                          <button
-                            key={farm.id}
-                            onClick={() => {
-                              setSelectedFarm(farm.name);
-                              setIsFarmDropdownOpen(false);
-                            }}
-                            className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
-                              selectedFarm === farm.name ? 'bg-gray-100 font-medium' : ''
-                            }`}
-                          >
-                            <span className="mr-2">{farm.emoji}</span>
-                            {farm.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
+
             </div>
           </div>
 
