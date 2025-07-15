@@ -46,22 +46,22 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section 
-        className="text-white py-20 relative overflow-hidden"
+        className="text-white py-8 relative overflow-hidden"
         style={{ 
           background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}, #333333)` 
         }}
       >
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-6xl font-bold mb-6 filter drop-shadow-lg">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3 filter drop-shadow-lg">
             {config.pageContent.homepage.heroTitle}
           </h2>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto filter drop-shadow-md">
+          <p className="text-base md:text-lg mb-4 max-w-2xl mx-auto filter drop-shadow-md">
             {config.pageContent.homepage.heroSubtitle}
           </p>
           <Link 
             href="/produits" 
-            className="inline-block bg-white/60 backdrop-blur-md text-black px-8 py-3 rounded-lg font-semibold hover:bg-white/80 transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg border border-white/30 shadow-lg"
+            className="inline-block bg-white/60 backdrop-blur-md text-black px-6 py-2 rounded-lg font-semibold hover:bg-white/80 transition-all duration-300 transform hover:scale-105 filter drop-shadow-lg border border-white/30 shadow-lg"
           >
             {config.pageContent.homepage.heroButtonText}
           </Link>
