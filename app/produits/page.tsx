@@ -9,6 +9,8 @@ export default function ProduitsPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
+  const [selectedFarmCategory, setSelectedFarmCategory] = useState<string>('all');
 
   useEffect(() => {
     setConfig(getConfig());
@@ -69,8 +71,9 @@ export default function ProduitsPage() {
               </p>
             </div>
             
-            {/* Category Dropdown */}
-            <div className="relative">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+              {/* Category Dropdown */}
+              <div className="relative">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800"

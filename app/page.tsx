@@ -106,7 +106,14 @@ export default function HomePage() {
                   onClick={() => setIsFarmDropdownOpen(!isFarmDropdownOpen)}
                   className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800"
                 >
-                  <span>🌾 {config.pageContent.homepage.farmDropdownTitle}</span>
+                  <span>
+                    {selectedFarmCategory === 'all' 
+                      ? `🌾 ${config.pageContent.homepage.farmDropdownTitle}` 
+                      : selectedFarmCategory === 'Farm' 
+                        ? '🌾 Produits Farm'
+                        : `🌾 ${selectedFarmCategory}`
+                    }
+                  </span>
                   <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -117,16 +124,33 @@ export default function HomePage() {
                     <div className="py-1">
                       <button
                         onClick={() => {
+                          setSelectedFarmCategory('all');
+                          setSelectedCategory('all');
+                          setIsFarmDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
+                          selectedFarmCategory === 'all' ? 'bg-gray-100 font-medium' : ''
+                        }`}
+                      >
+                        🌾 Tous les produits
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedFarmCategory('Farm');
                           setSelectedCategory('Farm');
                           setIsFarmDropdownOpen(false);
                         }}
-                        className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors"
+                        className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors ${
+                          selectedFarmCategory === 'Farm' ? 'bg-gray-100 font-medium' : ''
+                        }`}
                       >
                         🌾 Produits Farm
                       </button>
                       <button
                         onClick={() => {
                           setIsFarmDropdownOpen(false);
+                          // Ici vous pouvez ajouter la logique pour appeler Farm
+                          window.open('tel:+33123456789', '_blank');
                         }}
                         className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors"
                       >
@@ -135,6 +159,8 @@ export default function HomePage() {
                       <button
                         onClick={() => {
                           setIsFarmDropdownOpen(false);
+                          // Ici vous pouvez ajouter la logique pour envoyer un email
+                          window.open('mailto:farm@cbdshop.fr', '_blank');
                         }}
                         className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors"
                       >
@@ -143,6 +169,8 @@ export default function HomePage() {
                       <button
                         onClick={() => {
                           setIsFarmDropdownOpen(false);
+                          // Ici vous pouvez ajouter la logique pour la localisation
+                          window.open('https://maps.google.com/?q=farm+cbd', '_blank');
                         }}
                         className="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 transition-colors"
                       >
