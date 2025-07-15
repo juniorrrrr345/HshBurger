@@ -42,12 +42,12 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       <Header />
 
       {/* Breadcrumb */}
-      <div className="bg-white/95 backdrop-blur-sm border-b">
+      <div className="bg-white/70 backdrop-blur-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="flex items-center space-x-4">
               <li>
-                <Link href="/" className="text-gray-500 hover:text-green-600 transition-colors">
+                <Link href="/" className="text-gray-700 hover:text-green-600 transition-colors">
                   Accueil
                 </Link>
               </li>
@@ -55,7 +55,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 <span className="text-gray-500">/</span>
               </li>
               <li>
-                <Link href="/produits" className="text-gray-500 hover:text-green-600 transition-colors">
+                <Link href="/produits" className="text-gray-700 hover:text-green-600 transition-colors">
                   Produits
                 </Link>
               </li>
@@ -63,7 +63,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 <span className="text-gray-500">/</span>
               </li>
               <li>
-                <span className="text-gray-900 font-semibold">{product.name}</span>
+                <span className="text-black font-semibold">{product.name}</span>
               </li>
             </ol>
           </nav>

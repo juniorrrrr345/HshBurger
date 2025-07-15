@@ -167,7 +167,7 @@ export default function ProduitsPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6">
               {paginatedProducts.map((product) => (
                 <div key={product.id} className="bg-white/70 backdrop-blur-sm rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                   <div className="aspect-square relative bg-gray-100">
@@ -182,50 +182,50 @@ export default function ProduitsPage() {
                     />
                     {product.popular && (
                       <div 
-                        className="absolute top-2 right-2 text-white px-2 py-1 rounded-full text-xs font-semibold filter drop-shadow-md"
+                        className="absolute top-1 right-1 text-white px-1 py-0.5 rounded-full text-xs font-semibold filter drop-shadow-md"
                         style={{ backgroundColor: config.shopInfo.primaryColor }}
                       >
                         Populaire
                       </div>
                     )}
-                    <div className="absolute top-2 left-2 text-xl filter drop-shadow-md">
+                    <div className="absolute top-1 left-1 text-lg filter drop-shadow-md">
                       {config.categories.find(cat => cat.name === product.category)?.emoji}
                     </div>
                     {product.farm && (
-                      <div className="absolute bottom-2 left-2 text-black px-2 py-1 rounded text-xs font-semibold filter drop-shadow-md bg-white/90 backdrop-blur-sm border border-gray-200">
+                      <div className="absolute bottom-1 left-1 text-black px-1 py-0.5 rounded text-xs font-semibold filter drop-shadow-md bg-white/90 backdrop-blur-sm border border-gray-200">
                         {config.farms.find(farm => farm.name === product.farm)?.emoji} {product.farm}
                       </div>
                     )}
                   </div>
                   
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold mb-2 text-black">
+                  <div className="p-2 sm:p-3 md:p-4">
+                    <h3 className="text-sm sm:text-base md:text-lg font-bold mb-1 sm:mb-2 text-black">
                       {product.name}
                     </h3>
-                    <p className="text-gray-700 mb-3 text-sm">{product.description}</p>
+                    <p className="text-gray-700 mb-2 sm:mb-3 text-xs sm:text-sm">{product.description}</p>
                     
-                    <div className="mb-3">
+                    <div className="mb-2 sm:mb-3">
                       <div className="flex flex-wrap gap-1">
-                        {product.variants.slice(0, 2).map((variant, index) => (
-                          <div key={index} className="flex items-center bg-white/80 px-2 py-1 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
+                        {product.variants.slice(0, 1).map((variant, index) => (
+                          <div key={index} className="flex items-center bg-white/80 px-1 py-0.5 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
                             <span className="text-xs font-medium text-gray-700">{variant.name}</span>
                             <span className="text-xs font-bold ml-1" style={{ color: config.shopInfo.primaryColor }}>
                               €{variant.price}
                             </span>
                           </div>
                         ))}
-                        {product.variants.length > 2 && (
-                          <div className="flex items-center bg-white/80 px-2 py-1 rounded-full">
-                            <span className="text-xs text-gray-500">+{product.variants.length - 2} autres</span>
+                        {product.variants.length > 1 && (
+                          <div className="flex items-center bg-white/80 px-1 py-0.5 rounded-full">
+                            <span className="text-xs text-gray-500">+{product.variants.length - 1} autres</span>
                           </div>
                         )}
                       </div>
                     </div>
                     
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-1 sm:space-x-2">
                       <Link
                         href={`/produit/${product.id}`}
-                        className="flex-1 bg-white/80 text-center py-2 px-3 rounded-lg hover:bg-white transition-all duration-300 transform hover:scale-105 font-medium text-sm text-black"
+                        className="flex-1 bg-white/80 text-center py-1 px-2 sm:py-2 sm:px-3 rounded-lg hover:bg-white transition-all duration-300 transform hover:scale-105 font-medium text-xs sm:text-sm text-black"
                       >
                         Détails
                       </Link>
@@ -233,7 +233,7 @@ export default function ProduitsPage() {
                         href={product.orderLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 text-white text-center py-2 px-3 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium filter drop-shadow-md text-sm"
+                        className="flex-1 text-white text-center py-1 px-2 sm:py-2 sm:px-3 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium filter drop-shadow-md text-xs sm:text-sm"
                         style={{ backgroundColor: config.shopInfo.primaryColor }}
                       >
                         Commander
