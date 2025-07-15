@@ -138,4 +138,4 @@ Ce projet est sous licence MIT.
 
 ---
 
-**🎉 Projet optimisé et prêt pour la production !**
+**🎉 Projet optimisé et prêt pour la production !**# Force deployment

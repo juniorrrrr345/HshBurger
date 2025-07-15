@@ -138,9 +138,15 @@ export default function HomePage() {
       {/* Products Grid */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<<<<<<< HEAD
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6">
             {filteredProducts.slice(0, 8).map((product) => (
               <div key={product.id} className="bg-white/70 backdrop-blur-sm rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+=======
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+            {filteredProducts.slice(0, 6).map((product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+>>>>>>> main
                 <div className="aspect-square relative bg-gray-100">
                   <img
                     src={product.image}
@@ -169,6 +175,7 @@ export default function HomePage() {
                   )}
                 </div>
                 
+<<<<<<< HEAD
                 <div className="p-2 sm:p-3 md:p-4">
                   <h3 className="text-sm sm:text-base md:text-lg font-bold mb-1 sm:mb-2 text-black">
                     {product.name}
@@ -181,6 +188,20 @@ export default function HomePage() {
                         <div key={index} className="flex items-center bg-white/80 px-1 py-0.5 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
                           <span className="text-xs font-medium text-gray-700">{variant.name}</span>
                           <span className="text-xs font-bold ml-1" style={{ color: config.shopInfo.primaryColor }}>
+=======
+                <div className="p-3 md:p-6">
+                  <h3 className="text-sm md:text-xl font-bold mb-2 bg-gradient-to-r from-black to-gray-600 bg-clip-text text-transparent line-clamp-2">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600 mb-3 md:mb-4 text-xs md:text-sm line-clamp-2">{product.description}</p>
+                  
+                  <div className="mb-3 md:mb-4">
+                    <div className="flex flex-wrap gap-1 md:gap-2">
+                      {product.variants.map((variant, index) => (
+                        <div key={index} className="flex items-center bg-gray-100 px-2 md:px-3 py-1 rounded-full border-2 border-transparent hover:border-green-500 transition-colors">
+                          <span className="text-xs md:text-sm font-medium text-gray-700">{variant.name}</span>
+                          <span className="text-xs md:text-sm font-bold ml-1 md:ml-2" style={{ color: config.shopInfo.primaryColor }}>
+>>>>>>> main
                             €{variant.price}
                           </span>
                         </div>
@@ -193,10 +214,17 @@ export default function HomePage() {
                     </div>
                   </div>
                   
+<<<<<<< HEAD
                   <div className="flex space-x-1 sm:space-x-2">
                     <Link
                       href={`/produit/${product.id}`}
                       className="flex-1 bg-white/80 text-center py-1 px-2 sm:py-2 sm:px-3 rounded-lg hover:bg-white transition-all duration-300 transform hover:scale-105 font-medium text-xs sm:text-sm text-black"
+=======
+                  <div className="flex space-x-1 md:space-x-2">
+                    <Link
+                      href={`/produit/${product.id}`}
+                      className="flex-1 bg-gray-100 text-center py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium text-xs md:text-sm"
+>>>>>>> main
                     >
                       Détails
                     </Link>
@@ -204,7 +232,11 @@ export default function HomePage() {
                       href={product.orderLink}
                       target="_blank"
                       rel="noopener noreferrer"
+<<<<<<< HEAD
                       className="flex-1 text-white text-center py-1 px-2 sm:py-2 sm:px-3 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium filter drop-shadow-md text-xs sm:text-sm"
+=======
+                      className="flex-1 text-white text-center py-1.5 md:py-2 px-2 md:px-4 rounded-lg transition-all duration-300 transform hover:scale-105 font-medium filter drop-shadow-md text-xs md:text-sm"
+>>>>>>> main
                       style={{ backgroundColor: config.shopInfo.primaryColor }}
                     >
                       Commander

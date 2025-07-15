@@ -3,8 +3,8 @@ export interface Product {
   name: string;
   description: string;
   image: string;
-  images: string[]; // Images multiples
-  video: string; // URL de la vidéo
+  images?: string[]; // Images multiples optionnelles
+  video?: string; // Vidéo optionnelle
   category: string;
   variants: {
     name: string;

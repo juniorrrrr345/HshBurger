@@ -32,6 +32,7 @@ export default function Header({ currentPage = '' }: HeaderProps) {
     setLogoError(true);
   };
 
+<<<<<<< HEAD
   return (
     <header className="shadow-lg relative backdrop-blur-md border-b border-gray-200" style={{
       backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
@@ -69,6 +70,12 @@ export default function Header({ currentPage = '' }: HeaderProps) {
               {config.shopInfo.description}
             </p>
           </div>
+=======
+        <Link href="/" className="inline-flex items-center space-x-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-black hover:scale-105 transition-transform">
+            {config.shopInfo.name}
+          </h1>
+>>>>>>> main
         </Link>
       </div>
 

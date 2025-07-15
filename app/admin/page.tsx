@@ -311,8 +311,9 @@ export default function AdminPage() {
                 </div>
 
                 {/* Products list */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {config.products.map((product) => (
+<<<<<<< HEAD
                     <div key={product.id} className="bg-gray-50 rounded-lg p-4">
                       <div className="flex justify-between items-center">
                         <div className="flex-1">
@@ -338,6 +339,35 @@ export default function AdminPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                           </button>
+=======
+                    <div key={product.id} className="bg-gray-50 rounded-lg p-4 space-y-3">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-start">
+                          <h4 className="font-semibold text-gray-900 text-base">{product.name}</h4>
+                          <div className="flex flex-col space-y-1 ml-2">
+                            <button
+                              onClick={() => setEditingProduct(product)}
+                              className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+                            >
+                              Modifier
+                            </button>
+                            <button
+                              onClick={() => deleteProduct(product.id)}
+                              className="text-red-600 hover:text-red-800 text-sm px-2 py-1 bg-red-50 rounded hover:bg-red-100 transition-colors"
+                            >
+                              Supprimer
+                            </button>
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600 font-medium">{product.category}</p>
+                        <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {product.variants.map((variant, index) => (
+                            <span key={index} className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                              {variant.name}: €{variant.price}
+                            </span>
+                          ))}
+>>>>>>> main
                         </div>
                       </div>
                     </div>
@@ -550,31 +580,31 @@ export default function AdminPage() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {config.categories.map((category) => (
-                    <div key={category.id} className="bg-gray-50 rounded-lg p-4 space-y-2">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
+                    <div key={category.id} className="bg-gray-50 rounded-lg p-4 space-y-3">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-start">
                           <div className="flex items-center space-x-2">
                             <span className="text-2xl">{category.emoji}</span>
-                            <h4 className="font-semibold text-gray-900">{category.name}</h4>
+                            <h4 className="font-semibold text-gray-900 text-base">{category.name}</h4>
                           </div>
-                          <p className="text-sm text-gray-500">{category.description}</p>
+                          <div className="flex flex-col space-y-1 ml-2">
+                            <button
+                              onClick={() => setEditingCategory(category)}
+                              className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+                            >
+                              Modifier
+                            </button>
+                            <button
+                              onClick={() => deleteCategory(category.id)}
+                              className="text-red-600 hover:text-red-800 text-sm px-2 py-1 bg-red-50 rounded hover:bg-red-100 transition-colors"
+                            >
+                              Supprimer
+                            </button>
+                          </div>
                         </div>
-                        <div className="flex flex-col space-y-1">
-                          <button
-                            onClick={() => setEditingCategory(category)}
-                            className="text-blue-600 hover:text-blue-800 text-sm"
-                          >
-                            Modifier
-                          </button>
-                          <button
-                            onClick={() => deleteCategory(category.id)}
-                            className="text-red-600 hover:text-red-800 text-sm"
-                          >
-                            Supprimer
-                          </button>
-                        </div>
+                        <p className="text-sm text-gray-500 leading-relaxed">{category.description}</p>
                       </div>
                     </div>
                   ))}
@@ -656,31 +686,31 @@ export default function AdminPage() {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {config.farms.map((farm) => (
-                    <div key={farm.id} className="bg-gray-50 rounded-lg p-4 space-y-2">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
+                    <div key={farm.id} className="bg-gray-50 rounded-lg p-4 space-y-3">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-start">
                           <div className="flex items-center space-x-2">
                             <span className="text-2xl">{farm.emoji}</span>
-                            <h4 className="font-semibold text-gray-900">{farm.name}</h4>
+                            <h4 className="font-semibold text-gray-900 text-base">{farm.name}</h4>
                           </div>
-                          <p className="text-sm text-gray-500">{farm.description}</p>
+                          <div className="flex flex-col space-y-1 ml-2">
+                            <button
+                              onClick={() => setEditingFarm(farm)}
+                              className="text-blue-600 hover:text-blue-800 text-sm px-2 py-1 bg-blue-50 rounded hover:bg-blue-100 transition-colors"
+                            >
+                              Modifier
+                            </button>
+                            <button
+                              onClick={() => deleteFarm(farm.id)}
+                              className="text-red-600 hover:text-red-800 text-sm px-2 py-1 bg-red-50 rounded hover:bg-red-100 transition-colors"
+                            >
+                              Supprimer
+                            </button>
+                          </div>
                         </div>
-                        <div className="flex flex-col space-y-1">
-                          <button
-                            onClick={() => setEditingFarm(farm)}
-                            className="text-blue-600 hover:text-blue-800 text-sm"
-                          >
-                            Modifier
-                          </button>
-                          <button
-                            onClick={() => deleteFarm(farm.id)}
-                            className="text-red-600 hover:text-red-800 text-sm"
-                          >
-                            Supprimer
-                          </button>
-                        </div>
+                        <p className="text-sm text-gray-500 leading-relaxed">{farm.description}</p>
                       </div>
                     </div>
                   ))}
