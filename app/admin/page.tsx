@@ -867,6 +867,26 @@ export default function AdminPage() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Nom du volet roulant catégories</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.dropdownTitle}
+                        onChange={(e) => updatePageContent('homepage', 'dropdownTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Filtrer par catégorie"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Nom du volet roulant Farm</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.farmDropdownTitle}
+                        onChange={(e) => updatePageContent('homepage', 'farmDropdownTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Appeler Farm"
+                      />
+                    </div>
                   </div>
                 </div>
 
