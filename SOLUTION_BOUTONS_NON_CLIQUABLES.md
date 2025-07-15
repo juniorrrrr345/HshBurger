@@ -14,7 +14,7 @@ Anciennes données dans le localStorage qui bloquent les nouvelles fonctionnalit
 
 ### Méthode 1 : Page de réparation automatique
 
-1. **Aller sur** : `https://qencorroe-r5i8-git-main-huniors-projects.vercel.app/fix-storage.html`
+1. **Aller sur** : `https://qencorroe-r5i8-git-main-huniors-projects.vercel.app/fix-storage`
 2. **Cliquer** sur "🔧 Réparer maintenant"
 3. **Attendre** la réparation automatique
 4. **Laisser** la redirection se faire automatiquement
