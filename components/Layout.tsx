@@ -113,13 +113,13 @@ export default function Layout({ children }: LayoutProps) {
                 )}
               </div>
               
-              <Link href="/pages/livraison" className="text-gray-700 hover:text-primary transition-colors">
+              <Link href="/livraison" className="text-gray-700 hover:text-primary transition-colors">
                 Livraison
               </Link>
-              <Link href="/pages/qualite" className="text-gray-700 hover:text-primary transition-colors">
+              <Link href="/qualite" className="text-gray-700 hover:text-primary transition-colors">
                 Qualité
               </Link>
-              <Link href="/pages/a-propos" className="text-gray-700 hover:text-primary transition-colors">
+              <Link href="/a-propos" className="text-gray-700 hover:text-primary transition-colors">
                 À propos
               </Link>
               <Link href="/contact" className="text-gray-700 hover:text-primary transition-colors">
@@ -164,7 +164,7 @@ export default function Layout({ children }: LayoutProps) {
                 {pages.map((page) => (
                   <Link 
                     key={page.id} 
-                    href={`/pages/${page.slug}`} 
+                    href={`/${page.slug}`} 
                     className="block px-3 py-2 text-gray-700 hover:text-primary transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
