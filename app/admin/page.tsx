@@ -15,10 +15,19 @@ export default function AdminPage() {
   const [editingFarm, setEditingFarm] = useState<Farm | null>(null);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
 
+  // Debug: surveiller les changements d'editingPage
   useEffect(() => {
+    console.log('🔄 editingPage changed:', editingPage);
+  }, [editingPage]);
+
+  useEffect(() => {
+    console.log('🔄 Loading config...');
     const loadedConfig = getConfig();
+    console.log('📋 Loaded config:', loadedConfig);
+    
     // S'assurer que la propriété pages existe
     if (!loadedConfig.pages) {
+      console.log('➕ Creating default pages');
       loadedConfig.pages = [
         { id: 1, name: "Accueil", href: "/", isDefault: true },
         { id: 2, name: "Produits", href: "/produits", isDefault: true },
@@ -26,7 +35,9 @@ export default function AdminPage() {
         { id: 4, name: "Réseaux Sociaux", href: "/reseaux-sociaux", isDefault: true }
       ];
     }
+    console.log('📄 Final config.pages:', loadedConfig.pages);
     setConfig(loadedConfig);
+    console.log('✅ Config set in state');
   }, []);
 
   const handleSave = async () => {
@@ -227,26 +238,46 @@ export default function AdminPage() {
 
   // Page management
   const addPage = () => {
-    console.log('addPage function called');
-    if (!config) {
-      console.log('No config found');
-      return;
+    try {
+      console.log('🚀 addPage function called');
+      console.log('📊 config exists:', !!config);
+      
+      if (!config) {
+        console.error('❌ No config found');
+        alert('Erreur: Configuration non trouvée');
+        return;
+      }
+      
+      // S'assurer que pages existe
+      if (!config.pages) {
+        console.log('➕ Creating pages array');
+        config.pages = [];
+      }
+      
+      const newPage: Page = {
+        id: getNextId(config.pages || []),
+        name: '',
+        href: '',
+        isDefault: false
+      };
+      
+      console.log('📄 New page created:', newPage);
+      console.log('🔄 Setting editingPage...');
+      console.log('editingPage before:', editingPage);
+      
+      setEditingPage(newPage);
+      
+      console.log('✅ addPage completed');
+      
+      // Vérifier après un délai si editingPage a changé
+      setTimeout(() => {
+        console.log('📋 editingPage after timeout:', editingPage);
+      }, 100);
+      
+    } catch (error) {
+      console.error('❌ Error in addPage:', error);
+      alert('Erreur lors de l\'ajout de page: ' + error);
     }
-    // S'assurer que pages existe
-    if (!config.pages) {
-      console.log('Creating pages array');
-      config.pages = [];
-    }
-    const newPage: Page = {
-      id: getNextId(config.pages || []),
-      name: '',
-      href: '',
-      isDefault: false
-    };
-    console.log('New page created:', newPage);
-    console.log('Setting editingPage...');
-    setEditingPage(newPage);
-    console.log('addPage completed');
   };
 
   const savePage = () => {
@@ -1406,17 +1437,65 @@ export default function AdminPage() {
                 {/* Navigation Management Section */}
                 <div className="bg-gray-50 rounded-lg p-6">
                   <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => {
-                          console.log('TEST BUTTON CLICKED!');
-                          alert('Bouton de test fonctionne !');
-                        }}
-                        className="bg-yellow-500 text-white px-3 py-2 rounded-md hover:bg-yellow-600 transition-colors text-sm"
-                      >
-                        Test
-                      </button>
+                    <div>
+                      <h4 className="text-md font-semibold text-gray-800">Gestion de la Navigation</h4>
+                      <div className="text-sm text-gray-600 mt-1">
+                        Pages: {config?.pages?.length || 0} | 
+                        EditingPage: {editingPage ? `${editingPage.name} (${editingPage.href})` : 'null'}
+                      </div>
+                    </div>
+                    <div className="flex space-x-1 flex-wrap">
+                                             <button
+                         onClick={() => {
+                           console.log('TEST BUTTON CLICKED!');
+                           alert('Bouton de test fonctionne !');
+                         }}
+                         className="bg-yellow-500 text-white px-3 py-2 rounded-md hover:bg-yellow-600 transition-colors text-sm"
+                       >
+                         Test
+                       </button>
+                                               <button
+                          onClick={() => {
+                            console.log('=== DEBUG INFO ===');
+                            console.log('config:', config);
+                            console.log('config.pages:', config?.pages);
+                            console.log('editingPage:', editingPage);
+                            console.log('typeof addPage:', typeof addPage);
+                            console.log('typeof setEditingPage:', typeof setEditingPage);
+                          }}
+                          className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-colors text-sm"
+                        >
+                          Debug
+                        </button>
+                                                 <button
+                           onClick={() => {
+                             console.log('🧪 Test setEditingPage direct');
+                             const testPage = { id: 999, name: 'Test', href: '/test', isDefault: false };
+                             console.log('Setting test page:', testPage);
+                             setEditingPage(testPage);
+                           }}
+                           className="bg-purple-500 text-white px-3 py-2 rounded-md hover:bg-purple-600 transition-colors text-sm"
+                         >
+                           Test Modal
+                         </button>
+                         <button
+                           onClick={() => {
+                             console.log('🔧 Test simple add page');
+                             if (!config) {
+                               alert('Config manquante!');
+                               return;
+                             }
+                             const newTestPage = { id: Date.now(), name: 'Test Simple', href: '/test-simple', isDefault: false };
+                             const newPages = [...(config.pages || []), newTestPage];
+                             console.log('Adding page directly to config:', newTestPage);
+                             console.log('New pages array:', newPages);
+                             setConfig({ ...config, pages: newPages });
+                             alert('Page ajoutée directement!');
+                           }}
+                           className="bg-orange-500 text-white px-3 py-2 rounded-md hover:bg-orange-600 transition-colors text-sm"
+                         >
+                           Add Direct
+                         </button>
                       <button
                         onClick={() => {
                           console.log('Bouton Ajouter cliqué');
