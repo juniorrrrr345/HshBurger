@@ -14,6 +14,7 @@ export default function AdminPage() {
   const [editingSocial, setEditingSocial] = useState<SocialMediaLink | null>(null);
   const [editingFarm, setEditingFarm] = useState<Farm | null>(null);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
+  const [editingPageContent, setEditingPageContent] = useState<Page | null>(null);
 
   useEffect(() => {
     const loadedConfig = getConfig();
@@ -307,6 +308,30 @@ export default function AdminPage() {
 
   const cancelPageEdit = () => {
     setEditingPage(null);
+  };
+
+  const editPageContent = (page: Page) => {
+    setEditingPageContent({ ...page });
+  };
+
+  const savePageContent = () => {
+    if (!editingPageContent || !config) return;
+    
+    const currentPages = config.pages || [];
+    const newPages = currentPages.map(p => 
+      p.id === editingPageContent.id ? { ...editingPageContent } : p
+    );
+    
+    const updatedConfig = { ...config, pages: newPages };
+    setConfig(updatedConfig);
+    setEditingPageContent(null);
+    
+    setMessage('Contenu de la page sauvegardé !');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const cancelPageContentEdit = () => {
+    setEditingPageContent(null);
   };
 
   if (!config) {
@@ -1440,6 +1465,12 @@ export default function AdminPage() {
                             className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
                           >
                             Modifier
+                          </button>
+                          <button
+                            onClick={() => editPageContent(page)}
+                            className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
+                          >
+                            Contenu
                           </button>
                           <button
                             onClick={() => deletePage(page.id)}
