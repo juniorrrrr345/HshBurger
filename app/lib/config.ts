@@ -15,6 +15,25 @@ export interface SiteConfig {
     name: string;
     description: string;
   };
+  pageContent: {
+    homepage: {
+      heroTitle: string;
+      heroSubtitle: string;
+      heroButtonText: string;
+      sectionTitle: string;
+    };
+    contact: {
+      title: string;
+      subtitle: string;
+      description: string;
+    };
+    socialMedia: {
+      title: string;
+      subtitle: string;
+      ctaTitle: string;
+      ctaSubtitle: string;
+    };
+  };
 }
 
 export const defaultConfig: SiteConfig = {
@@ -33,6 +52,25 @@ export const defaultConfig: SiteConfig = {
   shopInfo: {
     name: "CBD Shop Premium",
     description: "Votre boutique CBD de confiance"
+  },
+  pageContent: {
+    homepage: {
+      heroTitle: "Produits CBD Premium",
+      heroSubtitle: "Découvrez notre sélection de produits CBD de qualité supérieure",
+      heroButtonText: "Voir nos produits",
+      sectionTitle: "Nos Produits Populaires"
+    },
+    contact: {
+      title: "Contactez-nous",
+      subtitle: "Nous sommes là pour vous aider",
+      description: "Pour toute commande ou question, contactez-nous directement via notre plateforme de commande."
+    },
+    socialMedia: {
+      title: "Suivez-nous sur les réseaux sociaux",
+      subtitle: "Restez connecté avec nous pour les dernières actualités et offres exclusives",
+      ctaTitle: "Rejoignez notre communauté !",
+      ctaSubtitle: "Soyez les premiers informés de nos nouvelles offres et produits"
+    }
   }
 };
 

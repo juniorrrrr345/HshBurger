@@ -6,7 +6,7 @@ import { SiteConfig, getConfig, saveConfig } from '../lib/config';
 
 export default function AdminPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
-  const [activeTab, setActiveTab] = useState('social');
+  const [activeTab, setActiveTab] = useState('pages');
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -37,6 +37,20 @@ export default function AdminPage() {
       [section]: {
         ...config[section],
         [key]: value
+      }
+    });
+  };
+
+  const updatePageContent = (page: keyof SiteConfig['pageContent'], key: string, value: string) => {
+    if (!config) return;
+    setConfig({
+      ...config,
+      pageContent: {
+        ...config.pageContent,
+        [page]: {
+          ...config.pageContent[page],
+          [key]: value
+        }
       }
     });
   };
@@ -79,6 +93,16 @@ export default function AdminPage() {
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8 px-6">
               <button
+                onClick={() => setActiveTab('pages')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'pages'
+                    ? 'border-green-500 text-green-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Pages
+              </button>
+              <button
                 onClick={() => setActiveTab('social')}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'social'
@@ -118,6 +142,155 @@ export default function AdminPage() {
                 message.includes('succès') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
               }`}>
                 {message}
+              </div>
+            )}
+
+            {/* Pages Tab */}
+            {activeTab === 'pages' && (
+              <div className="space-y-8">
+                <h3 className="text-lg font-medium text-gray-900">Configuration des Pages</h3>
+                
+                {/* Homepage Section */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="text-md font-semibold text-gray-800 mb-4">Page d'accueil</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Titre principal
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.heroTitle}
+                        onChange={(e) => updatePageContent('homepage', 'heroTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Sous-titre
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.heroSubtitle}
+                        onChange={(e) => updatePageContent('homepage', 'heroSubtitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Texte du bouton
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.heroButtonText}
+                        onChange={(e) => updatePageContent('homepage', 'heroButtonText', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Titre de la section produits
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.sectionTitle}
+                        onChange={(e) => updatePageContent('homepage', 'sectionTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Section */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="text-md font-semibold text-gray-800 mb-4">Page Contact</h4>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Titre
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.contact.title}
+                        onChange={(e) => updatePageContent('contact', 'title', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Sous-titre
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.contact.subtitle}
+                        onChange={(e) => updatePageContent('contact', 'subtitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Description
+                      </label>
+                      <textarea
+                        value={config.pageContent.contact.description}
+                        onChange={(e) => updatePageContent('contact', 'description', e.target.value)}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social Media Section */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="text-md font-semibold text-gray-800 mb-4">Page Réseaux Sociaux</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Titre principal
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.socialMedia.title}
+                        onChange={(e) => updatePageContent('socialMedia', 'title', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Sous-titre
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.socialMedia.subtitle}
+                        onChange={(e) => updatePageContent('socialMedia', 'subtitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Titre CTA
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.socialMedia.ctaTitle}
+                        onChange={(e) => updatePageContent('socialMedia', 'ctaTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Sous-titre CTA
+                      </label>
+                      <input
+                        type="text"
+                        value={config.pageContent.socialMedia.ctaSubtitle}
+                        onChange={(e) => updatePageContent('socialMedia', 'ctaSubtitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 

@@ -1,5 +1,8 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { SiteConfig, getConfig } from './lib/config';
 
 // Données statiques des produits avec plusieurs variantes de prix
 const products = [
@@ -71,6 +74,18 @@ const products = [
 ];
 
 export default function HomePage() {
+  const [config, setConfig] = useState<SiteConfig | null>(null);
+
+  useEffect(() => {
+    setConfig(getConfig());
+  }, []);
+
+  if (!config) {
+    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600"></div>
+    </div>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -78,12 +93,13 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">CBD Shop Premium</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{config.shopInfo.name}</h1>
             </div>
             <nav className="flex space-x-8">
               <Link href="/" className="text-gray-700 hover:text-green-600">Accueil</Link>
               <Link href="/produits" className="text-gray-700 hover:text-green-600">Produits</Link>
               <Link href="/contact" className="text-gray-700 hover:text-green-600">Contact</Link>
+              <Link href="/reseaux-sociaux" className="text-gray-700 hover:text-green-600">Réseaux Sociaux</Link>
             </nav>
           </div>
         </div>
@@ -93,16 +109,16 @@ export default function HomePage() {
       <section className="bg-gradient-to-r from-green-600 to-green-800 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            Produits CBD Premium
+            {config.pageContent.homepage.heroTitle}
           </h2>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Découvrez notre sélection de produits CBD de qualité supérieure
+            {config.pageContent.homepage.heroSubtitle}
           </p>
           <Link 
             href="/produits" 
             className="inline-block bg-white text-green-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
           >
-            Voir nos produits
+            {config.pageContent.homepage.heroButtonText}
           </Link>
         </div>
       </section>
@@ -110,7 +126,7 @@ export default function HomePage() {
       {/* Products Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Nos Produits Populaires</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{config.pageContent.homepage.sectionTitle}</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.slice(0, 3).map((product) => (
@@ -197,30 +213,9 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">CBD Shop Premium</h3>
-              <p className="text-gray-400">Votre boutique CBD de confiance</p>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Liens Utiles</h4>
-              <ul className="space-y-2">
-                <li><Link href="/produits" className="text-gray-400 hover:text-white">Produits</Link></li>
-                <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Contact</h4>
-              <p className="text-gray-400">Email: contact@cbdshop.fr</p>
-              <p className="text-gray-400">Tél: +33 1 23 45 67 89</p>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 CBD Shop Premium. Tous droits réservés.</p>
-          </div>
+      <footer className="bg-gray-800 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-gray-400">&copy; 2024 {config.shopInfo.name}. Tous droits réservés.</p>
         </div>
       </footer>
     </div>
