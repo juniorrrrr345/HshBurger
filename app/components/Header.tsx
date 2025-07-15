@@ -41,12 +41,8 @@ export default function Header({ currentPage = '' }: HeaderProps) {
         </div>
 
         <Link href="/" className="inline-flex items-center space-x-2">
-          <h1 className="text-3xl md:text-4xl font-bold text-black filter drop-shadow-lg hover:scale-105 transition-transform relative group animate-pulse-glow">
-            <span className="bg-gradient-to-r from-black via-gray-800 to-black bg-clip-text text-transparent">
-              {config.shopInfo.name}
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 group-hover:animate-shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/10 transform -skew-x-12 animate-float"></div>
+          <h1 className="text-3xl md:text-4xl font-bold text-black hover:scale-105 transition-transform">
+            {config.shopInfo.name}
           </h1>
         </Link>
         <p className="text-sm md:text-base mt-2 text-gray-600 italic">
