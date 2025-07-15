@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SiteConfig, getConfigAsync, saveConfigAsync, getNextId, Product, Category, SocialMediaLink, Farm, Page } from '../lib/config';
 import ErrorBoundary from './components/ErrorBoundary';
+import FileUpload from './components/FileUpload';
 
 export default function AdminPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -48,6 +49,31 @@ export default function AdminPage() {
     
     setIsSaving(true);
     try {
+      // Collecter toutes les URLs utilisées
+      const usedUrls: string[] = [];
+      
+      // URLs des produits
+      config.products.forEach(product => {
+        if (product.image) usedUrls.push(product.image);
+        if (product.images) usedUrls.push(...product.images);
+        if (product.video) usedUrls.push(product.video);
+      });
+      
+      // URLs de la boutique
+      if (config.shopInfo.logoUrl) usedUrls.push(config.shopInfo.logoUrl);
+      if (config.shopInfo.backgroundImage) usedUrls.push(config.shopInfo.backgroundImage);
+      
+      // Nettoyer les fichiers inutilisés
+      try {
+        await fetch('/api/cleanup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usedUrls })
+        });
+      } catch (error) {
+        console.error('Erreur lors du nettoyage:', error);
+      }
+      
       const success = await saveConfigAsync(config);
       if (success) {
         setMessage('Configuration sauvegardée avec succès!');
@@ -457,8 +483,47 @@ export default function AdminPage() {
                             </button>
                           </div>
                         </div>
+                        
+                        {/* Image principale */}
+                        {product.image && (
+                          <div className="relative">
+                            <img 
+                              src={product.image} 
+                              alt={product.name}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                            {product.popular && (
+                              <span className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-medium">
+                                ⭐ Populaire
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        
                         <p className="text-sm text-gray-600 font-medium">{product.category}</p>
                         <p className="text-sm text-gray-500 leading-relaxed">{product.description}</p>
+                        
+                        {/* Images supplémentaires */}
+                        {product.images && product.images.length > 0 && (
+                          <div className="flex space-x-1 overflow-x-auto">
+                            {product.images.map((img, index) => (
+                              <img 
+                                key={index}
+                                src={img} 
+                                alt={`${product.name} ${index + 1}`}
+                                className="w-12 h-12 object-cover rounded border flex-shrink-0"
+                              />
+                            ))}
+                          </div>
+                        )}
+                        
+                        {/* Vidéo */}
+                        {product.video && (
+                          <div className="text-xs text-blue-600">
+                            🎥 Vidéo disponible
+                          </div>
+                        )}
+                        
                         <div className="flex flex-wrap gap-1">
                           {product.variants.map((variant, index) => (
                             <span key={index} className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
@@ -502,37 +567,91 @@ export default function AdminPage() {
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                            <input
-                              type="url"
-                              value={editingProduct.image}
-                              onChange={(e) => setEditingProduct({...editingProduct, image: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Image principale</label>
+                            {editingProduct.image && (
+                              <div className="mb-3">
+                                <img 
+                                  src={editingProduct.image} 
+                                  alt="Image principale" 
+                                  className="w-32 h-32 object-cover rounded-lg border"
+                                />
+                                <button
+                                  onClick={() => setEditingProduct({...editingProduct, image: ''})}
+                                  className="mt-2 text-red-600 hover:text-red-800 text-sm"
+                                >
+                                  Supprimer l'image
+                                </button>
+                              </div>
+                            )}
+                            <FileUpload
+                              onUpload={(url) => setEditingProduct({...editingProduct, image: url})}
+                              accept="image/*"
+                              label="📸 Choisir une image principale"
+                              className="mb-4"
                             />
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Images multiples (URLs séparées par des virgules)</label>
-                            <textarea
-                              value={editingProduct.images?.join(', ') || ''}
-                              onChange={(e) => setEditingProduct({...editingProduct, images: e.target.value.split(',').map(url => url.trim()).filter(url => url)})}
-                              rows={3}
-                              placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Images supplémentaires</label>
+                            {editingProduct.images && editingProduct.images.length > 0 && (
+                              <div className="mb-3">
+                                <div className="grid grid-cols-4 gap-2 mb-2">
+                                  {editingProduct.images.map((img, index) => (
+                                    <div key={index} className="relative">
+                                      <img 
+                                        src={img} 
+                                        alt={`Image ${index + 1}`} 
+                                        className="w-16 h-16 object-cover rounded border"
+                                      />
+                                      <button
+                                        onClick={() => {
+                                          const newImages = editingProduct.images?.filter((_, i) => i !== index) || [];
+                                          setEditingProduct({...editingProduct, images: newImages});
+                                        }}
+                                        className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs"
+                                      >
+                                        ×
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            <FileUpload
+                              onUpload={(url) => {
+                                const newImages = [...(editingProduct.images || []), url];
+                                setEditingProduct({...editingProduct, images: newImages});
+                              }}
+                              accept="image/*"
+                              multiple={true}
+                              label="📸 Ajouter des images supplémentaires"
+                              className="mb-4"
                             />
-                            <p className="text-xs text-gray-500 mt-1">Séparez les URLs par des virgules</p>
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Vidéo URL (optionnel)</label>
-                            <input
-                              type="url"
-                              value={editingProduct.video || ''}
-                              onChange={(e) => setEditingProduct({...editingProduct, video: e.target.value})}
-                              placeholder="https://example.com/video.mp4"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Vidéo (optionnel)</label>
+                            {editingProduct.video && (
+                              <div className="mb-3">
+                                <video 
+                                  src={editingProduct.video} 
+                                  controls 
+                                  className="w-full max-w-md rounded-lg border"
+                                />
+                                <button
+                                  onClick={() => setEditingProduct({...editingProduct, video: ''})}
+                                  className="mt-2 text-red-600 hover:text-red-800 text-sm"
+                                >
+                                  Supprimer la vidéo
+                                </button>
+                              </div>
+                            )}
+                            <FileUpload
+                              onUpload={(url) => setEditingProduct({...editingProduct, video: url})}
+                              accept="video/*"
+                              label="🎥 Choisir une vidéo"
+                              className="mb-4"
                             />
-                            <p className="text-xs text-gray-500 mt-1">URL directe vers un fichier vidéo (MP4, WebM, etc.)</p>
                           </div>
                           
                           <div>
@@ -1192,13 +1311,27 @@ export default function AdminPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo (URL image)</label>
-                    <input
-                      type="url"
-                      value={config.shopInfo.logoUrl}
-                      onChange={(e) => updateConfig('shopInfo', { logoUrl: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="https://..."
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo</label>
+                    {config.shopInfo.logoUrl && (
+                      <div className="mb-3">
+                        <img 
+                          src={config.shopInfo.logoUrl} 
+                          alt="Logo" 
+                          className="w-16 h-16 object-contain rounded-lg border"
+                        />
+                        <button
+                          onClick={() => updateConfig('shopInfo', { logoUrl: '' })}
+                          className="mt-2 text-red-600 hover:text-red-800 text-sm"
+                        >
+                          Supprimer le logo
+                        </button>
+                      </div>
+                    )}
+                    <FileUpload
+                      onUpload={(url) => updateConfig('shopInfo', { logoUrl: url })}
+                      accept="image/*"
+                      label="🏷️ Choisir un logo"
+                      className="mb-4"
                     />
                   </div>
 
@@ -1264,13 +1397,27 @@ export default function AdminPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Image de fond (URL)</label>
-                    <input
-                      type="url"
-                      value={config.shopInfo.backgroundImage}
-                      onChange={(e) => updateConfig('shopInfo', { backgroundImage: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="https://..."
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Image de fond</label>
+                    {config.shopInfo.backgroundImage && (
+                      <div className="mb-3">
+                        <img 
+                          src={config.shopInfo.backgroundImage} 
+                          alt="Image de fond" 
+                          className="w-32 h-20 object-cover rounded-lg border"
+                        />
+                        <button
+                          onClick={() => updateConfig('shopInfo', { backgroundImage: '' })}
+                          className="mt-2 text-red-600 hover:text-red-800 text-sm"
+                        >
+                          Supprimer l'image de fond
+                        </button>
+                      </div>
+                    )}
+                    <FileUpload
+                      onUpload={(url) => updateConfig('shopInfo', { backgroundImage: url })}
+                      accept="image/*"
+                      label="🖼️ Choisir une image de fond"
+                      className="mb-4"
                     />
                     <p className="text-xs text-gray-500 mt-1">Laissez vide pour utiliser la couleur de fond</p>
                   </div>
