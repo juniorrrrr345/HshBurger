@@ -9,9 +9,7 @@ import OptimizedImage from './components/OptimizedImage';
 export default function HomePage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedFarm, setSelectedFarm] = useState<string>('all');
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
-  const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
 
   useEffect(() => {
     setConfig(getConfig());
@@ -23,16 +21,11 @@ export default function HomePage() {
     </div>;
   }
 
-  // Filtrer les produits selon la catégorie et la ferme sélectionnées
+  // Filtrer les produits selon la catégorie sélectionnée
   let filteredProducts = config.products;
   
   if (selectedCategory !== 'all') {
     filteredProducts = filteredProducts.filter(product => product.category === selectedCategory);
-  }
-  
-  // Si Farm est sélectionnée et qu'une ferme spécifique est choisie
-  if (selectedCategory === 'Farm' && selectedFarm !== 'all') {
-    filteredProducts = filteredProducts.filter(product => product.farm === selectedFarm);
   }
 
   return (
