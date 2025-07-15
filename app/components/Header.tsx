@@ -107,8 +107,7 @@ export default function Header({ currentPage = '' }: HeaderProps) {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset transition-colors"
                 style={{ 
-                  backgroundColor: isMenuOpen ? config.shopInfo.primaryColor : 'transparent',
-                  focusRingColor: config.shopInfo.primaryColor
+                  backgroundColor: isMenuOpen ? config.shopInfo.primaryColor : 'transparent'
                 }}
               >
                 <span className="sr-only">Ouvrir le menu</span>
