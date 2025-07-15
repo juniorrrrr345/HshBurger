@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Layout from '@/components/Layout';
 import ProductCard from '@/components/ProductCard';
+import LoadingSpinner from '@/components/admin/LoadingSpinner';
 import { useProducts } from '@/hooks/useShop';
 import { Product } from '@/types';
 import { 
@@ -15,42 +16,32 @@ import {
 export default function ProductDetailPage() {
   const { id } = useParams();
   const router = useRouter();
-  const { getProductById, products } = useProducts();
+  const { getProductById, products, loading } = useProducts();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedPriceIndex, setSelectedPriceIndex] = useState(0);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    if (id) {
-      const productData = getProductById(id as string);
-      if (productData) {
-        setProduct(productData);
-        
-        // Produits similaires
-        const related = products
-          .filter(p => p.id !== id && p.category === productData.category && p.inStock)
-          .slice(0, 4);
-        setRelatedProducts(related);
-      }
+    if (loading || !id) return;
+    
+    const productData = getProductById(id as string);
+    if (productData) {
+      setProduct(productData);
+      
+      // Produits similaires
+      const related = products
+        .filter(p => p.id !== id && p.category === productData.category && p.inStock)
+        .slice(0, 4);
+      setRelatedProducts(related);
     }
-  }, [id, getProductById, products]);
+  }, [id, getProductById, products, loading]);
 
-  if (!product) {
-    return (
-      <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="loading-spinner mx-auto mb-4"></div>
-            <p>Chargement du produit...</p>
-          </div>
-        </div>
-      </Layout>
-    );
+  if (loading || !product) {
+    return <LoadingSpinner />;
   }
 
   const selectedPrice = product.prices[selectedPriceIndex];
-  const totalPrice = selectedPrice.price * quantity;
 
   return (
     <Layout>

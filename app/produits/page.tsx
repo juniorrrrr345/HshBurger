@@ -3,19 +3,24 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import ProductCard from '@/components/ProductCard';
+import LoadingSpinner from '@/components/admin/LoadingSpinner';
 import { useProducts, useCategories } from '@/hooks/useShop';
 import { Search, Filter, Grid, List } from 'lucide-react';
 import { Product } from '@/types';
 
 export default function ProduitsPage() {
-  const { products, loading } = useProducts();
-  const { categories } = useCategories();
+  const { products, loading: productsLoading } = useProducts();
+  const { categories, loading: categoriesLoading } = useCategories();
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  if (productsLoading || categoriesLoading) {
+    return <LoadingSpinner />;
+  }
 
   useEffect(() => {
     let filtered = [...products];
@@ -62,15 +67,7 @@ export default function ProduitsPage() {
     setFilteredProducts(filtered);
   }, [products, searchTerm, selectedCategory, sortBy]);
 
-  if (loading) {
-    return (
-      <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="loading-spinner"></div>
-        </div>
-      </Layout>
-    );
-  }
+
 
   return (
     <Layout>

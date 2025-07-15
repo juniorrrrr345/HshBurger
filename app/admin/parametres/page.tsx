@@ -73,6 +73,17 @@ export default function AdminParametresPage() {
     }, 500);
   };
 
+  // Fonction pour réinitialiser les données
+  const resetToDefaults = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('cbd-products');
+      localStorage.removeItem('cbd-categories');
+      localStorage.removeItem('cbd-pages');
+      localStorage.removeItem('cbd-shop-settings');
+      window.location.reload();
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -314,10 +325,8 @@ export default function AdminParametresPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes les données ? Cette action remplacera tout par les données par défaut.')) {
-                      const { storage } = require('@/lib/storage');
-                      storage.resetAllData();
-                      window.location.reload();
+                    if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes les données ? Cette action remplacera tout par les données par défaut avec les liens de commande.')) {
+                      resetToDefaults();
                     }
                   }}
                   className="btn-outline text-red-600 border-red-300 hover:bg-red-50"
