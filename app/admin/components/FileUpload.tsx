@@ -84,7 +84,6 @@ export default function FileUpload({
         onChange={handleFileSelect}
         className="hidden"
         capture="environment"
-        webkitdirectory=""
       />
       
       <button
