@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { uploadFile } from '../lib/api';
 
 interface FileUploadProps {
   onUpload: (url: string, type: 'image' | 'video') => void;
@@ -41,22 +42,9 @@ export default function FileUpload({
           continue;
         }
 
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          onUpload(result.url, isImage ? 'image' : 'video');
-          setUploadProgress(((i + 1) / files.length) * 100);
-        } else {
-          const error = await response.json();
-          alert(`Erreur lors de l'upload: ${error.error}`);
-        }
+        const result = await uploadFile(file);
+        onUpload(result.url, isImage ? 'image' : 'video');
+        setUploadProgress(((i + 1) / files.length) * 100);
       }
     } catch (error) {
       console.error('Erreur upload:', error);
@@ -93,13 +81,13 @@ export default function FileUpload({
         className={`w-full px-4 py-4 border-2 border-dashed border-gray-300 rounded-lg text-center transition-colors ${
           isUploading 
             ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-            : 'bg-white text-gray-600 hover:border-green-500 hover:text-green-600 active:bg-green-50'
+            : 'bg-white text-gray-600 hover:border-primary-500 hover:text-primary-600 active:bg-primary-50'
         }`}
       >
         {isUploading ? (
           <div className="space-y-2">
             <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
             </div>
             <div className="text-sm">Upload en cours... {Math.round(uploadProgress)}%</div>
           </div>
