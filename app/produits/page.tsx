@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SiteConfig, getConfig } from '../lib/config';
 import Header from '../components/Header';
+import OptimizedImage from '../components/OptimizedImage';
 
 export default function ProduitsPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -61,28 +62,28 @@ export default function ProduitsPage() {
             </div>
             
             {/* Category Dropdown */}
-            <div className="relative">
+            <div className="relative dropdown-container">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
+                className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md mobile-button"
                 style={{ 
                   backgroundColor: config.shopInfo.primaryColor,
                   color: config.shopInfo.textColor 
                 }}
               >
-                <span>
+                <span className="truncate text-improved">
                   {selectedCategory === 'all' 
-                    ? '🌟 Toutes les catégories' 
+                    ? `🌟 ${config.pageContent.homepage.allCategoriesLabel}` 
                     : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
                   }
                 </span>
-                <svg className={`w-4 h-4 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-4 h-4 transition-transform duration-300 flex-shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-10">
+                <div className="dropdown-fix bg-white rounded-lg shadow-lg border max-h-60 overflow-y-auto">
                   <div className="py-1">
                     <button
                       onClick={() => {
@@ -93,7 +94,7 @@ export default function ProduitsPage() {
                         selectedCategory === 'all' ? 'bg-gray-100 font-medium' : ''
                       }`}
                     >
-                      🌟 Toutes les catégories
+                      🌟 {config.pageContent.homepage.allCategoriesLabel}
                     </button>
                     {config.categories.map((category) => (
                       <button
@@ -141,24 +142,13 @@ export default function ProduitsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProducts.map((product) => (
                 <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                  <div className="aspect-square relative bg-gray-100">
-                    <img
+                  <div className="aspect-square relative bg-gray-100 mobile-image-container">
+                    <OptimizedImage
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover object-center product-image mobile-optimized"
-                      loading="lazy"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        const placeholder = target.parentElement?.querySelector('.image-placeholder');
-                        if (placeholder) {
-                          (placeholder as HTMLElement).style.display = 'flex';
-                        }
-                      }}
+                      className="w-full h-full"
+                      fallbackIcon="📦"
                     />
-                    <div className="image-placeholder absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-400 text-4xl" style={{ display: 'none' }}>
-                      📦
-                    </div>
                     {product.popular && (
                       <div 
                         className="absolute top-2 right-2 text-white px-3 py-1 rounded-full text-sm font-semibold filter drop-shadow-md"

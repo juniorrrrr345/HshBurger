@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SiteConfig, getConfig } from '../../lib/config';
 import Header from '../../components/Header';
+import OptimizedImage from '../../components/OptimizedImage';
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -66,24 +67,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Image */}
-          <div className="aspect-square bg-gray-100 rounded-lg shadow-lg overflow-hidden">
-            <img
+          <div className="aspect-square bg-gray-100 rounded-lg shadow-lg overflow-hidden mobile-image-container">
+            <OptimizedImage
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover object-center product-image mobile-optimized"
-              loading="lazy"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                const placeholder = target.parentElement?.querySelector('.image-placeholder');
-                if (placeholder) {
-                  (placeholder as HTMLElement).style.display = 'flex';
-                }
-              }}
+              className="w-full h-full"
+              fallbackIcon="📦"
             />
-            <div className="image-placeholder absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-400 text-4xl" style={{ display: 'none' }}>
-              📦
-            </div>
           </div>
 
           {/* Product Info */}
@@ -207,24 +197,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   href={`/produit/${relatedProduct.id}`}
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 >
-                  <div className="aspect-square relative bg-gray-100">
-                    <img
+                  <div className="aspect-square relative bg-gray-100 mobile-image-container">
+                    <OptimizedImage
                       src={relatedProduct.image}
                       alt={relatedProduct.name}
-                      className="w-full h-full object-cover object-center product-image mobile-optimized"
-                      loading="lazy"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        const placeholder = target.parentElement?.querySelector('.image-placeholder');
-                        if (placeholder) {
-                          (placeholder as HTMLElement).style.display = 'flex';
-                        }
-                      }}
+                      className="w-full h-full"
+                      fallbackIcon="📦"
                     />
-                    <div className="image-placeholder absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-400 text-4xl" style={{ display: 'none' }}>
-                      📦
-                    </div>
                     <div className="absolute top-2 left-2 text-xl filter drop-shadow-md">
                       {category?.emoji}
                     </div>
