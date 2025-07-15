@@ -228,13 +228,16 @@ export default function AdminPage() {
 
   // Page management - Version simplifiée qui fonctionne
   const handleAddPage = () => {
+    console.log('🆕 Ajouter une page cliqué');
     const newPage: Page = {
       id: Date.now(), // ID unique basé sur timestamp
       name: '',
       href: '',
       isDefault: false
     };
+    console.log('📄 Nouvelle page créée:', newPage);
     setEditingPage(newPage);
+    console.log('✅ Modal d\'ajout ouvert');
   };
 
   const handleSavePage = () => {
@@ -269,14 +272,26 @@ export default function AdminPage() {
   };
 
   const handleEditPage = (page: Page) => {
+    console.log('✏️ Modifier page cliqué pour:', page);
     setEditingPage({ ...page });
+    console.log('✅ Modal de modification ouvert');
   };
 
   const handleDeletePage = (pageId: number) => {
-    if (!config || !config.pages) return;
+    console.log('🗑️ Supprimer page cliqué pour ID:', pageId);
+    
+    if (!config || !config.pages) {
+      console.log('❌ Config ou pages manquant');
+      return;
+    }
     
     const pageToDelete = config.pages.find(p => p.id === pageId);
-    if (!pageToDelete) return;
+    if (!pageToDelete) {
+      console.log('❌ Page non trouvée');
+      return;
+    }
+    
+    console.log('📄 Page à supprimer:', pageToDelete);
     
     if (pageToDelete.isDefault) {
       alert('Impossible de supprimer une page par défaut');
@@ -287,6 +302,7 @@ export default function AdminPage() {
       const updatedPages = config.pages.filter(p => p.id !== pageId);
       const newConfig = { ...config, pages: updatedPages };
       setConfig(newConfig);
+      console.log('✅ Page supprimée');
       alert('Page supprimée avec succès !');
     }
   };
@@ -832,7 +848,7 @@ export default function AdminPage() {
                     <div className="bg-white rounded-lg max-w-md w-full">
                       <div className="p-6">
                         <h3 className="text-lg font-medium mb-4">
-                          {editingPage.id ? 'Modifier la page' : 'Ajouter une page'}
+                          {config?.pages?.find(p => p.id === editingPage.id) ? 'Modifier la page' : 'Ajouter une page'}
                         </h3>
                         
                         <div className="space-y-4">
@@ -1381,13 +1397,27 @@ export default function AdminPage() {
                                 {/* Pages Management Section */}
                 <div className="bg-gray-50 rounded-lg p-6">
                   <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-medium text-gray-900">Gestion des Pages</h3>
-                    <button
-                      onClick={handleAddPage}
-                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                    >
-                      + Ajouter une page
-                    </button>
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900">Gestion des Pages</h3>
+                      <p className="text-sm text-gray-600">Pages configurées: {config?.pages?.length || 0}</p>
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => {
+                          alert('Test réussi ! Les boutons fonctionnent.');
+                          console.log('🧪 Test bouton OK');
+                        }}
+                        className="bg-yellow-500 text-white px-3 py-2 rounded-md hover:bg-yellow-600 transition-colors text-sm"
+                      >
+                        🧪 Test
+                      </button>
+                      <button
+                        onClick={handleAddPage}
+                        className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors font-medium shadow-sm"
+                      >
+                        ➕ Ajouter une page
+                      </button>
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1405,16 +1435,16 @@ export default function AdminPage() {
                         <div className="flex space-x-2">
                           <button
                             onClick={() => handleEditPage(page)}
-                            className="flex-1 bg-blue-500 text-white text-sm py-1 px-2 rounded hover:bg-blue-600 transition-colors"
+                            className="flex-1 bg-blue-500 text-white text-sm py-2 px-3 rounded hover:bg-blue-600 transition-colors font-medium"
                           >
-                            Modifier
+                            ✏️ Modifier
                           </button>
                           {!page.isDefault && (
                             <button
                               onClick={() => handleDeletePage(page.id)}
-                              className="flex-1 bg-red-500 text-white text-sm py-1 px-2 rounded hover:bg-red-600 transition-colors"
+                              className="flex-1 bg-red-500 text-white text-sm py-2 px-3 rounded hover:bg-red-600 transition-colors font-medium"
                             >
-                              Supprimer
+                              🗑️ Supprimer
                             </button>
                           )}
                         </div>
