@@ -42,7 +42,7 @@ export default function ProduitsPage() {
       <section 
         className="text-white py-16 relative overflow-hidden"
         style={{ 
-          background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}, ${config.shopInfo.secondaryColor})` 
+          background: `linear-gradient(135deg, ${config.shopInfo.primaryColor}, #333333)` 
         }}
       >
         <div className="absolute inset-0 bg-black opacity-20"></div>
@@ -61,7 +61,7 @@ export default function ProduitsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between mb-6">
             <div className="mb-4 md:mb-0">
-              <h2 className="text-2xl font-bold" style={{ color: config.shopInfo.secondaryColor }}>
+              <h2 className="text-2xl font-bold" style={{ color: config.shopInfo.primaryColor }}>
                 Filtrer par catégorie
               </h2>
               <p className="text-gray-600 mt-1">
@@ -142,7 +142,7 @@ export default function ProduitsPage() {
                   }}
                   className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
                   style={{ 
-                    backgroundColor: config.shopInfo.secondaryColor,
+                    backgroundColor: config.shopInfo.primaryColor,
                     color: config.shopInfo.textColor 
                   }}
                 >
@@ -240,7 +240,7 @@ export default function ProduitsPage() {
                     </div>
                     {product.farm && (
                       <div className="absolute bottom-2 left-2 text-white px-2 py-1 rounded text-xs font-semibold filter drop-shadow-md"
-                           style={{ backgroundColor: config.shopInfo.secondaryColor }}>
+                           style={{ backgroundColor: config.shopInfo.primaryColor }}>
                         {config.farms.find(farm => farm.name === product.farm)?.emoji} {product.farm}
                       </div>
                     )}

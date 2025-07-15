@@ -84,10 +84,10 @@ export const defaultConfig: SiteConfig = {
     name: "CBD Shop Premium",
     description: "Votre boutique CBD de confiance",
     logo: "🌿",
-    primaryColor: "#16a34a",
-    secondaryColor: "#000000",
+    primaryColor: "#000000",
+    secondaryColor: "#ffffff",
     textColor: "#ffffff",
-    backgroundColor: "#f9fafb"
+    backgroundColor: "#ffffff"
   },
   contactInfo: {
     orderLink: "https://example.com/order",
