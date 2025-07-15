@@ -296,11 +296,6 @@ export default function AdminPage() {
     const page = config.pages.find(p => p.id === pageId);
     if (!page) return;
     
-    if (page.isDefault) {
-      alert('Impossible de supprimer une page par défaut');
-      return;
-    }
-    
     if (confirm(`Supprimer la page "${page.name}" ?`)) {
       const newPages = config.pages.filter(p => p.id !== pageId);
       const updatedConfig = { ...config, pages: newPages };
@@ -1446,14 +1441,12 @@ export default function AdminPage() {
                           >
                             Modifier
                           </button>
-                          {!page.isDefault && (
-                            <button
-                              onClick={() => deletePage(page.id)}
-                              className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-                            >
-                              Supprimer
-                            </button>
-                          )}
+                          <button
+                            onClick={() => deletePage(page.id)}
+                            className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                          >
+                            Supprimer
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -1598,13 +1591,7 @@ export default function AdminPage() {
                 </p>
               </div>
               
-              {editingPage.isDefault && (
-                <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                  <p className="text-sm text-blue-800">
-                    ⚠️ Cette page est marquée comme page par défaut et ne peut pas être supprimée.
-                  </p>
-                </div>
-              )}
+
             </div>
             
             <div className="flex justify-end space-x-3 mt-6">
