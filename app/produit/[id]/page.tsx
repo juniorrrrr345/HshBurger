@@ -31,7 +31,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
   return (
     <div 
-      className="min-h-screen"
+      className="min-h-screen relative"
       style={{ 
         backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
         backgroundSize: 'cover',
@@ -40,6 +40,13 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         backgroundAttachment: 'fixed'
       }}
     >
+      {/* Overlay pour améliorer la lisibilité */}
+      <div 
+        className="absolute inset-0 bg-black opacity-30"
+        style={{ 
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%)'
+        }}
+      ></div>
       <Header />
 
       {/* Breadcrumb */}
@@ -72,8 +79,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* Product Details */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
+        <div className="bg-white/95 backdrop-blur-md rounded-lg p-8 shadow-xl border border-white/20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Product Image */}
             <div className="aspect-square">

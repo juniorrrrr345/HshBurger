@@ -28,7 +28,7 @@ export default function HomePage() {
 
   return (
     <div 
-      className="min-h-screen"
+      className="min-h-screen relative"
       style={{ 
         backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
         backgroundSize: 'cover',
@@ -37,12 +37,17 @@ export default function HomePage() {
         backgroundAttachment: 'fixed'
       }}
     >
+      {/* Overlay pour améliorer la lisibilité */}
+      <div 
+        className="absolute inset-0 bg-black opacity-30"
+        style={{ 
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%)'
+        }}
+      ></div>
       <Header currentPage="Accueil" />
 
-
-
       {/* Category Filter */}
-      <section className="py-8 bg-white/95 backdrop-blur-sm shadow-sm">
+      <section className="py-8 bg-white/95 backdrop-blur-md shadow-lg relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <h2 className="text-2xl font-bold text-black">
@@ -54,9 +59,9 @@ export default function HomePage() {
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800"
+                  className="flex items-center justify-center space-x-2 px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800 min-w-[200px]"
                 >
-                  <span>
+                  <span className="text-center">
                     {selectedCategory === 'all' 
                       ? `🌟 ${config.pageContent.homepage.categoryDropdownTitle}` 
                       : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
@@ -104,9 +109,9 @@ export default function HomePage() {
               <div className="relative">
                 <button
                   onClick={() => setIsFarmDropdownOpen(!isFarmDropdownOpen)}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800"
+                  className="flex items-center justify-center space-x-2 px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800 min-w-[200px]"
                 >
-                  <span>
+                  <span className="text-center">
                     {selectedFarmCategory === 'all' 
                       ? `🌾 ${config.pageContent.homepage.farmDropdownTitle}` 
                       : selectedFarmCategory === 'Farm' 
@@ -186,9 +191,9 @@ export default function HomePage() {
       </section>
 
       {/* Products Grid */}
-      <section className="py-16">
+      <section className="py-16 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-lg">
+          <div className="bg-white/95 backdrop-blur-md rounded-lg p-8 shadow-xl border border-white/20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProducts.slice(0, 6).map((product) => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200">

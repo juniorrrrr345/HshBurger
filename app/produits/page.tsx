@@ -28,7 +28,7 @@ export default function ProduitsPage() {
 
   return (
     <div 
-      className="min-h-screen"
+      className="min-h-screen relative"
       style={{ 
         backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
         backgroundSize: 'cover',
@@ -37,6 +37,13 @@ export default function ProduitsPage() {
         backgroundAttachment: 'fixed'
       }}
     >
+      {/* Overlay pour améliorer la lisibilité */}
+      <div 
+        className="absolute inset-0 bg-black opacity-30"
+        style={{ 
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%)'
+        }}
+      ></div>
       <Header currentPage="Produits" />
 
       {/* Page Header */}
@@ -60,34 +67,34 @@ export default function ProduitsPage() {
       {/* Category Filter */}
       <section className="py-8 bg-white/95 backdrop-blur-sm shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="mb-4 md:mb-0">
-              <h2 className="text-2xl font-bold text-black">
-                {config.pageContent.products?.filterTitle || "Filtrer par catégorie"}
-              </h2>
-              <p className="text-gray-600 mt-1">
-                {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''} 
-                {selectedCategory !== 'all' && ` dans ${selectedCategory}`}
-              </p>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-              {/* Category Dropdown */}
-              <div className="relative">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800"
-              >
-                <span>
-                  {selectedCategory === 'all' 
-                    ? '🌟 Toutes les catégories' 
-                    : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
-                  }
-                </span>
-                <svg className={`w-4 h-4 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+                      <div className="flex flex-col md:flex-row items-center justify-between">
+              <div className="mb-4 md:mb-0">
+                <h2 className="text-2xl font-bold text-black">
+                  {config.pageContent.products?.filterTitle || "Filtrer par catégorie"}
+                </h2>
+                <p className="text-gray-600 mt-1">
+                  {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''} 
+                  {selectedCategory !== 'all' && ` dans ${selectedCategory}`}
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                {/* Category Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center justify-center space-x-2 px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800 min-w-[200px]"
+                  >
+                    <span className="text-center">
+                      {selectedCategory === 'all' 
+                        ? '🌟 Toutes les catégories' 
+                        : `${config.categories.find(cat => cat.name === selectedCategory)?.emoji} ${selectedCategory}`
+                      }
+                    </span>
+                    <svg className={`w-4 h-4 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
               
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-10">
@@ -123,22 +130,22 @@ export default function ProduitsPage() {
 
               {/* Farm Dropdown */}
               <div className="relative">
-                <button
-                  onClick={() => setIsFarmDropdownOpen(!isFarmDropdownOpen)}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800"
-                >
-                  <span>
-                    {selectedFarmCategory === 'all' 
-                      ? `🌾 ${config.pageContent.homepage.farmDropdownTitle}` 
-                      : selectedFarmCategory === 'Farm' 
-                        ? '🌾 Produits Farm'
-                        : `🌾 ${selectedFarmCategory}`
-                    }
-                  </span>
-                  <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+                                  <button
+                    onClick={() => setIsFarmDropdownOpen(!isFarmDropdownOpen)}
+                    className="flex items-center justify-center space-x-2 px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white hover:bg-gray-800 min-w-[200px]"
+                  >
+                    <span className="text-center">
+                      {selectedFarmCategory === 'all' 
+                        ? `🌾 ${config.pageContent.homepage.farmDropdownTitle}` 
+                        : selectedFarmCategory === 'Farm' 
+                          ? '🌾 Produits Farm'
+                          : `🌾 ${selectedFarmCategory}`
+                      }
+                    </span>
+                    <svg className={`w-4 h-4 transition-transform duration-300 ${isFarmDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
                 
                 {isFarmDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-10">
@@ -204,9 +211,9 @@ export default function ProduitsPage() {
       </section>
 
       {/* Products Grid */}
-      <section className="py-16">
+      <section className="py-16 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-lg">
+          <div className="bg-white/95 backdrop-blur-md rounded-lg p-8 shadow-xl border border-white/20">
           {filteredProducts.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">📦</div>

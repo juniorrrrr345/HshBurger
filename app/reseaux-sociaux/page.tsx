@@ -20,7 +20,7 @@ export default function ReseauxSociauxPage() {
 
   return (
     <div 
-      className="min-h-screen"
+      className="min-h-screen relative"
       style={{ 
         backgroundImage: config.shopInfo.backgroundImage ? `url(${config.shopInfo.backgroundImage})` : 'none',
         backgroundSize: 'cover',
@@ -29,6 +29,13 @@ export default function ReseauxSociauxPage() {
         backgroundAttachment: 'fixed'
       }}
     >
+      {/* Overlay pour améliorer la lisibilité */}
+      <div 
+        className="absolute inset-0 bg-black opacity-30"
+        style={{ 
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%)'
+        }}
+      ></div>
       <Header currentPage="Réseaux Sociaux" />
 
       {/* Page Header */}
@@ -50,9 +57,9 @@ export default function ReseauxSociauxPage() {
       </section>
 
       {/* Social Media Cards */}
-      <section className="py-16">
+      <section className="py-16 relative z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-8 shadow-lg">
+          <div className="bg-white/95 backdrop-blur-md rounded-lg p-8 shadow-xl border border-white/20">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {config.socialMediaLinks.map((social) => (
                 <div key={social.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200">
