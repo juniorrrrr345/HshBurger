@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { SiteConfig, getConfig, saveConfig, getNextId, Product, Category, SocialMediaLink, Farm, Page } from '../lib/config';
+import { SiteConfig, getConfigAsync, saveConfigAsync, getNextId, Product, Category, SocialMediaLink, Farm, Page } from '../lib/config';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default function AdminPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -14,20 +15,32 @@ export default function AdminPage() {
   const [editingSocial, setEditingSocial] = useState<SocialMediaLink | null>(null);
   const [editingFarm, setEditingFarm] = useState<Farm | null>(null);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadedConfig = getConfig();
-    
-    // S'assurer que la propriété pages existe
-    if (!loadedConfig.pages) {
-      loadedConfig.pages = [
-        { id: 1, name: "Accueil", href: "/", isDefault: true },
-        { id: 2, name: "Produits", href: "/produits", isDefault: true },
-        { id: 3, name: "Contact", href: "/contact", isDefault: true },
-        { id: 4, name: "Réseaux Sociaux", href: "/reseaux-sociaux", isDefault: true }
-      ];
-    }
-    setConfig(loadedConfig);
+    const loadConfig = async () => {
+      try {
+        const loadedConfig = await getConfigAsync();
+        
+        // S'assurer que la propriété pages existe
+        if (!loadedConfig.pages) {
+          loadedConfig.pages = [
+            { id: 1, name: "Accueil", href: "/", isDefault: true },
+            { id: 2, name: "Produits", href: "/produits", isDefault: true },
+            { id: 3, name: "Contact", href: "/contact", isDefault: true },
+            { id: 4, name: "Réseaux Sociaux", href: "/reseaux-sociaux", isDefault: true }
+          ];
+        }
+        setConfig(loadedConfig);
+      } catch (error) {
+        console.error('Error loading config:', error);
+        setMessage('Erreur lors du chargement de la configuration');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadConfig();
   }, []);
 
   const handleSave = async () => {
@@ -35,9 +48,13 @@ export default function AdminPage() {
     
     setIsSaving(true);
     try {
-      saveConfig(config);
-      setMessage('Configuration sauvegardée avec succès!');
-      setTimeout(() => setMessage(''), 3000);
+      const success = await saveConfigAsync(config);
+      if (success) {
+        setMessage('Configuration sauvegardée avec succès!');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage('Erreur lors de la sauvegarde');
+      }
     } catch (error) {
       setMessage('Erreur lors de la sauvegarde');
       console.error('Save error:', error);
@@ -309,13 +326,26 @@ export default function AdminPage() {
     }
   };
 
-  if (!config) {
-    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600">Chargement du panel admin...</p>
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Chargement du panel admin...</p>
+        </div>
       </div>
-    </div>;
+    );
+  }
+
+  if (!config) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Chargement du panel admin...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -1543,7 +1573,6 @@ export default function AdminPage() {
             )}
           </div>
         </div>
-      </div>
     </div>
   );
 }

@@ -431,23 +431,49 @@ export const defaultConfig: SiteConfig = {
 };
 
 export function getConfig(): SiteConfig {
-  if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('siteConfig');
-    if (stored) {
-      try {
-        return { ...defaultConfig, ...JSON.parse(stored) };
-      } catch (e) {
-        console.error('Error parsing config:', e);
-      }
+  // Retourner la config par défaut côté serveur
+  if (typeof window === 'undefined') {
+    return defaultConfig;
+  }
+  
+  // Côté client, on utilisera l'API
+  return defaultConfig;
+}
+
+export async function getConfigAsync(): Promise<SiteConfig> {
+  try {
+    const response = await fetch('/api/config');
+    if (response.ok) {
+      return await response.json();
     }
+  } catch (error) {
+    console.error('Error fetching config:', error);
   }
   return defaultConfig;
 }
 
 export function saveConfig(config: SiteConfig): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('siteConfig', JSON.stringify(config));
+  // Cette fonction est maintenant asynchrone, utiliser saveConfigAsync à la place
+  console.warn('saveConfig is deprecated, use saveConfigAsync instead');
+}
+
+export async function saveConfigAsync(config: SiteConfig): Promise<boolean> {
+  try {
+    const response = await fetch('/api/config', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(config),
+    });
+    
+    if (response.ok) {
+      return true;
+    }
+  } catch (error) {
+    console.error('Error saving config:', error);
   }
+  return false;
 }
 
 export function getNextId(items: { id: number }[]): number {

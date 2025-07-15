@@ -126,3 +126,6 @@ temp/
 
 # Vercel
 .vercel
+
+# Data files (dynamic content)
+data/
