@@ -16,12 +16,7 @@ export default function ProduitsPage() {
   const [page, setPage] = useState(1);
   const PRODUCTS_PER_PAGE = 2;
   
-  // États pour les images multiples et vidéos
-  const [selectedProductImages, setSelectedProductImages] = useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showImageModal, setShowImageModal] = useState(false);
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [currentVideo, setCurrentVideo] = useState('');
+
 
   useEffect(() => {
     setConfig(getConfig());
@@ -255,10 +250,24 @@ export default function ProduitsPage() {
       </section>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-8 gap-4">
-        <button disabled={page === 1} onClick={() => setPage(page-1)} className="px-4 py-2 rounded bg-gray-200 disabled:opacity-50">Précédent</button>
-        <span className="px-4 py-2">Page {page} / {totalPages}</span>
-        <button disabled={page === totalPages} onClick={() => setPage(page+1)} className="px-4 py-2 rounded bg-gray-200 disabled:opacity-50">Suivant</button>
+      <div className="flex justify-center mt-8 gap-4 py-8">
+        <button 
+          disabled={page === 1} 
+          onClick={() => setPage(page-1)} 
+          className="px-4 py-2 rounded bg-white/90 backdrop-blur-sm border border-gray-200 disabled:opacity-50 hover:bg-white transition-colors font-medium text-black"
+        >
+          Précédent
+        </button>
+        <span className="px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded font-medium text-black">
+          Page {page} / {totalPages}
+        </span>
+        <button 
+          disabled={page === totalPages} 
+          onClick={() => setPage(page+1)} 
+          className="px-4 py-2 rounded bg-white/90 backdrop-blur-sm border border-gray-200 disabled:opacity-50 hover:bg-white transition-colors font-medium text-black"
+        >
+          Suivant
+        </button>
       </div>
 
 

@@ -73,14 +73,40 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       {/* Product Details */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Product Image */}
-          <div className="aspect-square bg-gray-100 rounded-lg shadow-lg overflow-hidden mobile-image-container">
-            <OptimizedImage
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full"
-              fallbackIcon="📦"
-            />
+          {/* Product Image and Video */}
+          <div className="space-y-6">
+            {/* Product Image */}
+            <div className="aspect-square bg-gray-100 rounded-lg shadow-lg overflow-hidden mobile-image-container">
+              <OptimizedImage
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full"
+                fallbackIcon="📦"
+              />
+            </div>
+            
+            {/* Video Section */}
+            {product.video && (
+              <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+                <h3 className="text-lg font-semibold mb-3 text-black flex items-center">
+                  <span className="mr-2">🎥</span>
+                  Vidéo du produit
+                </h3>
+                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                  <video
+                    src={product.video}
+                    controls
+                    className="w-full h-full object-cover"
+                    poster={product.image}
+                  >
+                    Votre navigateur ne supporte pas la lecture de vidéos.
+                  </video>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Découvrez notre produit en action
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
