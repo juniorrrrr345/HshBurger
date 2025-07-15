@@ -63,7 +63,6 @@ export default function ProduitsPage() {
               <p className="text-gray-600 mt-1">
                 {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''} 
                 {selectedCategory !== 'all' && ` dans ${selectedCategory}`}
-                {selectedCategory === 'Farm' && selectedFarm !== 'all' && ` - ${selectedFarm}`}
               </p>
             </div>
             
@@ -72,7 +71,6 @@ export default function ProduitsPage() {
               <button
                 onClick={() => {
                   setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-                  setIsFarmDropdownOpen(false);
                 }}
                 className="flex items-center justify-between w-full md:w-auto space-x-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md bg-black text-white"
               >
