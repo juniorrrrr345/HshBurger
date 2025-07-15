@@ -1,242 +1,251 @@
-'use client';
+import React from 'react';
+import Link from 'next/link';
 
-import React, { useState, useEffect } from 'react';
-import Layout from '@/components/Layout';
-import ProductCard from '@/components/ProductCard';
-import Diagnostic from '@/components/Diagnostic';
-import { useProducts, useCategories } from '@/hooks/useShop';
-import { Search, Filter, Grid, List } from 'lucide-react';
-import { Product } from '@/types';
+// Données statiques des produits
+const products = [
+  {
+    id: 1,
+    name: "Huile CBD 10%",
+    price: 29.90,
+    originalPrice: 39.90,
+    image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+    category: "huiles",
+    description: "Huile de CBD 10% premium, extraction CO2 supercritique.",
+    orderLink: "https://example.com/order/huile-cbd-10",
+    popular: true
+  },
+  {
+    id: 2,
+    name: "Fleurs CBD Amnesia",
+    price: 8.90,
+    originalPrice: 12.90,
+    image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+    category: "fleurs",
+    description: "Fleurs de CBD Amnesia séchées, arôme fruité.",
+    orderLink: "https://example.com/order/fleurs-amnesia",
+    popular: true
+  },
+  {
+    id: 3,
+    name: "Résine CBD Hash",
+    price: 12.90,
+    originalPrice: 16.90,
+    image: "https://images.unsplash.com/photo-1616684547847-8b0e6b6ae8b6?w=400&h=400&fit=crop",
+    category: "resines",
+    description: "Résine CBD Hash artisanale, texture fondante.",
+    orderLink: "https://example.com/order/resine-hash",
+    popular: true
+  },
+  {
+    id: 4,
+    name: "Huile CBD 15%",
+    price: 49.90,
+    originalPrice: 59.90,
+    image: "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
+    category: "huiles",
+    description: "Huile de CBD 15% concentration élevée.",
+    orderLink: "https://example.com/order/huile-cbd-15",
+    popular: false
+  },
+  {
+    id: 5,
+    name: "Fleurs CBD Lemon Haze",
+    price: 9.90,
+    originalPrice: 13.90,
+    image: "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
+    category: "fleurs",
+    description: "Fleurs CBD Lemon Haze au parfum citronné.",
+    orderLink: "https://example.com/order/fleurs-lemon-haze",
+    popular: false
+  }
+];
+
+const categories = [
+  { id: 'tous', name: 'Tous les produits' },
+  { id: 'huiles', name: 'Huiles CBD' },
+  { id: 'fleurs', name: 'Fleurs CBD' },
+  { id: 'resines', name: 'Résines CBD' }
+];
 
 export default function ProduitsPage() {
-  const { products, loading: productsLoading } = useProducts();
-  const { categories, loading: categoriesLoading } = useCategories();
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
-  const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-
-  // Ajout d'un état de chargement pour éviter les erreurs d'hydratation
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simuler un délai de chargement pour éviter les erreurs d'hydratation
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (productsLoading || categoriesLoading) {
-    return (
-      <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement des données...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-
-  useEffect(() => {
-    let filtered = [...products];
-
-    // Filtrage par recherche
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Filtrage par catégorie
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(product => product.category === selectedCategory);
-    }
-
-    // Tri
-    switch (sortBy) {
-      case 'name':
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'price_asc':
-        filtered.sort((a, b) => {
-          const priceA = Math.min(...a.prices.map(p => p.price));
-          const priceB = Math.min(...b.prices.map(p => p.price));
-          return priceA - priceB;
-        });
-        break;
-      case 'price_desc':
-        filtered.sort((a, b) => {
-          const priceA = Math.min(...a.prices.map(p => p.price));
-          const priceB = Math.min(...b.prices.map(p => p.price));
-          return priceB - priceA;
-        });
-        break;
-      case 'newest':
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        break;
-      default:
-        break;
-    }
-
-    setFilteredProducts(filtered);
-  }, [products, searchTerm, selectedCategory, sortBy]);
-
   return (
-    <Layout>
-      <Diagnostic currentPath="/produits" />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* En-tête */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Nos Produits</h1>
-          <p className="text-gray-600">
-            Découvrez notre gamme complète de produits CBD de qualité premium
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center">
+              <Link href="/" className="text-2xl font-bold text-gray-900">CBD Shop Premium</Link>
+            </div>
+            <nav className="flex space-x-8">
+              <Link href="/" className="text-gray-700 hover:text-green-600">Accueil</Link>
+              <Link href="/produits" className="text-green-600 font-semibold">Produits</Link>
+              <Link href="/contact" className="text-gray-700 hover:text-green-600">Contact</Link>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Page Header */}
+      <section className="bg-green-600 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Nos Produits CBD
+          </h1>
+          <p className="text-xl max-w-2xl mx-auto">
+            Découvrez notre gamme complète de produits CBD premium
           </p>
         </div>
+      </section>
 
-        {/* Barre de recherche et filtres */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
-            {/* Recherche */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Rechercher un produit..."
-                className="form-input pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+      {/* Breadcrumb */}
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <nav className="flex" aria-label="Breadcrumb">
+            <ol className="flex items-center space-x-4">
+              <li>
+                <Link href="/" className="text-gray-500 hover:text-green-600">
+                  Accueil
+                </Link>
+              </li>
+              <li>
+                <span className="text-gray-500">/</span>
+              </li>
+              <li>
+                <span className="text-gray-900 font-semibold">Produits</span>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
 
-            {/* Bouton filtres mobile */}
-            <button
-              className="md:hidden btn-outline flex items-center"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <Filter size={20} className="mr-2" />
-              Filtres
-            </button>
-
-            {/* Mode d'affichage */}
-            <div className="hidden md:flex items-center space-x-2">
-              <button
-                className={`p-2 rounded ${viewMode === 'grid' ? 'bg-green-100 text-green-600' : 'text-gray-400'}`}
-                onClick={() => setViewMode('grid')}
-              >
-                <Grid size={20} />
-              </button>
-              <button
-                className={`p-2 rounded ${viewMode === 'list' ? 'bg-green-100 text-green-600' : 'text-gray-400'}`}
-                onClick={() => setViewMode('list')}
-              >
-                <List size={20} />
-              </button>
+      {/* Products Section */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          {/* Category Filter */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-6">Catégories</h2>
+            <div className="flex flex-wrap gap-4">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  className="px-6 py-2 rounded-full border border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition-colors"
+                >
+                  {category.name}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Filtres */}
-          <div className={`${showFilters ? 'block' : 'hidden'} md:block`}>
-            <div className="grid md:grid-cols-3 gap-4">
-              {/* Catégorie */}
-              <div>
-                <label className="form-label">Catégorie</label>
-                <select
-                  className="form-input"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                  <option value="all">Toutes les catégories</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map((product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="aspect-square relative">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {product.popular && (
+                    <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-sm font-semibold">
+                      Populaire
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-6">
+                  <div className="mb-2">
+                    <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded uppercase tracking-wide">
+                      {product.category}
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+                  <p className="text-gray-600 mb-4 text-sm">{product.description}</p>
+                  
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-2xl font-bold text-green-600">€{product.price}</span>
+                      {product.originalPrice && (
+                        <span className="text-sm text-gray-500 line-through">€{product.originalPrice}</span>
+                      )}
+                    </div>
+                    {product.originalPrice && (
+                      <span className="text-sm text-green-600 font-semibold">
+                        -{Math.round((1 - product.price / product.originalPrice) * 100)}%
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <Link
+                      href={`/produit/${product.id}`}
+                      className="flex-1 bg-gray-100 text-center py-2 px-4 rounded hover:bg-gray-200 transition-colors font-semibold"
+                    >
+                      Voir détails
+                    </Link>
+                    <a
+                      href={product.orderLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 bg-green-600 text-white text-center py-2 px-4 rounded hover:bg-green-700 transition-colors font-semibold"
+                    >
+                      Commander
+                    </a>
+                  </div>
+                </div>
               </div>
-
-              {/* Tri */}
-              <div>
-                <label className="form-label">Trier par</label>
-                <select
-                  className="form-input"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                >
-                  <option value="name">Nom</option>
-                  <option value="price_asc">Prix croissant</option>
-                  <option value="price_desc">Prix décroissant</option>
-                  <option value="newest">Plus récent</option>
-                </select>
-              </div>
-
-              {/* Statut */}
-              <div>
-                <label className="form-label">Disponibilité</label>
-                <select className="form-input">
-                  <option value="all">Tous</option>
-                  <option value="in_stock">En stock</option>
-                  <option value="out_of_stock">Rupture de stock</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Résultats */}
-        <div className="mb-6">
-          <p className="text-gray-600">
-            {filteredProducts.length} produit{filteredProducts.length !== 1 ? 's' : ''} trouvé{filteredProducts.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-
-        {/* Liste des produits */}
-        {filteredProducts.length > 0 ? (
-          <div className={`${viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-8' : 'space-y-6'}`}>
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
             ))}
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <Search size={64} className="mx-auto" />
+
+          {/* Call to Action */}
+          <div className="text-center mt-16">
+            <div className="bg-green-50 rounded-lg p-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Besoin d'aide pour choisir ?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Notre équipe est là pour vous conseiller et vous aider à trouver le produit qui vous convient.
+              </p>
+              <Link
+                href="/contact"
+                className="inline-block bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              >
+                Nous contacter
+              </Link>
             </div>
-            <h3 className="text-xl font-semibold mb-2">Aucun produit trouvé</h3>
-            <p className="text-gray-600 mb-4">
-              Essayez de modifier vos critères de recherche ou de filtrage
-            </p>
-            <button
-              className="btn-primary"
-              onClick={() => {
-                setSearchTerm('');
-                setSelectedCategory('all');
-                setSortBy('name');
-              }}
-            >
-              Réinitialiser les filtres
-            </button>
           </div>
-        )}
-      </div>
-    </Layout>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">CBD Shop Premium</h3>
+              <p className="text-gray-400">Votre boutique CBD de confiance</p>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Liens Utiles</h4>
+              <ul className="space-y-2">
+                <li><Link href="/produits" className="text-gray-400 hover:text-white">Produits</Link></li>
+                <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Contact</h4>
+              <p className="text-gray-400">Email: contact@cbdshop.fr</p>
+              <p className="text-gray-400">Tél: +33 1 23 45 67 89</p>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+            <p className="text-gray-400">© 2024 CBD Shop Premium. Tous droits réservés.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }

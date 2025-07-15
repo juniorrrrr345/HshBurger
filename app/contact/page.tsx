@@ -1,303 +1,315 @@
-'use client';
-
-import React, { useState } from 'react';
-import Layout from '@/components/Layout';
-import { useShopSettings } from '@/hooks/useShop';
-import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+import React from 'react';
+import Link from 'next/link';
 
 export default function ContactPage() {
-  const { settings } = useShopSettings();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simuler l'envoi du formulaire
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      
-      // Réinitialiser le statut après 3 secondes
-      setTimeout(() => setSubmitStatus(null), 3000);
-    }, 1000);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  if (!settings) {
-    return (
-      <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="loading-spinner"></div>
-        </div>
-      </Layout>
-    );
-  }
-
   return (
-    <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* En-tête */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Contactez-nous</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Une question ? Un conseil ? Notre équipe est là pour vous aider. 
-            N'hésitez pas à nous contacter !
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center">
+              <Link href="/" className="text-2xl font-bold text-gray-900">CBD Shop Premium</Link>
+            </div>
+            <nav className="flex space-x-8">
+              <Link href="/" className="text-gray-700 hover:text-green-600">Accueil</Link>
+              <Link href="/produits" className="text-gray-700 hover:text-green-600">Produits</Link>
+              <Link href="/contact" className="text-green-600 font-semibold">Contact</Link>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Page Header */}
+      <section className="bg-green-600 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Contactez-nous
+          </h1>
+          <p className="text-xl max-w-2xl mx-auto">
+            Notre équipe est là pour répondre à toutes vos questions
           </p>
         </div>
+      </section>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Informations de contact */}
-          <div>
-            <h2 className="text-2xl font-bold mb-6">Nos coordonnées</h2>
+      {/* Breadcrumb */}
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <nav className="flex" aria-label="Breadcrumb">
+            <ol className="flex items-center space-x-4">
+              <li>
+                <Link href="/" className="text-gray-500 hover:text-green-600">
+                  Accueil
+                </Link>
+              </li>
+              <li>
+                <span className="text-gray-500">/</span>
+              </li>
+              <li>
+                <span className="text-gray-900 font-semibold">Contact</span>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+
+      {/* Contact Section */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             
-            <div className="space-y-6">
-              {/* Adresse */}
-              <div className="flex items-start">
-                <div className="bg-green-100 rounded-lg p-3 mr-4">
-                  <MapPin className="text-green-600" size={24} />
+            {/* Contact Info */}
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                Informations de contact
+              </h2>
+              
+              <div className="space-y-6">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">📧</span>
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Email</h3>
+                    <p className="text-gray-600">contact@cbdshop.fr</p>
+                    <p className="text-gray-600">support@cbdshop.fr</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Adresse</h3>
-                  <p className="text-gray-600">{settings.contact.address}</p>
-                </div>
-              </div>
 
-              {/* Téléphone */}
-              <div className="flex items-start">
-                <div className="bg-green-100 rounded-lg p-3 mr-4">
-                  <Phone className="text-green-600" size={24} />
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">📞</span>
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Téléphone</h3>
+                    <p className="text-gray-600">+33 1 23 45 67 89</p>
+                    <p className="text-gray-600">Du lundi au vendredi, 9h-18h</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Téléphone</h3>
-                  <p className="text-gray-600">{settings.contact.phone}</p>
-                </div>
-              </div>
 
-              {/* Email */}
-              <div className="flex items-start">
-                <div className="bg-green-100 rounded-lg p-3 mr-4">
-                  <Mail className="text-green-600" size={24} />
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">📍</span>
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Adresse</h3>
+                    <p className="text-gray-600">123 Rue de la Paix</p>
+                    <p className="text-gray-600">75001 Paris, France</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Email</h3>
-                  <p className="text-gray-600">{settings.contact.email}</p>
-                </div>
-              </div>
 
-              {/* Horaires */}
-              <div className="flex items-start">
-                <div className="bg-green-100 rounded-lg p-3 mr-4">
-                  <Clock className="text-green-600" size={24} />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Horaires</h3>
-                  <div className="text-gray-600 space-y-1">
-                    <p>Lundi - Vendredi : 9h00 - 18h00</p>
-                    <p>Samedi : 9h00 - 12h00</p>
-                    <p>Dimanche : Fermé</p>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">🕒</span>
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Horaires</h3>
+                    <p className="text-gray-600">Lundi - Vendredi : 9h00 - 18h00</p>
+                    <p className="text-gray-600">Samedi : 10h00 - 16h00</p>
+                    <p className="text-gray-600">Dimanche : Fermé</p>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Réseaux sociaux */}
-            <div className="mt-8">
-              <h3 className="font-semibold text-lg mb-4">Suivez-nous</h3>
-              <div className="flex space-x-4">
-                {settings.social.facebook && (
-                  <a
-                    href={settings.social.facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    Facebook
+              {/* Social Media */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Suivez-nous</h3>
+                <div className="flex space-x-4">
+                  <a href="#" className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white hover:bg-green-700 transition-colors">
+                    f
                   </a>
-                )}
-                {settings.social.instagram && (
-                  <a
-                    href={settings.social.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-pink-600 text-white p-3 rounded-lg hover:bg-pink-700 transition-colors"
-                  >
-                    Instagram
+                  <a href="#" className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white hover:bg-green-700 transition-colors">
+                    @
                   </a>
-                )}
-                {settings.social.twitter && (
-                  <a
-                    href={settings.social.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-blue-400 text-white p-3 rounded-lg hover:bg-blue-500 transition-colors"
-                  >
-                    Twitter
+                  <a href="#" className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white hover:bg-green-700 transition-colors">
+                    in
                   </a>
-                )}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Formulaire de contact */}
-          <div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-bold mb-6">Envoyez-nous un message</h2>
+            {/* Contact Form */}
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                Envoyez-nous un message
+              </h2>
               
-              {submitStatus === 'success' && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                  <p className="text-green-800">
-                    Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.
-                  </p>
-                </div>
-              )}
-
-              {submitStatus === 'error' && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                  <p className="text-red-800">
-                    Une erreur s'est produite lors de l'envoi. Veuillez réessayer.
-                  </p>
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="form-label">
-                      Nom complet *
+                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                      Prénom
                     </label>
                     <input
                       type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
+                      id="firstName"
+                      name="firstName"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       required
-                      className="form-input"
-                      placeholder="Votre nom"
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="form-label">
-                      Email *
+                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                      Nom
                     </label>
                     <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       required
-                      className="form-input"
-                      placeholder="votre@email.com"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="form-label">
-                    Sujet *
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                    Sujet
                   </label>
                   <select
                     id="subject"
                     name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     required
-                    className="form-input"
                   >
-                    <option value="">Choisissez un sujet</option>
+                    <option value="">Sélectionnez un sujet</option>
                     <option value="info">Demande d'informations</option>
-                    <option value="product">Question sur un produit</option>
-                    <option value="order">Suivi de commande</option>
-                    <option value="support">Support technique</option>
-                    <option value="other">Autre</option>
+                    <option value="commande">Question sur une commande</option>
+                    <option value="produit">Question sur un produit</option>
+                    <option value="autre">Autre</option>
                   </select>
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="form-label">
-                    Message *
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    Message
                   </label>
                   <textarea
                     id="message"
                     name="message"
-                    value={formData.message}
-                    onChange={handleChange}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     required
-                    rows={6}
-                    className="form-input"
-                    placeholder="Votre message..."
+                  ></textarea>
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    id="agree"
+                    name="agree"
+                    type="checkbox"
+                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    required
                   />
+                  <label htmlFor="agree" className="ml-2 block text-sm text-gray-900">
+                    J'accepte les conditions d'utilisation et la politique de confidentialité
+                  </label>
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="btn-primary w-full flex items-center justify-center"
+                  className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-colors font-semibold"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <div className="loading-spinner w-5 h-5 mr-2"></div>
-                      Envoi en cours...
-                    </>
-                  ) : (
-                    <>
-                      <Send size={20} className="mr-2" />
-                      Envoyer le message
-                    </>
-                  )}
+                  Envoyer le message
                 </button>
               </form>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* FAQ */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-center mb-8">Questions fréquentes</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="font-semibold text-lg mb-2">Délais de livraison</h3>
+      {/* FAQ Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-12">Questions fréquentes</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Comment passer une commande ?
+              </h3>
               <p className="text-gray-600">
-                Nous expédions sous 24h (jours ouvrés). La livraison prend généralement 2-3 jours ouvrés.
+                Cliquez sur le bouton "Commander" sur la page produit. Vous serez redirigé vers notre partenaire de commande sécurisé.
               </p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="font-semibold text-lg mb-2">Retours et échanges</h3>
+            
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Quels sont les délais de livraison ?
+              </h3>
               <p className="text-gray-600">
-                Vous avez 14 jours pour retourner un produit non ouvert. Les frais de retour sont à votre charge.
+                Nous expédions sous 24h. La livraison prend généralement 2-3 jours ouvrés en France métropolitaine.
               </p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="font-semibold text-lg mb-2">Paiement sécurisé</h3>
+            
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Vos produits sont-ils légaux ?
+              </h3>
               <p className="text-gray-600">
-                Nous acceptons les cartes bancaires, PayPal et les virements. Tous les paiements sont sécurisés.
+                Oui, tous nos produits respectent la législation française avec un taux de THC inférieur à 0,2%.
               </p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="font-semibold text-lg mb-2">Légalité des produits</h3>
+            
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Puis-je retourner un produit ?
+              </h3>
               <p className="text-gray-600">
-                Tous nos produits CBD contiennent moins de 0,3% de THC et sont conformes à la législation française.
+                Oui, vous disposez de 14 jours pour retourner un produit non ouvert selon notre politique de retour.
               </p>
             </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">CBD Shop Premium</h3>
+              <p className="text-gray-400">Votre boutique CBD de confiance</p>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Liens Utiles</h4>
+              <ul className="space-y-2">
+                <li><Link href="/produits" className="text-gray-400 hover:text-white">Produits</Link></li>
+                <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Contact</h4>
+              <p className="text-gray-400">Email: contact@cbdshop.fr</p>
+              <p className="text-gray-400">Tél: +33 1 23 45 67 89</p>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+            <p className="text-gray-400">© 2024 CBD Shop Premium. Tous droits réservés.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
