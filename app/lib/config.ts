@@ -468,7 +468,11 @@ export function getConfig(): SiteConfig {
 
 export async function getConfigAsync(): Promise<SiteConfig> {
   try {
-    const response = await fetch('/api/config');
+    // Utiliser une URL absolue pour éviter les problèmes de routing
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const apiUrl = `${baseUrl}/api/config`;
+    
+    const response = await fetch(apiUrl);
     if (response.ok) {
       return await response.json();
     }
