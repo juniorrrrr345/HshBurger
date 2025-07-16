@@ -35,6 +35,14 @@ export interface Page {
   name: string;
   href: string;
   isDefault: boolean; // Les pages par défaut ne peuvent pas être supprimées
+  content?: {
+    title: string;
+    subtitle: string;
+    description: string;
+    heroTitle?: string;
+    heroSubtitle?: string;
+    heroButtonText?: string;
+  };
 }
 
 export interface SocialMediaLink {
@@ -212,19 +220,37 @@ export const defaultConfig: SiteConfig = {
       id: 1,
       name: "Accueil",
       href: "/",
-      isDefault: true
+      isDefault: true,
+      content: {
+        title: "Accueil",
+        subtitle: "Bienvenue sur notre boutique",
+        description: "Découvrez nos produits CBD de qualité premium",
+        heroTitle: "Produits CBD Premium",
+        heroSubtitle: "Découvrez notre sélection de produits CBD de qualité supérieure",
+        heroButtonText: "Voir nos produits"
+      }
     },
     {
       id: 2,
       name: "Produits",
       href: "/produits",
-      isDefault: true
+      isDefault: true,
+      content: {
+        title: "Nos Produits",
+        subtitle: "Découvrez toute notre gamme de produits CBD de qualité premium",
+        description: "Explorez notre collection complète de produits CBD"
+      }
     },
     {
       id: 3,
       name: "Contact",
       href: "/contact",
-      isDefault: true
+      isDefault: true,
+      content: {
+        title: "Contactez-nous",
+        subtitle: "Nous sommes là pour vous aider",
+        description: "Pour toute commande ou question, contactez-nous directement via notre plateforme de commande."
+      }
     },
     {
       id: 4,
