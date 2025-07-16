@@ -129,3 +129,6 @@ temp/
 
 # Data files (dynamic content)
 data/
+
+# Uploaded files
+public/uploads/
