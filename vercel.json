@@ -12,6 +12,8 @@
     "NEXT_PUBLIC_NHOST_SUBDOMAIN": "mon-projet-nhost",
     "NEXT_PUBLIC_NHOST_REGION": "eu-central-1",
     "NHOST_SUBDOMAIN": "mon-projet-nhost",
-    "NHOST_REGION": "eu-central-1"
+    "NHOST_REGION": "eu-central-1",
+    "STORAGE_URL": "https://api.jsonbin.io/v3/b",
+    "JSONBIN_MASTER_KEY": "$2a$10$placeholder"
   }
 }
