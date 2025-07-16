@@ -364,6 +364,13 @@ export default function AdminPage() {
               <Link
                 href="/"
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                target="_blank"
+              >
+                👁️ Prévisualiser
+              </Link>
+              <Link
+                href="/"
+                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Retour au site
               </Link>
@@ -410,6 +417,19 @@ export default function AdminPage() {
                 {message}
               </div>
             )}
+            
+            {/* Status Bar */}
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className={`w-2 h-2 rounded-full ${isSaving ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
+                <span className="text-sm text-gray-600">
+                  {isSaving ? 'Sauvegarde en cours...' : 'Synchronisé'}
+                </span>
+              </div>
+              <div className="text-sm text-gray-500">
+                {config.products.length} produits • {config.categories.length} catégories • {config.farms.length} fermes
+              </div>
+            </div>
 
             {/* Products Tab */}
             {activeTab === 'products' && (
@@ -598,23 +618,35 @@ export default function AdminPage() {
                           Catégorie
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Variantes
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Statut
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {config.products.map((product) => (
-                        <tr key={product.id}>
+                        <tr key={product.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                               <img
                                 src={product.image}
                                 alt={product.name}
                                 className="w-10 h-10 rounded-lg object-cover mr-3"
+                                onError={(e) => {
+                                  e.currentTarget.src = 'https://via.placeholder.com/40x40?text=🌿';
+                                }}
                               />
                               <div>
                                 <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                <div className="text-sm text-gray-500">{product.description}</div>
+                                <div className="text-sm text-gray-500 truncate max-w-xs">{product.description}</div>
+                                {product.farm && (
+                                  <div className="text-xs text-green-600">🏡 {product.farm}</div>
+                                )}
                               </div>
                             </div>
                           </td>
@@ -623,19 +655,41 @@ export default function AdminPage() {
                               {product.category}
                             </span>
                           </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {product.variants.length} variante{product.variants.length > 1 ? 's' : ''}
+                            <div className="text-xs text-gray-500 mt-1">
+                              {product.variants.slice(0, 2).map(v => `${v.name} (${v.price}€)`).join(', ')}
+                              {product.variants.length > 2 && '...'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {product.popular ? (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                ⭐ Populaire
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                Standard
+                              </span>
+                            )}
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button
-                              onClick={() => setEditingProduct(product)}
-                              className="text-indigo-600 hover:text-indigo-900 mr-3"
-                            >
-                              Modifier
-                            </button>
-                            <button
-                              onClick={() => deleteProduct(product.id)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              Supprimer
-                            </button>
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => setEditingProduct(product)}
+                                className="text-indigo-600 hover:text-indigo-900"
+                                title="Modifier le produit"
+                              >
+                                ✏️ Modifier
+                              </button>
+                              <button
+                                onClick={() => deleteProduct(product.id)}
+                                className="text-red-600 hover:text-red-900"
+                                title="Supprimer le produit"
+                              >
+                                🗑️ Supprimer
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
