@@ -477,5 +477,12 @@ export async function saveConfigAsync(config: SiteConfig): Promise<boolean> {
 }
 
 export function getNextId(items: { id: number }[]): number {
-  return items.length > 0 ? Math.max(...items.map(item => item.id)) + 1 : 1;
+  if (items.length === 0) return 1;
+  return Math.max(...items.map(item => item.id)) + 1;
 }
+
+// Supabase configuration fallback to prevent build errors
+export const supabaseConfig = {
+  url: process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
+  anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || 'placeholder-key'
+};
