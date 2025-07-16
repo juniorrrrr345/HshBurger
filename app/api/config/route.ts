@@ -1,36 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { supabase } from '../../lib/supabase';
 import { SiteConfig, defaultConfig } from '../../lib/config';
 
-const configFilePath = path.join(process.cwd(), 'data', 'config.json');
-
-// Assurer que le dossier data existe
-async function ensureDataDirectory() {
-  const dataDir = path.join(process.cwd(), 'data');
-  try {
-    await fs.access(dataDir);
-  } catch {
-    await fs.mkdir(dataDir, { recursive: true });
-  }
-}
-
-// Lire la configuration depuis le fichier
+// Lire la configuration depuis Supabase
 async function readConfig(): Promise<SiteConfig> {
   try {
-    await ensureDataDirectory();
-    const data = await fs.readFile(configFilePath, 'utf-8');
-    return { ...defaultConfig, ...JSON.parse(data) };
+    const { data, error } = await supabase
+      .from('site_config')
+      .select('config_data')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error) {
+      console.error('Error reading config from Supabase:', error);
+      return defaultConfig;
+    }
+
+    if (data && data.config_data) {
+      return { ...defaultConfig, ...data.config_data };
+    }
+
+    return defaultConfig;
   } catch (error) {
-    // Si le fichier n'existe pas, retourner la config par défaut
+    console.error('Error reading config:', error);
     return defaultConfig;
   }
 }
 
-// Écrire la configuration dans le fichier
+// Écrire la configuration dans Supabase
 async function writeConfig(config: SiteConfig): Promise<void> {
-  await ensureDataDirectory();
-  await fs.writeFile(configFilePath, JSON.stringify(config, null, 2));
+  try {
+    const { error } = await supabase
+      .from('site_config')
+      .insert({ config_data: config });
+
+    if (error) {
+      console.error('Error saving config to Supabase:', error);
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error writing config:', error);
+    throw error;
+  }
 }
 
 export async function GET() {
