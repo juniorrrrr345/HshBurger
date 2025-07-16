@@ -932,7 +932,12 @@ export default function AdminPage() {
                                   value={editingPage.content?.title || ''}
                                   onChange={(e) => setEditingPage({
                                     ...editingPage, 
-                                    content: { ...editingPage.content, title: e.target.value }
+                                    content: { 
+                                      ...editingPage.content, 
+                                      title: e.target.value,
+                                      subtitle: editingPage.content?.subtitle || '',
+                                      description: editingPage.content?.description || ''
+                                    }
                                   })}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                                   placeholder="Titre de la page"
@@ -948,7 +953,12 @@ export default function AdminPage() {
                                   value={editingPage.content?.subtitle || ''}
                                   onChange={(e) => setEditingPage({
                                     ...editingPage, 
-                                    content: { ...editingPage.content, subtitle: e.target.value }
+                                    content: { 
+                                      ...editingPage.content, 
+                                      title: editingPage.content?.title || '',
+                                      subtitle: e.target.value,
+                                      description: editingPage.content?.description || ''
+                                    }
                                   })}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                                   placeholder="Sous-titre de la page"
@@ -964,7 +974,12 @@ export default function AdminPage() {
                                 value={editingPage.content?.description || ''}
                                 onChange={(e) => setEditingPage({
                                   ...editingPage, 
-                                  content: { ...editingPage.content, description: e.target.value }
+                                  content: { 
+                                    ...editingPage.content, 
+                                    title: editingPage.content?.title || '',
+                                    subtitle: editingPage.content?.subtitle || '',
+                                    description: e.target.value
+                                  }
                                 })}
                                 rows={3}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -986,7 +1001,13 @@ export default function AdminPage() {
                                     value={editingPage.content?.heroTitle || ''}
                                     onChange={(e) => setEditingPage({
                                       ...editingPage, 
-                                      content: { ...editingPage.content, heroTitle: e.target.value }
+                                      content: { 
+                                        ...editingPage.content, 
+                                        title: editingPage.content?.title || '',
+                                        subtitle: editingPage.content?.subtitle || '',
+                                        description: editingPage.content?.description || '',
+                                        heroTitle: e.target.value
+                                      }
                                     })}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                                     placeholder="Titre de la section hero"
@@ -1002,7 +1023,13 @@ export default function AdminPage() {
                                     value={editingPage.content?.heroSubtitle || ''}
                                     onChange={(e) => setEditingPage({
                                       ...editingPage, 
-                                      content: { ...editingPage.content, heroSubtitle: e.target.value }
+                                      content: { 
+                                        ...editingPage.content, 
+                                        title: editingPage.content?.title || '',
+                                        subtitle: editingPage.content?.subtitle || '',
+                                        description: editingPage.content?.description || '',
+                                        heroSubtitle: e.target.value
+                                      }
                                     })}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                                     placeholder="Sous-titre de la section hero"
@@ -1019,7 +1046,13 @@ export default function AdminPage() {
                                   value={editingPage.content?.heroButtonText || ''}
                                   onChange={(e) => setEditingPage({
                                     ...editingPage, 
-                                    content: { ...editingPage.content, heroButtonText: e.target.value }
+                                    content: { 
+                                      ...editingPage.content, 
+                                      title: editingPage.content?.title || '',
+                                      subtitle: editingPage.content?.subtitle || '',
+                                      description: editingPage.content?.description || '',
+                                      heroButtonText: e.target.value
+                                    }
                                   })}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                                   placeholder="Ex: En savoir plus, Commander..."
@@ -1686,6 +1719,7 @@ export default function AdminPage() {
             )}
           </div>
         </div>
+      </div>
     </div>
   );
 }

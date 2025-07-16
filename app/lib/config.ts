@@ -37,8 +37,8 @@ export interface Page {
   isDefault: boolean; // Les pages par défaut ne peuvent pas être supprimées
   content?: {
     title: string;
-    subtitle: string;
-    description: string;
+    subtitle?: string;
+    description?: string;
     heroTitle?: string;
     heroSubtitle?: string;
     heroButtonText?: string;
