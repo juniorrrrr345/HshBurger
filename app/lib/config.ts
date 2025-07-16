@@ -475,14 +475,16 @@ export async function getConfigAsync(): Promise<SiteConfig> {
   try {
     // Utiliser une URL absolue pour éviter les problèmes de routing
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const apiUrl = `${baseUrl}/api/config`;
+    const apiUrl = `${baseUrl}/api/config-supabase`;
     
     const response = await fetch(apiUrl);
     if (response.ok) {
-      return await response.json();
+      const data = await response.json();
+      console.log('getConfigAsync: Fetched config from Supabase:', data);
+      return data;
     }
   } catch (error) {
-    console.error('Error fetching config:', error);
+    console.error('Error fetching config from Supabase:', error);
   }
   return defaultConfig;
 }
@@ -494,11 +496,11 @@ export function saveConfig(config: SiteConfig): void {
 
 export async function saveConfigAsync(config: SiteConfig): Promise<boolean> {
   try {
-    console.log('saveConfigAsync: Starting save process');
+    console.log('saveConfigAsync: Starting save process to Supabase');
     
     // Utiliser une URL absolue pour éviter les problèmes de routing
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const apiUrl = `${baseUrl}/api/config`;
+    const apiUrl = `${baseUrl}/api/config-supabase`;
     
     console.log('saveConfigAsync: Using URL:', apiUrl);
     console.log('saveConfigAsync: Config structure:', Object.keys(config));

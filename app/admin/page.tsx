@@ -64,9 +64,9 @@ export default function AdminPage() {
     if (typeof window === 'undefined') return;
     
     try {
-      console.log('Admin: Auto-saving configuration...');
+      console.log('Admin: Auto-saving configuration to Supabase...');
       
-      const apiUrl = `${window.location.origin}/api/config`;
+      const apiUrl = `${window.location.origin}/api/config-supabase`;
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -81,6 +81,8 @@ export default function AdminPage() {
         setTimeout(() => setMessage(''), 2000);
       } else {
         console.error('Admin: Auto-save failed:', response.status);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Admin: Auto-save error details:', errorData);
         setMessage('Erreur lors de la sauvegarde automatique');
         setTimeout(() => setMessage(''), 3000);
       }
