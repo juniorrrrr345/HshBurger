@@ -481,8 +481,8 @@ export function getNextId(items: { id: number }[]): number {
   return Math.max(...items.map(item => item.id)) + 1;
 }
 
-// Supabase configuration fallback to prevent build errors
-export const supabaseConfig = {
-  url: process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
-  anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || 'placeholder-key'
+// Nhost configuration
+export const nhostConfig = {
+  subdomain: process.env.NEXT_PUBLIC_NHOST_SUBDOMAIN || process.env.NHOST_SUBDOMAIN || 'placeholder',
+  region: process.env.NEXT_PUBLIC_NHOST_REGION || process.env.NHOST_REGION || 'eu-central-1'
 };

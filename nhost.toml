@@ -1,0 +1,4 @@
+name = "mon-projet-nhost"
+
+[backend]
+  commands = ["hasura", "migrations", "functions"]

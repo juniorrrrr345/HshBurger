@@ -10,6 +10,8 @@
     "init-config": "node scripts/init-config.js"
   },
   "dependencies": {
+    "@nhost/nextjs": "^2.0.0",
+    "@nhost/react": "^2.0.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
