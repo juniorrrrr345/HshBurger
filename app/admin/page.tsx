@@ -385,6 +385,7 @@ export default function AdminPage() {
                 { id: 'admin-settings', name: 'Paramètres Admin' },
                 { id: 'shop', name: 'Boutique' },
                 { id: 'pages', name: 'Pages' },
+                { id: 'page-content', name: 'Contenu des Pages' },
                 { id: 'contact', name: 'Contact' }
               ].map((tab) => (
                 <button
@@ -477,7 +478,98 @@ export default function AdminPage() {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         />
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Vidéo URL (optionnel)</label>
+                        <input
+                          type="url"
+                          value={editingProduct.video || ''}
+                          onChange={(e) => setEditingProduct({...editingProduct, video: e.target.value})}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        />
+                      </div>
+                      <div>
+                        <label className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={editingProduct.popular}
+                            onChange={(e) => setEditingProduct({...editingProduct, popular: e.target.checked})}
+                            className="mr-2"
+                          />
+                          <span className="text-sm font-medium text-gray-700">Produit populaire</span>
+                        </label>
+                      </div>
                     </div>
+
+                    {/* Variantes */}
+                    <div className="mt-6">
+                      <div className="flex justify-between items-center mb-4">
+                        <label className="block text-sm font-medium text-gray-700">Variantes</label>
+                        <button
+                          type="button"
+                          onClick={() => setEditingProduct({
+                            ...editingProduct,
+                            variants: [...editingProduct.variants, { name: '', price: 0, size: '' }]
+                          })}
+                          className="text-sm bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                        >
+                          + Ajouter variante
+                        </button>
+                      </div>
+                      
+                      {editingProduct.variants.map((variant, index) => (
+                        <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">
+                          <input
+                            type="text"
+                            value={variant.name}
+                            onChange={(e) => {
+                              const newVariants = [...editingProduct.variants];
+                              newVariants[index] = { ...variant, name: e.target.value };
+                              setEditingProduct({...editingProduct, variants: newVariants});
+                            }}
+                            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Nom (ex: 10%)"
+                          />
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={variant.price}
+                            onChange={(e) => {
+                              const newVariants = [...editingProduct.variants];
+                              newVariants[index] = { ...variant, price: parseFloat(e.target.value) };
+                              setEditingProduct({...editingProduct, variants: newVariants});
+                            }}
+                            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Prix"
+                          />
+                          <div className="flex">
+                            <input
+                              type="text"
+                              value={variant.size}
+                              onChange={(e) => {
+                                const newVariants = [...editingProduct.variants];
+                                newVariants[index] = { ...variant, size: e.target.value };
+                                setEditingProduct({...editingProduct, variants: newVariants});
+                              }}
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                              placeholder="Taille (ex: 10ml)"
+                            />
+                            {editingProduct.variants.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newVariants = editingProduct.variants.filter((_, i) => i !== index);
+                                  setEditingProduct({...editingProduct, variants: newVariants});
+                                }}
+                                className="ml-2 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                              >
+                                ×
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
                     <div className="mt-4 flex space-x-2">
                       <button
                         onClick={saveProduct}
@@ -1009,12 +1101,24 @@ export default function AdminPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo (emoji)</label>
                     <input
                       type="text"
                       value={config.shopInfo.logo}
                       onChange={(e) => updateConfig('shopInfo', { logo: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="🌿"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Utilisez un emoji comme logo</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">URL du logo</label>
+                    <input
+                      type="url"
+                      value={config.shopInfo.logoUrl}
+                      onChange={(e) => updateConfig('shopInfo', { logoUrl: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="https://example.com/logo.png"
                     />
                   </div>
                   <div>
@@ -1023,6 +1127,203 @@ export default function AdminPage() {
                       type="color"
                       value={config.shopInfo.primaryColor}
                       onChange={(e) => updateConfig('shopInfo', { primaryColor: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Couleur secondaire</label>
+                    <input
+                      type="color"
+                      value={config.shopInfo.secondaryColor}
+                      onChange={(e) => updateConfig('shopInfo', { secondaryColor: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Couleur du texte</label>
+                    <input
+                      type="color"
+                      value={config.shopInfo.textColor}
+                      onChange={(e) => updateConfig('shopInfo', { textColor: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Couleur de fond</label>
+                    <input
+                      type="color"
+                      value={config.shopInfo.backgroundColor}
+                      onChange={(e) => updateConfig('shopInfo', { backgroundColor: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Image de fond</label>
+                    <input
+                      type="url"
+                      value={config.shopInfo.backgroundImage}
+                      onChange={(e) => updateConfig('shopInfo', { backgroundImage: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="https://example.com/background.jpg"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">URL de l'image de fond (optionnel)</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Page Content Tab */}
+            {activeTab === 'page-content' && (
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-6">Contenu des Pages</h3>
+                
+                {/* Homepage Content */}
+                <div className="mb-8">
+                  <h4 className="text-md font-medium text-gray-900 mb-4">Page d'accueil</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre principal</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.heroTitle}
+                        onChange={(e) => updatePageContent('homepage', 'heroTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Sous-titre</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.heroSubtitle}
+                        onChange={(e) => updatePageContent('homepage', 'heroSubtitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Texte du bouton</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.heroButtonText}
+                        onChange={(e) => updatePageContent('homepage', 'heroButtonText', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre de section</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.homepage.sectionTitle}
+                        onChange={(e) => updatePageContent('homepage', 'sectionTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Products Page Content */}
+                <div className="mb-8">
+                  <h4 className="text-md font-medium text-gray-900 mb-4">Page Produits</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre de la page</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.products.pageTitle}
+                        onChange={(e) => updatePageContent('products', 'pageTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Sous-titre de la page</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.products.pageSubtitle}
+                        onChange={(e) => updatePageContent('products', 'pageSubtitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre du filtre</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.products.filterTitle}
+                        onChange={(e) => updatePageContent('products', 'filterTitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Texte "Populaire"</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.products.popularText}
+                        onChange={(e) => updatePageContent('products', 'popularText', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Texte "Voir détails"</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.products.detailsText}
+                        onChange={(e) => updatePageContent('products', 'detailsText', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Texte "Commander"</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.products.orderText}
+                        onChange={(e) => updatePageContent('products', 'orderText', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Page Content */}
+                <div className="mb-8">
+                  <h4 className="text-md font-medium text-gray-900 mb-4">Page Contact</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Titre</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.contact.title}
+                        onChange={(e) => updatePageContent('contact', 'title', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Sous-titre</label>
+                      <input
+                        type="text"
+                        value={config.pageContent.contact.subtitle}
+                        onChange={(e) => updatePageContent('contact', 'subtitle', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                      <textarea
+                        value={config.pageContent.contact.description}
+                        onChange={(e) => updatePageContent('contact', 'description', e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Content */}
+                <div className="mb-8">
+                  <h4 className="text-md font-medium text-gray-900 mb-4">Pied de page</h4>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Texte de copyright</label>
+                    <input
+                      type="text"
+                      value={config.pageContent.footer.copyrightText}
+                      onChange={(e) => updatePageContent('footer', 'copyrightText', e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     />
                   </div>
