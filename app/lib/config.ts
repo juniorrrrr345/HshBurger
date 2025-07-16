@@ -485,8 +485,16 @@ export function saveConfig(config: SiteConfig): void {
 
 export async function saveConfigAsync(config: SiteConfig): Promise<boolean> {
   try {
-    console.log('saveConfigAsync: Sending request to /api/config');
-    const response = await fetch('/api/config', {
+    console.log('saveConfigAsync: Starting save process');
+    
+    // Utiliser une URL absolue pour éviter les problèmes de routing
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const apiUrl = `${baseUrl}/api/config`;
+    
+    console.log('saveConfigAsync: Using URL:', apiUrl);
+    console.log('saveConfigAsync: Config structure:', Object.keys(config));
+    
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -495,6 +503,7 @@ export async function saveConfigAsync(config: SiteConfig): Promise<boolean> {
     });
     
     console.log('saveConfigAsync: Response status:', response.status);
+    console.log('saveConfigAsync: Response headers:', Object.fromEntries(response.headers.entries()));
     
     if (response.ok) {
       const result = await response.json();

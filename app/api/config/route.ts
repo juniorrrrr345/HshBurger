@@ -39,21 +39,41 @@ async function writeConfig(config: SiteConfig): Promise<void> {
 export async function GET() {
   try {
     const config = await readConfig();
-    return NextResponse.json(config);
+    const response = NextResponse.json(config);
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    return response;
   } catch (error) {
     console.error('Error reading config:', error);
     return NextResponse.json({ error: 'Failed to read config' }, { status: 500 });
   }
 }
 
+export async function OPTIONS() {
+  const response = new NextResponse(null, { status: 200 });
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+  return response;
+}
+
 export async function POST(request: NextRequest) {
   try {
     console.log('POST /api/config - Starting save process');
+    console.log('POST /api/config - Request headers:', Object.fromEntries(request.headers.entries()));
+    
     const config: SiteConfig = await request.json();
     console.log('POST /api/config - Config received, writing to file');
+    console.log('POST /api/config - Config structure:', Object.keys(config));
+    
     await writeConfig(config);
     console.log('POST /api/config - Config saved successfully');
-    return NextResponse.json({ success: true });
+    
+    const response = NextResponse.json({ success: true });
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    
+    return response;
   } catch (error) {
     console.error('Error saving config:', error);
     return NextResponse.json({ error: 'Failed to save config', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });

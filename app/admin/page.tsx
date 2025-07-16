@@ -1,5 +1,7 @@
 'use client';
 
+// Force le rendu côté client pour éviter les problèmes de SSR
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SiteConfig, getConfig, getConfigAsync, saveConfigAsync, getNextId, Product, Category, SocialMediaLink, Farm, Page } from '../lib/config';
@@ -58,16 +60,44 @@ export default function AdminPage() {
   const handleSave = async () => {
     if (!config) return;
     
+    // Vérifier que nous sommes côté client
+    if (typeof window === 'undefined') {
+      setMessage('Erreur: Panel admin non disponible côté serveur');
+      return;
+    }
+    
     setIsSaving(true);
+    setMessage('Sauvegarde en cours...');
+    
     try {
       console.log('Admin: Starting save process');
-      const success = await saveConfigAsync(config);
-      console.log('Admin: Save result:', success);
-      if (success) {
+      console.log('Admin: Config to save:', config);
+      console.log('Admin: Window location:', window.location.origin);
+      
+      // Utiliser une approche plus robuste pour l'appel API
+      const apiUrl = `${window.location.origin}/api/config`;
+      console.log('Admin: Using API URL:', apiUrl);
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(config),
+      });
+      
+      console.log('Admin: Response status:', response.status);
+      console.log('Admin: Response headers:', Object.fromEntries(response.headers.entries()));
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Admin: Response data:', result);
         setMessage('Configuration sauvegardée avec succès!');
         setTimeout(() => setMessage(''), 3000);
       } else {
-        setMessage('Erreur lors de la sauvegarde');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Admin: Response not ok:', response.status, errorData);
+        setMessage(`Erreur lors de la sauvegarde (${response.status}) - Vérifiez la console pour plus de détails`);
       }
     } catch (error) {
       console.error('Admin: Save error:', error);
