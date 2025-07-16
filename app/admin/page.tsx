@@ -22,22 +22,32 @@ export default function AdminPage() {
   useEffect(() => {
     const loadConfig = async () => {
       try {
-        const loadedConfig = await getConfigAsync();
+        // Utiliser getConfig() en premier pour un chargement rapide
+        const defaultConfig = getConfig();
+        setConfig(defaultConfig);
+        setIsLoading(false);
         
-        // S'assurer que la propriété pages existe
-        if (!loadedConfig.pages) {
-          loadedConfig.pages = [
-            { id: 1, name: "Accueil", href: "/", isDefault: true },
-            { id: 2, name: "Produits", href: "/produits", isDefault: true },
-            { id: 3, name: "Contact", href: "/contact", isDefault: true },
-            { id: 4, name: "Réseaux Sociaux", href: "/reseaux-sociaux", isDefault: true }
-          ];
+        // Ensuite, essayer de charger depuis l'API pour avoir les données les plus récentes
+        try {
+          const loadedConfig = await getConfigAsync();
+          
+          // S'assurer que la propriété pages existe
+          if (!loadedConfig.pages) {
+            loadedConfig.pages = [
+              { id: 1, name: "Accueil", href: "/", isDefault: true },
+              { id: 2, name: "Produits", href: "/produits", isDefault: true },
+              { id: 3, name: "Contact", href: "/contact", isDefault: true },
+              { id: 4, name: "Réseaux Sociaux", href: "/reseaux-sociaux", isDefault: true }
+            ];
+          }
+          setConfig(loadedConfig);
+        } catch (apiError) {
+          console.warn('Could not load config from API, using default:', apiError);
+          // Garder la config par défaut si l'API échoue
         }
-        setConfig(loadedConfig);
       } catch (error) {
         console.error('Error loading config:', error);
         setMessage('Erreur lors du chargement de la configuration');
-      } finally {
         setIsLoading(false);
       }
     };
@@ -50,7 +60,9 @@ export default function AdminPage() {
     
     setIsSaving(true);
     try {
+      console.log('Admin: Starting save process');
       const success = await saveConfigAsync(config);
+      console.log('Admin: Save result:', success);
       if (success) {
         setMessage('Configuration sauvegardée avec succès!');
         setTimeout(() => setMessage(''), 3000);
@@ -58,8 +70,8 @@ export default function AdminPage() {
         setMessage('Erreur lors de la sauvegarde');
       }
     } catch (error) {
-      setMessage('Erreur lors de la sauvegarde');
-      console.error('Save error:', error);
+      console.error('Admin: Save error:', error);
+      setMessage(`Erreur lors de la sauvegarde: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
     } finally {
       setIsSaving(false);
     }

@@ -174,12 +174,26 @@ function initConfig() {
       console.log('📁 Dossier data créé');
     }
 
-    // Vérifier si le fichier de configuration existe
+    // Vérifier si le fichier de configuration existe et est valide
     if (!fs.existsSync(configFile)) {
       fs.writeFileSync(configFile, JSON.stringify(defaultConfig, null, 2));
       console.log('✅ Configuration initialisée');
     } else {
-      console.log('ℹ️  Configuration déjà existante');
+      try {
+        const existingConfig = JSON.parse(fs.readFileSync(configFile, 'utf-8'));
+        // Vérifier si la config a la structure attendue
+        if (!existingConfig.shopInfo || !existingConfig.products || !existingConfig.categories) {
+          console.log('⚠️  Configuration corrompue, réinitialisation...');
+          fs.writeFileSync(configFile, JSON.stringify(defaultConfig, null, 2));
+          console.log('✅ Configuration réinitialisée');
+        } else {
+          console.log('ℹ️  Configuration déjà existante et valide');
+        }
+      } catch (error) {
+        console.log('⚠️  Configuration corrompue, réinitialisation...');
+        fs.writeFileSync(configFile, JSON.stringify(defaultConfig, null, 2));
+        console.log('✅ Configuration réinitialisée');
+      }
     }
   } catch (error) {
     console.error('❌ Erreur lors de l\'initialisation:', error);

@@ -29,8 +29,11 @@ async function readConfig(): Promise<SiteConfig> {
 
 // Écrire la configuration dans le fichier
 async function writeConfig(config: SiteConfig): Promise<void> {
+  console.log('writeConfig - Ensuring data directory exists');
   await ensureDataDirectory();
+  console.log('writeConfig - Writing config to file:', configFilePath);
   await fs.writeFile(configFilePath, JSON.stringify(config, null, 2));
+  console.log('writeConfig - Config written successfully');
 }
 
 export async function GET() {
@@ -45,11 +48,14 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('POST /api/config - Starting save process');
     const config: SiteConfig = await request.json();
+    console.log('POST /api/config - Config received, writing to file');
     await writeConfig(config);
+    console.log('POST /api/config - Config saved successfully');
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error saving config:', error);
-    return NextResponse.json({ error: 'Failed to save config' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to save config', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
 }

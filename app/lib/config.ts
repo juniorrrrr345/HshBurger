@@ -485,6 +485,7 @@ export function saveConfig(config: SiteConfig): void {
 
 export async function saveConfigAsync(config: SiteConfig): Promise<boolean> {
   try {
+    console.log('saveConfigAsync: Sending request to /api/config');
     const response = await fetch('/api/config', {
       method: 'POST',
       headers: {
@@ -493,13 +494,21 @@ export async function saveConfigAsync(config: SiteConfig): Promise<boolean> {
       body: JSON.stringify(config),
     });
     
+    console.log('saveConfigAsync: Response status:', response.status);
+    
     if (response.ok) {
+      const result = await response.json();
+      console.log('saveConfigAsync: Response data:', result);
       return true;
+    } else {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('saveConfigAsync: Response not ok:', response.status, errorData);
+      return false;
     }
   } catch (error) {
-    console.error('Error saving config:', error);
+    console.error('saveConfigAsync: Network error:', error);
+    return false;
   }
-  return false;
 }
 
 export function getNextId(items: { id: number }[]): number {
