@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { SiteConfig, getConfig } from '../lib/config';
+import { SiteConfig, getConfigAsync } from '../lib/config';
 import Header from '../components/Header';
 import OptimizedImage from '../components/OptimizedImage';
 
@@ -15,14 +15,24 @@ export default function ProduitsPage() {
   const [isFarmDropdownOpen, setIsFarmDropdownOpen] = useState(false);
   const [page, setPage] = useState(1);
   const PRODUCTS_PER_PAGE = 2;
-  
-
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setConfig(getConfig());
+    const loadConfig = async () => {
+      try {
+        const loadedConfig = await getConfigAsync();
+        setConfig(loadedConfig);
+      } catch (error) {
+        console.error('Error loading config:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadConfig();
   }, []);
 
-  if (!config) {
+  if (!config || isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600"></div>
