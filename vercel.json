@@ -1,11 +1,17 @@
 {
-  "framework": "nextjs",
+  "version": 2,
   "buildCommand": "npm run build",
-  "installCommand": "npm install",
-  "regions": ["fra1"],
+  "outputDirectory": ".next",
+  "framework": "nextjs",
   "functions": {
     "app/api/config/route.ts": {
-      "maxDuration": 30
+      "runtime": "nodejs18.x"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ]
 }
