@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // output: 'export', // Commented out to fix Supabase error
   images: {
     unoptimized: true // nécessaire si tu utilises next/image
   }
