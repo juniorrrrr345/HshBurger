@@ -467,6 +467,11 @@ export function getConfig(): SiteConfig {
 }
 
 export async function getConfigAsync(): Promise<SiteConfig> {
+  // Pendant le build statique, retourner directement la config par défaut
+  if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
+    return defaultConfig;
+  }
+
   try {
     // Utiliser une URL absolue pour éviter les problèmes de routing
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';

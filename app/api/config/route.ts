@@ -1,50 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 import { SiteConfig, defaultConfig } from '../../lib/config';
-
-const configFilePath = path.join(process.cwd(), 'data', 'config.json');
-
-// Assurer que le dossier data existe
-async function ensureDataDirectory() {
-  const dataDir = path.join(process.cwd(), 'data');
-  try {
-    await fs.access(dataDir);
-  } catch {
-    await fs.mkdir(dataDir, { recursive: true });
-  }
-}
-
-// Lire la configuration depuis le fichier
-async function readConfig(): Promise<SiteConfig> {
-  try {
-    await ensureDataDirectory();
-    const data = await fs.readFile(configFilePath, 'utf-8');
-    return { ...defaultConfig, ...JSON.parse(data) };
-  } catch (error) {
-    // Si le fichier n'existe pas, retourner la config par défaut
-    return defaultConfig;
-  }
-}
-
-// Écrire la configuration dans le fichier
-async function writeConfig(config: SiteConfig): Promise<void> {
-  console.log('writeConfig - Ensuring data directory exists');
-  await ensureDataDirectory();
-  console.log('writeConfig - Writing config to file:', configFilePath);
-  await fs.writeFile(configFilePath, JSON.stringify(config, null, 2));
-  console.log('writeConfig - Config written successfully');
-}
 
 export async function GET() {
   try {
-    const config = await readConfig();
-    const response = NextResponse.json(config);
+    console.log('GET /api/config - Starting fetch process');
+    
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const { data: config, error } = await supabase
+      .from('site_config')
+      .select('config')
+      .single();
+
+    if (error) {
+      console.error('GET /api/config - Supabase error:', error);
+      // Retourner la config par défaut si pas de données dans Supabase
+      return NextResponse.json(defaultConfig);
+    }
+
+    console.log('GET /api/config - Config loaded successfully');
+    const response = NextResponse.json(config?.config || defaultConfig);
     response.headers.set('Access-Control-Allow-Origin', '*');
     return response;
   } catch (error) {
-    console.error('Error reading config:', error);
-    return NextResponse.json({ error: 'Failed to read config' }, { status: 500 });
+    console.error('GET /api/config - Error:', error);
+    return NextResponse.json(defaultConfig);
   }
 }
 
@@ -62,20 +45,35 @@ export async function POST(request: NextRequest) {
     console.log('POST /api/config - Request headers:', Object.fromEntries(request.headers.entries()));
     
     const config: SiteConfig = await request.json();
-    console.log('POST /api/config - Config received, writing to file');
-    console.log('POST /api/config - Config structure:', Object.keys(config));
+    console.log('POST /api/config - Config received:', Object.keys(config));
     
-    await writeConfig(config);
-    console.log('POST /api/config - Config saved successfully');
-    
-    const response = NextResponse.json({ success: true });
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+
+    const { data, error } = await supabase
+      .from('site_config')
+      .upsert({ 
+        id: 1, // Toujours utiliser l'ID 1 pour la config principale
+        config: config,
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('POST /api/config - Supabase error:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    console.log('POST /api/config - Config saved successfully:', data);
+    const response = NextResponse.json({ success: true, data });
     response.headers.set('Access-Control-Allow-Origin', '*');
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
     
     return response;
   } catch (error) {
-    console.error('Error saving config:', error);
-    return NextResponse.json({ error: 'Failed to save config', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    console.error('POST /api/config - Error:', error);
+    return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }
