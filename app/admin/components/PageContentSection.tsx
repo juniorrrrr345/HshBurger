@@ -12,17 +12,15 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
   const [pageContent, setPageContent] = useState(config.pageContent);
   const [activePage, setActivePage] = useState('homepage');
 
-  const handleContentChange = (page: string, section: string, field: string, value: string) => {
+  const handleContentChange = (page: string, field: string, value: string) => {
     const updatedContent = {
       ...pageContent,
       [page]: {
         ...pageContent[page as keyof typeof pageContent],
-        [section]: {
-          ...pageContent[page as keyof typeof pageContent][section as keyof any],
-          [field]: value
-        }
+        [field]: value
       }
-    };
+    } as typeof pageContent;
+    
     setPageContent(updatedContent);
     onUpdate({ pageContent: updatedContent });
   };
@@ -81,7 +79,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.homepage.heroTitle}
-                  onChange={(e) => handleContentChange('homepage', 'heroTitle', 'heroTitle', e.target.value)}
+                  onChange={(e) => handleContentChange('homepage', 'heroTitle', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Bienvenue sur notre boutique"
                 />
@@ -94,7 +92,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.homepage.heroSubtitle}
-                  onChange={(e) => handleContentChange('homepage', 'heroSubtitle', 'heroSubtitle', e.target.value)}
+                  onChange={(e) => handleContentChange('homepage', 'heroSubtitle', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Découvrez nos produits"
                 />
@@ -107,7 +105,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.homepage.heroButtonText}
-                  onChange={(e) => handleContentChange('homepage', 'heroButtonText', 'heroButtonText', e.target.value)}
+                  onChange={(e) => handleContentChange('homepage', 'heroButtonText', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Voir nos produits"
                 />
@@ -120,7 +118,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.homepage.sectionTitle}
-                  onChange={(e) => handleContentChange('homepage', 'sectionTitle', 'sectionTitle', e.target.value)}
+                  onChange={(e) => handleContentChange('homepage', 'sectionTitle', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Nos catégories"
                 />
@@ -133,7 +131,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.homepage.categoriesLabel}
-                  onChange={(e) => handleContentChange('homepage', 'categoriesLabel', 'categoriesLabel', e.target.value)}
+                  onChange={(e) => handleContentChange('homepage', 'categoriesLabel', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Catégories"
                 />
@@ -146,7 +144,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.homepage.farmLabel}
-                  onChange={(e) => handleContentChange('homepage', 'farmLabel', 'farmLabel', e.target.value)}
+                  onChange={(e) => handleContentChange('homepage', 'farmLabel', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Fermes"
                 />
@@ -159,7 +157,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.homepage.allCategoriesLabel}
-                  onChange={(e) => handleContentChange('homepage', 'allCategoriesLabel', 'allCategoriesLabel', e.target.value)}
+                  onChange={(e) => handleContentChange('homepage', 'allCategoriesLabel', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Voir toutes les catégories"
                 />
@@ -172,7 +170,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.homepage.farmProductsLabel}
-                  onChange={(e) => handleContentChange('homepage', 'farmProductsLabel', 'farmProductsLabel', e.target.value)}
+                  onChange={(e) => handleContentChange('homepage', 'farmProductsLabel', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Produits de nos fermes"
                 />
@@ -193,7 +191,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.contact.title}
-                  onChange={(e) => handleContentChange('contact', 'title', 'title', e.target.value)}
+                  onChange={(e) => handleContentChange('contact', 'title', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Contactez-nous"
                 />
@@ -206,7 +204,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.contact.subtitle}
-                  onChange={(e) => handleContentChange('contact', 'subtitle', 'subtitle', e.target.value)}
+                  onChange={(e) => handleContentChange('contact', 'subtitle', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Nous sommes là pour vous aider"
                 />
@@ -218,7 +216,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 </label>
                 <textarea
                   value={pageContent.contact.description}
-                  onChange={(e) => handleContentChange('contact', 'description', 'description', e.target.value)}
+                  onChange={(e) => handleContentChange('contact', 'description', e.target.value)}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Description de la page contact..."
@@ -240,7 +238,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.socialMedia.title}
-                  onChange={(e) => handleContentChange('socialMedia', 'title', 'title', e.target.value)}
+                  onChange={(e) => handleContentChange('socialMedia', 'title', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Suivez-nous"
                 />
@@ -253,7 +251,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.socialMedia.subtitle}
-                  onChange={(e) => handleContentChange('socialMedia', 'subtitle', 'subtitle', e.target.value)}
+                  onChange={(e) => handleContentChange('socialMedia', 'subtitle', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Restez connectés"
                 />
@@ -273,7 +271,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
               <input
                 type="text"
                 value={pageContent.footer.copyrightText}
-                onChange={(e) => handleContentChange('footer', 'copyrightText', 'copyrightText', e.target.value)}
+                onChange={(e) => handleContentChange('footer', 'copyrightText', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="© 2024 Votre Boutique. Tous droits réservés."
               />
@@ -293,7 +291,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.products.pageTitle}
-                  onChange={(e) => handleContentChange('products', 'pageTitle', 'pageTitle', e.target.value)}
+                  onChange={(e) => handleContentChange('products', 'pageTitle', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Nos Produits"
                 />
@@ -306,7 +304,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.products.pageSubtitle}
-                  onChange={(e) => handleContentChange('products', 'pageSubtitle', 'pageSubtitle', e.target.value)}
+                  onChange={(e) => handleContentChange('products', 'pageSubtitle', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Découvrez notre sélection"
                 />
@@ -319,7 +317,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.products.filterTitle}
-                  onChange={(e) => handleContentChange('products', 'filterTitle', 'filterTitle', e.target.value)}
+                  onChange={(e) => handleContentChange('products', 'filterTitle', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Filtrer par"
                 />
@@ -332,7 +330,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.products.popularText}
-                  onChange={(e) => handleContentChange('products', 'popularText', 'popularText', e.target.value)}
+                  onChange={(e) => handleContentChange('products', 'popularText', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Populaire"
                 />
@@ -345,7 +343,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.products.detailsText}
-                  onChange={(e) => handleContentChange('products', 'detailsText', 'detailsText', e.target.value)}
+                  onChange={(e) => handleContentChange('products', 'detailsText', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Voir détails"
                 />
@@ -358,7 +356,7 @@ export default function PageContentSection({ config, onUpdate }: PageContentSect
                 <input
                   type="text"
                   value={pageContent.products.orderText}
-                  onChange={(e) => handleContentChange('products', 'orderText', 'orderText', e.target.value)}
+                  onChange={(e) => handleContentChange('products', 'orderText', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Commander"
                 />
