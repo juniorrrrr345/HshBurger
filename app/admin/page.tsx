@@ -57,70 +57,61 @@ export default function AdminPage() {
     loadConfig();
   }, []);
 
-  const handleSave = async () => {
-    if (!config) return;
+  const autoSave = async (newConfig: SiteConfig) => {
+    if (!newConfig) return;
     
     // Vérifier que nous sommes côté client
-    if (typeof window === 'undefined') {
-      setMessage('Erreur: Panel admin non disponible côté serveur');
-      return;
-    }
-    
-    setIsSaving(true);
-    setMessage('Sauvegarde en cours...');
+    if (typeof window === 'undefined') return;
     
     try {
-      console.log('Admin: Starting save process');
-      console.log('Admin: Config to save:', config);
-      console.log('Admin: Window location:', window.location.origin);
+      console.log('Admin: Auto-saving configuration...');
       
-      // Utiliser une approche plus robuste pour l'appel API
       const apiUrl = `${window.location.origin}/api/config`;
-      console.log('Admin: Using API URL:', apiUrl);
-      
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(config),
+        body: JSON.stringify(newConfig),
       });
       
-      console.log('Admin: Response status:', response.status);
-      console.log('Admin: Response headers:', Object.fromEntries(response.headers.entries()));
-      
       if (response.ok) {
-        const result = await response.json();
-        console.log('Admin: Response data:', result);
-        setMessage('Configuration sauvegardée avec succès!');
-        setTimeout(() => setMessage(''), 3000);
+        console.log('Admin: Auto-save successful');
+        setMessage('Sauvegarde automatique réussie');
+        setTimeout(() => setMessage(''), 2000);
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Admin: Response not ok:', response.status, errorData);
-        setMessage(`Erreur lors de la sauvegarde (${response.status}) - Vérifiez la console pour plus de détails`);
+        console.error('Admin: Auto-save failed:', response.status);
+        setMessage('Erreur lors de la sauvegarde automatique');
+        setTimeout(() => setMessage(''), 3000);
       }
     } catch (error) {
-      console.error('Admin: Save error:', error);
-      setMessage(`Erreur lors de la sauvegarde: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
-    } finally {
-      setIsSaving(false);
+      console.error('Admin: Auto-save error:', error);
+      setMessage('Erreur lors de la sauvegarde automatique');
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 
-  const updateConfig = (section: keyof SiteConfig, updates: any) => {
+  const handleSave = async () => {
     if (!config) return;
-    setConfig({
+    await autoSave(config);
+  };
+
+  const updateConfig = async (section: keyof SiteConfig, updates: any) => {
+    if (!config) return;
+    const newConfig = {
       ...config,
       [section]: {
         ...config[section],
         ...updates
       }
-    });
+    };
+    setConfig(newConfig);
+    await autoSave(newConfig);
   };
 
-  const updatePageContent = (page: keyof SiteConfig['pageContent'], key: string, value: string) => {
+  const updatePageContent = async (page: keyof SiteConfig['pageContent'], key: string, value: string) => {
     if (!config) return;
-    setConfig({
+    const newConfig = {
       ...config,
       pageContent: {
         ...config.pageContent,
@@ -129,7 +120,9 @@ export default function AdminPage() {
           [key]: value
         }
       }
-    });
+    };
+    setConfig(newConfig);
+    await autoSave(newConfig);
   };
 
   // Product management
@@ -150,7 +143,7 @@ export default function AdminPage() {
     setEditingProduct(newProduct);
   };
 
-  const saveProduct = () => {
+  const saveProduct = async () => {
     if (!config || !editingProduct) return;
     
     const existingIndex = config.products.findIndex(p => p.id === editingProduct.id);
@@ -163,16 +156,20 @@ export default function AdminPage() {
       newProducts = [...config.products, editingProduct];
     }
     
-    setConfig({ ...config, products: newProducts });
+    const newConfig = { ...config, products: newProducts };
+    setConfig(newConfig);
     setEditingProduct(null);
+    await autoSave(newConfig);
   };
 
-  const deleteProduct = (id: number) => {
+  const deleteProduct = async (id: number) => {
     if (!config) return;
-    setConfig({
+    const newConfig = {
       ...config,
       products: config.products.filter(p => p.id !== id)
-    });
+    };
+    setConfig(newConfig);
+    await autoSave(newConfig);
   };
 
   // Category management
@@ -187,7 +184,7 @@ export default function AdminPage() {
     setEditingCategory(newCategory);
   };
 
-  const saveCategory = () => {
+  const saveCategory = async () => {
     if (!config || !editingCategory) return;
     
     const existingIndex = config.categories.findIndex(c => c.id === editingCategory.id);
@@ -200,16 +197,20 @@ export default function AdminPage() {
       newCategories = [...config.categories, editingCategory];
     }
     
-    setConfig({ ...config, categories: newCategories });
+    const newConfig = { ...config, categories: newCategories };
+    setConfig(newConfig);
     setEditingCategory(null);
+    await autoSave(newConfig);
   };
 
-  const deleteCategory = (id: number) => {
+  const deleteCategory = async (id: number) => {
     if (!config) return;
-    setConfig({
+    const newConfig = {
       ...config,
       categories: config.categories.filter(c => c.id !== id)
-    });
+    };
+    setConfig(newConfig);
+    await autoSave(newConfig);
   };
 
   // Social media management
@@ -225,7 +226,7 @@ export default function AdminPage() {
     setEditingSocial(newSocial);
   };
 
-  const saveSocialMedia = () => {
+  const saveSocialMedia = async () => {
     if (!config || !editingSocial) return;
     
     const existingIndex = config.socialMediaLinks.findIndex(s => s.id === editingSocial.id);
@@ -238,16 +239,20 @@ export default function AdminPage() {
       newSocials = [...config.socialMediaLinks, editingSocial];
     }
     
-    setConfig({ ...config, socialMediaLinks: newSocials });
+    const newConfig = { ...config, socialMediaLinks: newSocials };
+    setConfig(newConfig);
     setEditingSocial(null);
+    await autoSave(newConfig);
   };
 
-  const deleteSocialMedia = (id: number) => {
+  const deleteSocialMedia = async (id: number) => {
     if (!config) return;
-    setConfig({
+    const newConfig = {
       ...config,
       socialMediaLinks: config.socialMediaLinks.filter(s => s.id !== id)
-    });
+    };
+    setConfig(newConfig);
+    await autoSave(newConfig);
   };
 
   // Farm management
@@ -262,7 +267,7 @@ export default function AdminPage() {
     setEditingFarm(newFarm);
   };
 
-  const saveFarm = () => {
+  const saveFarm = async () => {
     if (!config || !editingFarm) return;
     
     const existingIndex = config.farms.findIndex(f => f.id === editingFarm.id);
@@ -275,16 +280,20 @@ export default function AdminPage() {
       newFarms = [...config.farms, editingFarm];
     }
     
-    setConfig({ ...config, farms: newFarms });
+    const newConfig = { ...config, farms: newFarms };
+    setConfig(newConfig);
     setEditingFarm(null);
+    await autoSave(newConfig);
   };
 
-  const deleteFarm = (id: number) => {
+  const deleteFarm = async (id: number) => {
     if (!config) return;
-    setConfig({
+    const newConfig = {
       ...config,
       farms: config.farms.filter(f => f.id !== id)
-    });
+    };
+    setConfig(newConfig);
+    await autoSave(newConfig);
   };
 
   // ===== NOUVEAU SYSTÈME DE PAGES - REFAIT COMPLÈTEMENT =====
@@ -317,7 +326,7 @@ export default function AdminPage() {
     setEditingPage({ ...page });
   };
 
-  const savePage = () => {
+  const savePage = async () => {
     if (!editingPage || !config) {
       alert('Erreur: données manquantes');
       return;
@@ -353,13 +362,14 @@ export default function AdminPage() {
     const updatedConfig = { ...config, pages: newPages };
     setConfig(updatedConfig);
     setEditingPage(null);
+    await autoSave(updatedConfig);
     
     // Message de succès
     const action = isExisting ? 'modifiée' : 'ajoutée';
     alert(`Page ${action} avec succès !`);
   };
 
-  const deletePage = (pageId: number) => {
+  const deletePage = async (pageId: number) => {
     if (!config || !config.pages) return;
     
     const page = config.pages.find(p => p.id === pageId);
@@ -374,6 +384,7 @@ export default function AdminPage() {
       const newPages = config.pages.filter(p => p.id !== pageId);
       const updatedConfig = { ...config, pages: newPages };
       setConfig(updatedConfig);
+      await autoSave(updatedConfig);
       alert("Page supprimée !");
     }
   };
@@ -412,17 +423,10 @@ export default function AdminPage() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className={`px-4 py-2 rounded-md font-medium ${
-                  isSaving
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-green-600 text-white hover:bg-green-700'
-                } transition-colors`}
-              >
-                {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
-              </button>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-gray-600">Sauvegarde automatique</span>
+              </div>
               <Link
                 href="/"
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
