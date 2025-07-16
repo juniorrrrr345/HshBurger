@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SiteConfig, getConfigAsync, saveConfigAsync, getNextId, Product, Category, SocialMediaLink, Farm, Page } from '../lib/config';
 import ErrorBoundary from './components/ErrorBoundary';
+import ImageUpload from './components/ImageUpload';
+import GalleryUpload from './components/GalleryUpload';
 
 export default function AdminPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -254,7 +256,15 @@ export default function AdminPage() {
       id: newId,
       name: '',
       href: '',
-      isDefault: false
+      isDefault: false,
+      content: {
+        title: '',
+        subtitle: '',
+        description: '',
+        heroTitle: '',
+        heroSubtitle: '',
+        heroButtonText: ''
+      }
     };
     
     setEditingPage(newPage);
@@ -502,37 +512,31 @@ export default function AdminPage() {
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                            <input
-                              type="url"
+                            <ImageUpload
                               value={editingProduct.image}
-                              onChange={(e) => setEditingProduct({...editingProduct, image: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                              onChange={(url) => setEditingProduct({...editingProduct, image: url})}
+                              label="Image principale du produit"
+                              placeholder="Sélectionnez l'image principale"
                             />
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Images multiples (URLs séparées par des virgules)</label>
-                            <textarea
-                              value={editingProduct.images?.join(', ') || ''}
-                              onChange={(e) => setEditingProduct({...editingProduct, images: e.target.value.split(',').map(url => url.trim()).filter(url => url)})}
-                              rows={3}
-                              placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                            <GalleryUpload
+                              images={editingProduct.images || []}
+                              onChange={(images) => setEditingProduct({...editingProduct, images: images})}
+                              label="Galerie d'images du produit"
+                              placeholder="Ajoutez plusieurs images pour la galerie du produit"
                             />
-                            <p className="text-xs text-gray-500 mt-1">Séparez les URLs par des virgules</p>
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Vidéo URL (optionnel)</label>
-                            <input
-                              type="url"
+                            <ImageUpload
                               value={editingProduct.video || ''}
-                              onChange={(e) => setEditingProduct({...editingProduct, video: e.target.value})}
-                              placeholder="https://example.com/video.mp4"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                              onChange={(url) => setEditingProduct({...editingProduct, video: url})}
+                              label="Vidéo du produit (optionnel)"
+                              placeholder="Sélectionnez une vidéo"
+                              accept="video/*"
                             />
-                            <p className="text-xs text-gray-500 mt-1">URL directe vers un fichier vidéo (MP4, WebM, etc.)</p>
                           </div>
                           
                           <div>
@@ -877,43 +881,156 @@ export default function AdminPage() {
                 {/* MODAL SIMPLE POUR PAGES */}
                 {editingPage && (
                   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
+                    <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                       <div className="p-6">
                         <h3 className="text-lg font-medium mb-4">
                           {config?.pages?.some(p => p.id === editingPage.id) ? 'Modifier la page' : 'Ajouter une page'}
                         </h3>
                         
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              Nom de la page *
-                            </label>
-                            <input
-                              type="text"
-                              value={editingPage.name || ''}
-                              onChange={(e) => setEditingPage({...editingPage, name: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="Ex: À propos, Conditions..."
-                              autoFocus
-                            />
+                        <div className="space-y-6">
+                          {/* Informations de base */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Nom de la page *
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.name || ''}
+                                onChange={(e) => setEditingPage({...editingPage, name: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Ex: À propos, Conditions..."
+                                autoFocus
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                URL de la page *
+                              </label>
+                              <input
+                                type="text"
+                                value={editingPage.href || ''}
+                                onChange={(e) => setEditingPage({...editingPage, href: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Ex: /a-propos ou https://external.com"
+                              />
+                            </div>
                           </div>
                           
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                              URL de la page *
-                            </label>
-                            <input
-                              type="text"
-                              value={editingPage.href || ''}
-                              onChange={(e) => setEditingPage({...editingPage, href: e.target.value})}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                              placeholder="Ex: /a-propos ou https://external.com"
-                            />
+                          {/* Contenu de la page */}
+                          <div className="space-y-4">
+                            <h4 className="text-md font-medium text-gray-800">Contenu de la page</h4>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Titre principal
+                                </label>
+                                <input
+                                  type="text"
+                                  value={editingPage.content?.title || ''}
+                                  onChange={(e) => setEditingPage({
+                                    ...editingPage, 
+                                    content: { ...editingPage.content, title: e.target.value }
+                                  })}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                  placeholder="Titre de la page"
+                                />
+                              </div>
+                              
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Sous-titre
+                                </label>
+                                <input
+                                  type="text"
+                                  value={editingPage.content?.subtitle || ''}
+                                  onChange={(e) => setEditingPage({
+                                    ...editingPage, 
+                                    content: { ...editingPage.content, subtitle: e.target.value }
+                                  })}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                  placeholder="Sous-titre de la page"
+                                />
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Description
+                              </label>
+                              <textarea
+                                value={editingPage.content?.description || ''}
+                                onChange={(e) => setEditingPage({
+                                  ...editingPage, 
+                                  content: { ...editingPage.content, description: e.target.value }
+                                })}
+                                rows={3}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                placeholder="Description de la page"
+                              />
+                            </div>
+                            
+                            {/* Contenu Hero (optionnel) */}
+                            <div className="space-y-4">
+                              <h5 className="text-sm font-medium text-gray-700">Section Hero (optionnel)</h5>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Titre Hero
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={editingPage.content?.heroTitle || ''}
+                                    onChange={(e) => setEditingPage({
+                                      ...editingPage, 
+                                      content: { ...editingPage.content, heroTitle: e.target.value }
+                                    })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    placeholder="Titre de la section hero"
+                                  />
+                                </div>
+                                
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Sous-titre Hero
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={editingPage.content?.heroSubtitle || ''}
+                                    onChange={(e) => setEditingPage({
+                                      ...editingPage, 
+                                      content: { ...editingPage.content, heroSubtitle: e.target.value }
+                                    })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    placeholder="Sous-titre de la section hero"
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Texte du bouton Hero
+                                </label>
+                                <input
+                                  type="text"
+                                  value={editingPage.content?.heroButtonText || ''}
+                                  onChange={(e) => setEditingPage({
+                                    ...editingPage, 
+                                    content: { ...editingPage.content, heroButtonText: e.target.value }
+                                  })}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                                  placeholder="Ex: En savoir plus, Commander..."
+                                />
+                              </div>
+                            </div>
                           </div>
                           
                           <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
                             <p className="text-sm text-blue-800">
-                              💡 <strong>Exemples :</strong><br />
+                              💡 <strong>Exemples d'URL :</strong><br />
                               • Page interne : <code>/a-propos</code><br />
                               • Lien externe : <code>https://monsite.com</code><br />
                               • Email : <code>mailto:contact@monsite.com</code>
@@ -1192,13 +1309,11 @@ export default function AdminPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Logo (URL image)</label>
-                    <input
-                      type="url"
+                    <ImageUpload
                       value={config.shopInfo.logoUrl}
-                      onChange={(e) => updateConfig('shopInfo', { logoUrl: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="https://..."
+                      onChange={(url) => updateConfig('shopInfo', { logoUrl: url })}
+                      label="Logo de la boutique"
+                      placeholder="Sélectionnez le logo de votre boutique"
                     />
                   </div>
 
@@ -1264,13 +1379,11 @@ export default function AdminPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Image de fond (URL)</label>
-                    <input
-                      type="url"
+                    <ImageUpload
                       value={config.shopInfo.backgroundImage}
-                      onChange={(e) => updateConfig('shopInfo', { backgroundImage: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="https://..."
+                      onChange={(url) => updateConfig('shopInfo', { backgroundImage: url })}
+                      label="Image de fond"
+                      placeholder="Sélectionnez une image de fond pour votre boutique"
                     />
                     <p className="text-xs text-gray-500 mt-1">Laissez vide pour utiliser la couleur de fond</p>
                   </div>
