@@ -243,7 +243,7 @@ export const defaultConfig: SiteConfig = {
         "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop",
         "https://images.unsplash.com/photo-1587736793948-7b6b17f06c8d?w=400&h=400&fit=crop"
       ],
-      video: "",
+      video: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
       category: "Huiles",
       variants: [
         { name: "10%", price: 29.90, size: "10ml" },
@@ -338,7 +338,7 @@ export const defaultConfig: SiteConfig = {
         "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop",
         "https://images.unsplash.com/photo-1600996506180-b6d92c6d8b62?w=400&h=400&fit=crop"
       ],
-      video: "",
+      video: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4",
       category: "Farm",
       farm: "Mountain",
       variants: [
