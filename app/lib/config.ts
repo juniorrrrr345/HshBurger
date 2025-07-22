@@ -222,12 +222,18 @@ export const defaultConfig: SiteConfig = {
     },
     {
       id: 3,
+      name: "Informations",
+      href: "/informations",
+      isDefault: true
+    },
+    {
+      id: 4,
       name: "Contact",
       href: "/contact",
       isDefault: true
     },
     {
-      id: 4,
+      id: 5,
       name: "Réseaux Sociaux",
       href: "/reseaux-sociaux",
       isDefault: true
